@@ -1,41 +1,24 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-interface Product {
-  id: number;
-  ten_san_pham: string;
-  mo_ta: string;
-  gia: number;
-}
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navigation from "./components/Navigation";
+import Dashboard from "./routes/Dashboard";
+import Goals from "./routes/Goals";
 
 function App() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/products")
-      .then(res => {
-        console.log("Dữ liệu API:", res.data);
-        setProducts(res.data);
-      })
-      .catch(err => {
-        console.error("Lỗi gọi API:", err);
-        setError(err.message);
-      });
-  }, []);
-
   return (
-    <div>
-      <h1>đặng duy tiên   </h1>
-      <h2>Chi tiết sản phẩm</h2>
-      <p>Thông tin chi tiết sản phẩm</p>
-      {error && <p style={{ color: "red" }}>Lỗi: {error}</p>}
-      <ul>
-        {products.map(p => (
-          <li key={p.id}>{p.ten_san_pham}</li>
-        ))}
-      </ul>
-    </div>
+    <BrowserRouter>
+      <div className="app">
+        <header>
+          <h1>Hệ thống Quản lý Mục tiêu Cá nhân</h1>
+          <Navigation />
+        </header>
+        <main>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/goals" element={<Goals />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 }
 
