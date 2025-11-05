@@ -21,6 +21,7 @@ function App() {
     <div>
       <h1>Danh sách sản phẩm</h1>
       <h2>Chi tiết sản phẩm</h2>
+      <p>Thông tin chi tiết sản phẩm</p>
       {error && <p style={{ color: "red" }}>Lỗi: {error}</p>}
       <ul>
         {products.map(p => (
