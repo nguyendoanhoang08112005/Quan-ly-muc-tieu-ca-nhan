@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+interface Product {
+  id: number;
+  ten_san_pham: string;
+  mo_ta: string;
+  gia: number;
+}
+
 function App() {
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/api/products")
@@ -19,7 +26,7 @@ function App() {
 
   return (
     <div>
-      <h1>Danh sách sản phẩm</h1>
+      <h1>đặng duy tiên   </h1>
       <h2>Chi tiết sản phẩm</h2>
       <p>Thông tin chi tiết sản phẩm</p>
       {error && <p style={{ color: "red" }}>Lỗi: {error}</p>}
