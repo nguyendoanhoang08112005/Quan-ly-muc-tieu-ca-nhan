@@ -2,25 +2,35 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Dashboard from "./routes/Dashboard";
 import Goals from "./routes/Goals";
+import ProductList from "./components/ProductList";
+
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="app">
-        <header>
-          <h1>Hệ thống Quản lý Mục tiêu Cá nhân</h1>
-          <Navigation />
-        </header>
-        <main>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/goals" element={<Goals />} />
-          </Routes>
-        </main>
-      </div>
-    </BrowserRouter>
+    <div className="bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold text-center p-4">Danh sách sản phẩm</h1>
+      <ProductList />
+    </div>
   );
 }
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <div className="app">
+//         <header>
+//           <h1>Hệ thống Quản lý Mục tiêu Cá nhân</h1>
+//           <Navigation />
+//         </header>
+//         <main>
+//           <Routes>
+//             <Route path="/" element={<Dashboard />} />
+//             <Route path="/goals" element={<Goals />} />
+//           </Routes>
+//         </main>
+//       </div>
+//     </BrowserRouter>
+//   );
+// }
 
 // export default function App() {
 //   return (
