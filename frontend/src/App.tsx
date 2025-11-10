@@ -1,15 +1,14 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navigation from "./components/Navigation";
-import Dashboard from "./routes/Dashboard";
-import Goals from "./routes/Goals";
-import ProductList from "./components/ProductList";
+import TaskBoard from "./components/TaskBoard";
+import Sidebar from "./components/Sidebar";
 
 
 function App() {
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold text-center p-4">Danh sách sản phẩm</h1>
-      <ProductList />
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar />
+      <div className="flex-1 overflow-auto">
+        <TaskBoard />
+      </div>
     </div>
   );
 }
