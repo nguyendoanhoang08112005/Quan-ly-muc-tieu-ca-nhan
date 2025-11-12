@@ -1,15 +1,48 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TaskBoard from "./components/TaskBoard";
 import Sidebar from "./components/Sidebar";
-
+import Home from "./routes/Home";
+import Dashboard from "./routes/Dashboard";
+import Goals from "./routes/Goals";
 
 function App() {
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex-1 overflow-auto">
-        <TaskBoard />
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Trang chủ - Landing page */}
+        <Route path="/" element={<Home />} />
+        
+        {/* Dashboard với Sidebar */}
+        <Route path="/dashboard" element={
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 overflow-auto">
+              <Dashboard />
+            </div>
+          </div>
+        } />
+
+        {/* Goals page với Sidebar */}
+        <Route path="/goals" element={
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 overflow-auto">
+              <Goals />
+            </div>
+          </div>
+        } />
+
+        {/* Task Board với Sidebar */}
+        <Route path="/tasks" element={
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 overflow-auto">
+              <TaskBoard />
+            </div>
+          </div>
+        } />
+      </Routes>
+    </BrowserRouter>
   );
 }
 // function App() {

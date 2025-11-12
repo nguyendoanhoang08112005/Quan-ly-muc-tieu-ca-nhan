@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   HomeIcon, 
   FolderIcon, 
@@ -12,6 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -51,7 +53,10 @@ const Sidebar = () => {
           <>
             {/* Home Section */}
             <div className="mb-2">
-              <button className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-white/10 rounded-xl transition-colors text-sm font-medium">
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-white/10 rounded-xl transition-colors text-sm font-medium"
+              >
                 <HomeIcon className="w-5 h-5" />
                 <span>Trang chủ</span>
               </button>
@@ -80,14 +85,20 @@ const Sidebar = () => {
                 
                 {/* Projects */}
                 <div className="ml-4 space-y-1">
-                  <button className="w-full flex items-center space-x-3 px-4 py-2.5 bg-white/10 rounded-xl text-sm font-medium">
+                  <button 
+                    onClick={() => navigate('/tasks')}
+                    className="w-full flex items-center space-x-3 px-4 py-2.5 bg-white/10 rounded-xl text-sm font-medium"
+                  >
                     <ClipboardDocumentListIcon className="w-4 h-4 text-purple-400" />
                     <span>Quản lý Dự án</span>
                     <span className="ml-auto text-xs bg-purple-500 px-2 py-1 rounded-full">5</span>
                   </button>
-                  <button className="w-full flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 rounded-xl text-sm">
+                  <button 
+                    onClick={() => navigate('/goals')}
+                    className="w-full flex items-center space-x-3 px-4 py-2.5 hover:bg-white/10 rounded-xl text-sm"
+                  >
                     <ClipboardDocumentListIcon className="w-4 h-4 text-gray-400" />
-                    <span>Marketing Campaign</span>
+                    <span>Mục tiêu cá nhân</span>
                     <span className="ml-auto text-xs bg-gray-700 px-2 py-1 rounded-full">3</span>
                   </button>
                 </div>
