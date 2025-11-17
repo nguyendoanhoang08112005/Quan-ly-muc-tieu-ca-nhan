@@ -55,9 +55,9 @@ const TaskBoard = () => {
   );
 
   const columns = [
-    { id: 'todo', title: 'TO DO', color: 'bg-gray-400', icon: ClipboardDocumentListIcon },
-    { id: 'in_progress', title: 'IN PROGRESS', color: 'bg-blue-500', icon: ArrowPathIcon },
-    { id: 'complete', title: 'COMPLETE', color: 'bg-green-500', icon: CheckCircleIcon },
+    { id: 'todo', title: 'TO DO', color: 'bg-red-600', icon: ClipboardDocumentListIcon },
+    { id: 'in_progress', title: 'IN PROGRESS', color: 'bg-blue-600', icon: ArrowPathIcon },
+    { id: 'complete', title: 'COMPLETE', color: 'bg-green-600', icon: CheckCircleIcon },
   ];
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -97,56 +97,64 @@ const TaskBoard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-8 py-4 sticky top-0 z-10">
+    <div className="min-h-screen bg-white">
+      {/* Header - Black Background */}
+      <header className="bg-black text-white border-b-4 border-black px-6 py-6 sticky top-0 z-20">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-gray-800">Quản lý Dự án</h1>
-            <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
-              Sprint 1
-            </span>
+            <TableCellsIcon className="w-10 h-10 stroke-2" />
+            <div>
+              <h1 className="text-3xl font-black tracking-tight uppercase">Quản lý dự án</h1>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="px-3 py-1 bg-white text-black text-xs font-bold uppercase tracking-wider">
+                  Sprint 1
+                </span>
+                <span className="text-gray-400 text-xs uppercase tracking-wider">
+                  {tasks.length} Tasks
+                </span>
+              </div>
+            </div>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <MagnifyingGlassIcon className="w-5 h-5 text-gray-600" />
+            <button className="p-2.5 border-2 border-white hover:bg-white hover:text-black transition-all">
+              <MagnifyingGlassIcon className="w-5 h-5 stroke-2" />
             </button>
-            <button className="px-4 py-2 text-sm bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 rounded-lg flex items-center space-x-2 shadow-md hover:shadow-lg transition-all">
-              <PlusIcon className="w-4 h-4" />
-              <span>Thêm Task</span>
+            <button className="px-6 py-2.5 bg-white text-black text-sm font-bold uppercase tracking-wider hover:bg-gray-200 transition-all flex items-center space-x-2">
+              <PlusIcon className="w-5 h-5 stroke-2" />
+              <span>Task mới</span>
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative">
-              <BellIcon className="w-5 h-5 text-gray-600" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            <button className="p-2.5 border-2 border-white hover:bg-white hover:text-black transition-all relative">
+              <BellIcon className="w-5 h-5 stroke-2" />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-white rounded-full"></span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Sub Header with Views */}
-      <div className="bg-white/60 backdrop-blur-sm border-b border-gray-200/50 px-8">
-        <div className="flex items-center space-x-2 py-3">
-          <button className="px-4 py-2 text-sm font-medium bg-white text-purple-600 border border-purple-200 rounded-lg shadow-sm flex items-center space-x-2">
-            <Squares2X2Icon className="w-4 h-4" />
+      <div className="bg-gray-50 border-b-2 border-black px-6">
+        <div className="flex items-center space-x-2 py-4">
+          <button className="px-5 py-2.5 text-sm font-bold bg-black text-white border-2 border-black uppercase tracking-wider flex items-center space-x-2">
+            <Squares2X2Icon className="w-5 h-5 stroke-2" />
             <span>Board</span>
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-white hover:text-gray-900 rounded-lg transition-colors flex items-center space-x-2">
-            <ListBulletIcon className="w-4 h-4" />
+          <button className="px-5 py-2.5 text-sm font-bold text-black border-2 border-black hover:bg-black hover:text-white transition-all uppercase tracking-wider flex items-center space-x-2">
+            <ListBulletIcon className="w-5 h-5 stroke-2" />
             <span>List</span>
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-white hover:text-gray-900 rounded-lg transition-colors flex items-center space-x-2">
-            <CalendarIcon className="w-4 h-4" />
+          <button className="px-5 py-2.5 text-sm font-bold text-black border-2 border-black hover:bg-black hover:text-white transition-all uppercase tracking-wider flex items-center space-x-2">
+            <CalendarIcon className="w-5 h-5 stroke-2" />
             <span>Calendar</span>
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-white hover:text-gray-900 rounded-lg transition-colors flex items-center space-x-2">
-            <TableCellsIcon className="w-4 h-4" />
-            <span>Table</span>
+          <button className="px-5 py-2.5 text-sm font-bold text-black border-2 border-black hover:bg-black hover:text-white transition-all uppercase tracking-wider flex items-center space-x-2">
+            <ChartBarIcon className="w-5 h-5 stroke-2" />
+            <span>Timeline</span>
           </button>
         </div>
       </div>
 
       {/* Task Board */}
-      <div className="p-8">
+      <div className="p-6 bg-gray-50">
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
@@ -166,15 +174,15 @@ const TaskBoard = () => {
             ))}
             
             {/* Add Group Button */}
-            <button className="flex-shrink-0 w-[320px] h-16 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-white/50 rounded-2xl border-2 border-dashed border-gray-300 hover:border-gray-400 transition-all">
-              <PlusIcon className="w-5 h-5 mr-2" />
-              <span className="font-medium">Thêm cột mới</span>
+            <button className="flex-shrink-0 w-[320px] h-16 flex items-center justify-center text-black hover:bg-black hover:text-white border-2 border-dashed border-black transition-all font-bold uppercase tracking-wider">
+              <PlusIcon className="w-5 h-5 mr-2 stroke-2" />
+              <span>Cột mới</span>
             </button>
           </div>
 
           <DragOverlay>
             {activeTask ? (
-              <div className="bg-white p-4 rounded-lg shadow-lg opacity-90">
+              <div className="bg-white p-4 border-2 border-black opacity-90">
                 <TaskCard task={activeTask} />
               </div>
             ) : null}

@@ -30,7 +30,27 @@ const Home = () => {
   const [statsAnimated, setStatsAnimated] = useState(false);
   const [animatedNumbers, setAnimatedNumbers] = useState<{[key: number]: number}>({});
   const [copiedStat, setCopiedStat] = useState<number | null>(null);
+  const [darkMode, setDarkMode] = useState(false);
+  const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
+  const [activePricing, setActivePricing] = useState<'monthly' | 'yearly'>('monthly');
+  const [liveVisitors, setLiveVisitors] = useState(0);
   const fullText = 'Biến Ước Mơ Thành Hiện Thực';
+
+  // Simulate live visitors counter
+  useEffect(() => {
+    const baseVisitors = 234;
+    setLiveVisitors(baseVisitors + Math.floor(Math.random() * 50));
+    
+    const interval = setInterval(() => {
+      setLiveVisitors(prev => {
+        const change = Math.random() > 0.5 ? 1 : -1;
+        const newValue = prev + change;
+        return Math.max(baseVisitors, Math.min(baseVisitors + 100, newValue));
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Show toast notification
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
@@ -366,14 +386,232 @@ const Home = () => {
     }
   ];
 
+  const howItWorks = [
+    {
+      step: '01',
+      title: 'Đăng ký & Thiết lập',
+      description: 'Tạo tài khoản miễn phí và thiết lập các mục tiêu cá nhân của bạn trong vài phút',
+      icon: (
+        <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+        </svg>
+      ),
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      step: '02',
+      title: 'Tạo Task & Lập Kế Hoạch',
+      description: 'Chia nhỏ mục tiêu thành các task cụ thể và lên lịch trình thực hiện hợp lý',
+      icon: (
+        <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      ),
+      color: 'from-purple-500 to-pink-500'
+    },
+    {
+      step: '03',
+      title: 'Theo Dõi Tiến Độ',
+      description: 'Cập nhật tiến độ hàng ngày và theo dõi sự phát triển qua biểu đồ trực quan',
+      icon: (
+        <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+      color: 'from-rose-500 to-orange-500'
+    },
+    {
+      step: '04',
+      title: 'Đạt Mục Tiêu',
+      description: 'Hoàn thành mục tiêu và chia sẻ thành công với cộng đồng để tạo động lực',
+      icon: (
+        <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+      ),
+      color: 'from-green-500 to-emerald-500'
+    }
+  ];
+
+  const pricingPlans = [
+    {
+      name: 'Free',
+      price: { monthly: 0, yearly: 0 },
+      description: 'Hoàn hảo để bắt đầu',
+      features: [
+        'Tối đa 10 mục tiêu',
+        'Tối đa 50 task/tháng',
+        'Báo cáo cơ bản',
+        'Hỗ trợ email',
+        '1GB lưu trữ'
+      ],
+      color: 'from-gray-400 to-gray-500',
+      popular: false
+    },
+    {
+      name: 'Pro',
+      price: { monthly: 99000, yearly: 990000 },
+      description: 'Dành cho người dùng nghiêm túc',
+      features: [
+        'Không giới hạn mục tiêu',
+        'Không giới hạn task',
+        'Báo cáo nâng cao & AI insights',
+        'Hỗ trợ ưu tiên 24/7',
+        '10GB lưu trữ',
+        'Tích hợp Calendar',
+        'Export dữ liệu'
+      ],
+      color: 'from-blue-500 to-purple-600',
+      popular: true
+    },
+    {
+      name: 'Team',
+      price: { monthly: 299000, yearly: 2990000 },
+      description: 'Quản lý nhóm hiệu quả',
+      features: [
+        'Tất cả tính năng Pro',
+        'Tối đa 10 thành viên',
+        'Workspace riêng',
+        'Quản lý phân quyền',
+        'Analytics team',
+        '50GB lưu trữ chung',
+        'API access'
+      ],
+      color: 'from-purple-500 to-pink-500',
+      popular: false
+    }
+  ];
+
+  const faqs = [
+    {
+      question: 'Ứng dụng có miễn phí không?',
+      answer: 'Có! Chúng tôi cung cấp gói Free hoàn toàn miễn phí với các tính năng cơ bản. Bạn có thể nâng cấp lên Pro hoặc Team khi cần thêm tính năng nâng cao.'
+    },
+    {
+      question: 'Dữ liệu của tôi có được bảo mật không?',
+      answer: 'Tất nhiên rồi! Chúng tôi sử dụng mã hóa SSL/TLS để bảo vệ dữ liệu. Tất cả thông tin được lưu trữ an toàn trên server và chỉ bạn mới có quyền truy cập.'
+    },
+    {
+      question: 'Tôi có thể hủy đăng ký bất cứ lúc nào không?',
+      answer: 'Có, bạn có thể hủy đăng ký bất cứ lúc nào mà không mất phí. Nếu hủy trong chu kỳ thanh toán, bạn vẫn có thể sử dụng đến hết kỳ hạn đã thanh toán.'
+    },
+    {
+      question: 'Ứng dụng có hỗ trợ mobile không?',
+      answer: 'Hiện tại chúng tôi hỗ trợ responsive web app hoạt động tốt trên mọi thiết bị. Ứng dụng mobile native đang được phát triển và sẽ ra mắt sớm.'
+    },
+    {
+      question: 'Làm sao để liên hệ hỗ trợ?',
+      answer: 'Bạn có thể liên hệ qua email support@mygoals.com hoặc chat trực tiếp trên website. Team hỗ trợ của chúng tôi làm việc 24/7 để giải đáp thắc mắc.'
+    }
+  ];
+
   return (
     <div 
-      className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 overflow-hidden relative"
+      className="min-h-screen bg-white overflow-hidden relative"
       onMouseEnter={() => setShowCustomCursor(true)}
       onMouseLeave={() => setShowCustomCursor(false)}
     >
-      {/* Quick Navigation - Floating Menu */}
+      {/* Minimalist Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'linear-gradient(90deg, #000 1px, transparent 1px), linear-gradient(#000 1px, transparent 1px)',
+          backgroundSize: '50px 50px'
+        }} />
+      </div>
       {isScrolled && (
+        <div className="fixed left-6 top-1/2 -translate-y-1/2 z-40 animate-slide-in-left hidden lg:block">
+          <div className="flex flex-col gap-3 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border-2 border-gray-200">
+            <button
+              onClick={() => {
+                document.getElementById('hero-section')?.scrollIntoView({ behavior: 'smooth' });
+                showToast('Đang chuyển đến Hero', 'info');
+              }}
+              className="group relative w-12 h-12 flex items-center justify-center rounded-xl hover:bg-blue-50 transition-all hover:scale-110"
+              aria-label="Chuyển đến Hero"
+              title="Hero"
+            >
+              <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span className="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                Trang chủ
+              </span>
+            </button>
+            <button
+              onClick={() => {
+                document.getElementById('stats-section')?.scrollIntoView({ behavior: 'smooth' });
+                showToast('Đang chuyển đến Thống kê', 'info');
+              }}
+              className="group relative w-12 h-12 flex items-center justify-center rounded-xl hover:bg-purple-50 transition-all hover:scale-110"
+              aria-label="Chuyển đến Stats"
+              title="Stats"
+            >
+              <svg className="w-5 h-5 text-gray-600 group-hover:text-purple-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <span className="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                Thống kê
+              </span>
+            </button>
+            <button
+              onClick={() => {
+                document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
+                showToast('Đang chuyển đến Tính năng', 'info');
+              }}
+              className="group relative w-12 h-12 flex items-center justify-center rounded-xl hover:bg-rose-50 transition-all hover:scale-110"
+              aria-label="Chuyển đến Features"
+              title="Features"
+            >
+              <svg className="w-5 h-5 text-gray-600 group-hover:text-rose-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+              <span className="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                Tính năng
+              </span>
+            </button>
+            <button
+              onClick={() => {
+                document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' });
+                showToast('Đang chuyển đến Bảng giá', 'info');
+              }}
+              className="group relative w-12 h-12 flex items-center justify-center rounded-xl hover:bg-green-50 transition-all hover:scale-110"
+              aria-label="Chuyển đến Pricing"
+              title="Pricing"
+            >
+              <svg className="w-5 h-5 text-gray-600 group-hover:text-green-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                Bảng giá
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Social Proof */}
+      {isVisible && (
+        <div className="fixed right-6 bottom-24 z-30 animate-slide-in-right hidden lg:block">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border-2 border-gray-200 max-w-xs">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse-slow">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">
+                  <span className="text-green-600">Minh Anh</span> vừa đạt mục tiêu
+                </p>
+                <p className="text-xs text-gray-600">2 phút trước</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quick Navigation - Floating Menu */}
+      {isScrolled && false && (
         <div className="fixed left-6 top-1/2 -translate-y-1/2 z-40 animate-fade-in hidden lg:block">
           <div className="flex flex-col gap-3 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border-2 border-gray-200">
             <button
@@ -544,6 +782,43 @@ const Home = () => {
 
       {/* Floating hint tooltip */}
       {isVisible && !showLogin && !showRegister && (
+        <div className="fixed bottom-8 left-8 z-30 animate-fade-in hidden md:block" style={{ animationDelay: '3s' }}>
+          <div className="bg-gradient-to-r from-blue-600/90 to-purple-600/90 backdrop-blur-md px-5 py-3 rounded-xl border border-white/30 text-white shadow-lg hover:scale-105 transition-transform cursor-default">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span>💡 Mẹo: Double-click để cuộn lên đầu trang</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Keyboard Shortcuts Hint */}
+      {isVisible && !showLogin && !showRegister && (
+        <div className="fixed top-24 right-6 z-30 animate-fade-in hidden xl:block" style={{ animationDelay: '4s' }}>
+          <div className="bg-white/95 backdrop-blur-md px-4 py-3 rounded-xl border-2 border-gray-200 shadow-lg">
+            <p className="text-xs font-semibold text-gray-700 mb-2">⌨️ Phím tắt:</p>
+            <div className="space-y-1 text-xs text-gray-600">
+              <div className="flex items-center gap-2">
+                <kbd className="px-2 py-0.5 bg-gray-100 rounded text-gray-800 font-mono">Ctrl+K</kbd>
+                <span>Đăng nhập</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <kbd className="px-2 py-0.5 bg-gray-100 rounded text-gray-800 font-mono">Ctrl+D</kbd>
+                <span>Dashboard</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <kbd className="px-2 py-0.5 bg-gray-100 rounded text-gray-800 font-mono">ESC</kbd>
+                <span>Đóng modal</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating hint tooltip */}
+      {isVisible && !showLogin && !showRegister && false && (
         <div className="fixed bottom-8 left-8 z-30 animate-fade-in" style={{ animationDelay: '2s' }}>
           <div className="bg-white/15 backdrop-blur-md px-5 py-3 rounded-xl border border-white/30 text-white shadow-lg">
             <div className="flex items-center gap-2 text-sm font-medium">
@@ -578,7 +853,40 @@ const Home = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300" />
               </span>
             </div>
+            
+            {/* Live Visitors Counter */}
+            <div className="hidden lg:flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full animate-pulse-slow">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-semibold text-green-700">
+                {liveVisitors} người đang online
+              </span>
+            </div>
+            
             <div className="flex items-center space-x-3">
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={() => {
+                  setDarkMode(!darkMode);
+                  showToast(darkMode ? 'Chế độ sáng đã bật' : 'Chế độ tối đang được phát triển', 'info');
+                }}
+                className="p-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-all hover:scale-110 relative group"
+                aria-label="Toggle dark mode"
+                title="Đổi chế độ sáng/tối"
+              >
+                {darkMode ? (
+                  <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                  </svg>
+                )}
+                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  {darkMode ? 'Sáng' : 'Tối'}
+                </span>
+              </button>
+
               <button
                 onClick={() => navigate('/dashboard')}
                 className="px-5 py-2.5 text-gray-700 font-medium hover:bg-blue-50 rounded-lg transition-all flex items-center gap-2 border border-gray-200 hover:border-blue-300 hover:scale-105 group relative overflow-hidden"
@@ -838,41 +1146,120 @@ const Home = () => {
           </div>
 
           {/* Testimonial Preview */}
-          <div 
-            className="group mt-24 bg-white/90 backdrop-blur-md p-8 rounded-2xl border-2 border-gray-200 hover:bg-white hover:border-blue-300 transition-all max-w-3xl mx-auto animate-fade-in hover:scale-105 hover:shadow-2xl hover:shadow-blue-200/50 cursor-pointer" 
-            style={{ animationDelay: '2.5s' }}
-            onClick={() => showToast('Cảm ơn bạn đã quan tâm! ⭐', 'success')}
-            role="button"
-            tabIndex={0}
-            aria-label="Xem đánh giá từ người dùng"
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <div className="text-left">
-                <div className="text-gray-800 font-bold text-lg group-hover:text-blue-600 transition-colors">Nguyễn Văn A</div>
-                <div className="text-gray-600 text-sm">CEO tại ABC Company</div>
-              </div>
-              <div className="ml-auto flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-yellow-400 group-hover:scale-110 transition-transform" style={{ transitionDelay: `${i * 0.05}s` }} fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
+          <div className="mt-24 animate-fade-in" style={{ animationDelay: '2.5s' }}>
+            <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">
+              Người dùng nói gì về chúng tôi
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {[
+                {
+                  name: 'Nguyễn Văn A',
+                  role: 'CEO tại ABC Company',
+                  avatar: 'from-yellow-400 to-orange-500',
+                  rating: 5,
+                  text: '"Ứng dụng này đã giúp tôi tổ chức công việc hiệu quả hơn rất nhiều. Giao diện đẹp, dễ sử dụng và đầy đủ tính năng!"',
+                  verified: true
+                },
+                {
+                  name: 'Trần Thị B',
+                  role: 'Product Manager',
+                  avatar: 'from-pink-400 to-rose-500',
+                  rating: 5,
+                  text: '"Tính năng Pomodoro và theo dõi tiến độ rất xuất sắc. Giúp tôi tập trung và hoàn thành nhiều việc hơn!"',
+                  verified: true
+                },
+                {
+                  name: 'Lê Văn C',
+                  role: 'Freelancer',
+                  avatar: 'from-blue-400 to-cyan-500',
+                  rating: 5,
+                  text: '"Quản lý nhiều dự án trở nên dễ dàng hơn bao giờ hết. Đội ngũ support cũng rất tận tình và nhiệt tình!"',
+                  verified: true
+                }
+              ].map((testimonial, index) => (
+                <div
+                  key={index}
+                  className="group bg-white/90 backdrop-blur-md p-6 rounded-2xl border-2 border-gray-200 hover:bg-white hover:border-blue-300 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-blue-200/50 cursor-pointer"
+                  onClick={() => showToast(`Cảm ơn ${testimonial.name.split(' ')[0]}! ⭐`, 'success')}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Xem đánh giá từ ${testimonial.name}`}
+                  style={{ animationDelay: `${2.5 + index * 0.15}s` }}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`w-12 h-12 bg-gradient-to-br ${testimonial.avatar} rounded-full flex items-center justify-center text-white group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg`}>
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="text-gray-800 font-bold group-hover:text-blue-600 transition-colors flex items-center gap-2">
+                        {testimonial.name}
+                        {testimonial.verified && (
+                          <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="text-gray-600 text-sm">{testimonial.role}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-1 mb-3">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <svg key={i} className="w-4 h-4 text-yellow-400 group-hover:scale-110 transition-transform" style={{ transitionDelay: `${i * 0.05}s` }} fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  
+                  <p className="text-gray-700 italic group-hover:text-gray-900 transition-colors leading-relaxed">
+                    {testimonial.text}
+                  </p>
+                </div>
+              ))}
             </div>
-            <p className="text-gray-700 text-lg italic group-hover:text-gray-900 transition-colors">
-              "Ứng dụng này đã giúp tôi tổ chức công việc hiệu quả hơn rất nhiều. Giao diện đẹp, dễ sử dụng và đầy đủ tính năng!"
-            </p>
-            <div className="mt-4 pt-4 border-t border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity">
-              <div className="flex items-center gap-2 text-gray-600 text-sm">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span>Đã xác minh</span>
+          </div>
+
+          {/* Testimonial Preview - Old */}
+          <div className="hidden">
+            <div 
+              className="group mt-24 bg-white/90 backdrop-blur-md p-8 rounded-2xl border-2 border-gray-200 hover:bg-white hover:border-blue-300 transition-all max-w-3xl mx-auto animate-fade-in hover:scale-105 hover:shadow-2xl hover:shadow-blue-200/50 cursor-pointer" 
+              style={{ animationDelay: '2.5s' }}
+              onClick={() => showToast('Cảm ơn bạn đã quan tâm! ⭐', 'success')}
+              role="button"
+              tabIndex={0}
+              aria-label="Xem đánh giá từ người dùng"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <div className="text-gray-800 font-bold text-lg group-hover:text-blue-600 transition-colors">Nguyễn Văn A</div>
+                  <div className="text-gray-600 text-sm">CEO tại ABC Company</div>
+                </div>
+                <div className="ml-auto flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-400 group-hover:scale-110 transition-transform" style={{ transitionDelay: `${i * 0.05}s` }} fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+              <p className="text-gray-700 text-lg italic group-hover:text-gray-900 transition-colors">
+                "Ứng dụng này đã giúp tôi tổ chức công việc hiệu quả hơn rất nhiều. Giao diện đẹp, dễ sử dụng và đầy đủ tính năng!"
+              </p>
+              <div className="mt-4 pt-4 border-t border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-2 text-gray-600 text-sm">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>Đã xác minh</span>
+                </div>
               </div>
             </div>
           </div>
@@ -900,6 +1287,353 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* How It Works Section */}
+      <div className="py-24 px-6 relative z-10 bg-gradient-to-b from-transparent to-blue-50/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 animate-fade-in">
+            <span className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+              QUY TRÌNH
+            </span>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">
+              Cách Hoạt Động
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Chỉ 4 bước đơn giản để bắt đầu hành trình đạt mục tiêu
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {howItWorks.map((step, index) => (
+              <div 
+                key={index}
+                className="relative group"
+                style={{ animationDelay: `${index * 0.15}s` }}
+              >
+                {/* Connection Line */}
+                {index < howItWorks.length - 1 && (
+                  <div className="hidden lg:block absolute top-16 left-1/2 w-full h-0.5 bg-gradient-to-r from-gray-300 to-gray-200 z-0">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
+                  </div>
+                )}
+
+                <div className="relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-3 border-2 border-gray-100 hover:border-blue-200 cursor-pointer">
+                  {/* Step Number */}
+                  <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg transform group-hover:rotate-12 transition-transform">
+                    {step.step}
+                  </div>
+
+                  {/* Icon */}
+                  <div className={`w-20 h-20 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform shadow-lg`}>
+                    {step.icon}
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center group-hover:text-blue-600 transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 text-center leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing Section */}
+      <div className="py-24 px-6 relative z-10" id="pricing-section">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold mb-4">
+              BẢNG GIÁ
+            </span>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">
+              Chọn Gói Phù Hợp
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+              Linh hoạt, minh bạch và không ràng buộc dài hạn
+            </p>
+
+            {/* Pricing Toggle */}
+            <div className="inline-flex items-center bg-white rounded-full p-1.5 shadow-lg border-2 border-gray-200">
+              <button
+                onClick={() => setActivePricing('monthly')}
+                className={`px-6 py-2.5 rounded-full font-semibold transition-all ${
+                  activePricing === 'monthly'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Hàng tháng
+              </button>
+              <button
+                onClick={() => setActivePricing('yearly')}
+                className={`px-6 py-2.5 rounded-full font-semibold transition-all relative ${
+                  activePricing === 'yearly'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Hàng năm
+                <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded-full">
+                  -17%
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {pricingPlans.map((plan, index) => (
+              <div
+                key={index}
+                className={`relative bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 border-2 ${
+                  plan.popular ? 'border-blue-500 scale-105' : 'border-gray-200 hover:border-blue-300'
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-bold rounded-full shadow-lg">
+                    PHỔ BIẾN NHẤT
+                  </div>
+                )}
+
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <p className="text-gray-600 mb-6">{plan.description}</p>
+                  
+                  <div className="mb-6">
+                    <span className="text-5xl font-bold text-gray-900">
+                      {plan.price[activePricing].toLocaleString('vi-VN')}
+                    </span>
+                    <span className="text-gray-600 ml-2">
+                      {plan.price[activePricing] > 0 ? '₫/' + (activePricing === 'monthly' ? 'tháng' : 'năm') : ''}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      showToast(`Đăng ký gói ${plan.name} thành công!`, 'success');
+                      setShowRegister(true);
+                    }}
+                    className={`w-full py-3.5 rounded-xl font-bold transition-all hover:scale-105 ${
+                      plan.popular
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl'
+                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    }`}
+                  >
+                    Bắt đầu ngay
+                  </button>
+                </div>
+
+                <ul className="space-y-4">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-gray-700">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="py-24 px-6 relative z-10 bg-gradient-to-b from-blue-50/30 to-transparent">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-2 bg-rose-100 text-rose-700 rounded-full text-sm font-semibold mb-4">
+              CÂU HỎI THƯỜNG GẶP
+            </span>
+            <h2 className="text-5xl font-bold text-gray-900 mb-4">
+              Giải Đáp Thắc Mắc
+            </h2>
+            <p className="text-xl text-gray-600">
+              Những câu hỏi phổ biến từ người dùng
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-gray-100 hover:border-blue-200 overflow-hidden"
+              >
+                <button
+                  onClick={() => setActiveFAQ(activeFAQ === index ? null : index)}
+                  className="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                >
+                  <span className="text-lg font-semibold text-gray-900 pr-4">
+                    {faq.question}
+                  </span>
+                  <svg
+                    className={`w-6 h-6 text-blue-600 flex-shrink-0 transition-transform ${
+                      activeFAQ === index ? 'rotate-180' : ''
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {activeFAQ === index && (
+                  <div className="px-8 pb-6 animate-fade-in">
+                    <p className="text-gray-600 leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-gray-600 mb-4">Vẫn còn thắc mắc?</p>
+            <button
+              onClick={() => showToast('Hãy liên hệ support@mygoals.com', 'info')}
+              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+            >
+              Liên hệ hỗ trợ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="py-24 px-6 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-rose-600 rounded-3xl p-12 md:p-16 shadow-2xl overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+                backgroundSize: '30px 30px'
+              }} />
+            </div>
+
+            <div className="relative z-10 text-center text-white">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Sẵn sàng bắt đầu chưa?
+              </h2>
+              <p className="text-xl md:text-2xl mb-10 text-blue-100 max-w-3xl mx-auto">
+                Tham gia cùng hàng ngàn người đang đạt được mục tiêu của họ mỗi ngày
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                  onClick={() => {
+                    setShowRegister(true);
+                    showToast('Chào mừng đến với My Goals! 🎉', 'success');
+                  }}
+                  className="px-10 py-4 bg-white text-blue-600 font-bold text-lg rounded-xl hover:bg-gray-50 transition-all shadow-xl hover:shadow-2xl hover:scale-110 hover:-translate-y-1"
+                >
+                  Bắt đầu miễn phí
+                </button>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="px-10 py-4 bg-transparent border-2 border-white text-white font-bold text-lg rounded-xl hover:bg-white/10 transition-all hover:scale-110 hover:-translate-y-1"
+                >
+                  Xem demo
+                </button>
+              </div>
+              <p className="mt-6 text-blue-100 text-sm">
+                ✨ Không cần thẻ tín dụng • Miễn phí mãi mãi
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-300 py-16 px-6 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center font-bold text-2xl text-white">
+                  M
+                </div>
+                <span className="text-white font-bold text-2xl">My Goals</span>
+              </div>
+              <p className="text-gray-400 leading-relaxed mb-6">
+                Công cụ quản lý mục tiêu cá nhân thông minh giúp bạn đạt được những gì bạn mong muốn.
+              </p>
+              <div className="flex gap-3">
+                <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-all hover:scale-110" aria-label="Facebook">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </a>
+                <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-blue-400 rounded-lg flex items-center justify-center transition-all hover:scale-110" aria-label="Twitter">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                  </svg>
+                </a>
+                <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-pink-600 rounded-lg flex items-center justify-center transition-all hover:scale-110" aria-label="Instagram">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Product */}
+            <div>
+              <h3 className="text-white font-bold text-lg mb-4">Sản phẩm</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Tính năng</a></li>
+                <li><a href="#pricing-section" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Bảng giá</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Roadmap</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">API</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Changelog</a></li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h3 className="text-white font-bold text-lg mb-4">Công ty</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Về chúng tôi</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Tuyển dụng</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Đối tác</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Liên hệ</a></li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h3 className="text-white font-bold text-lg mb-4">Hỗ trợ</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Trung tâm trợ giúp</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Hướng dẫn</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Điều khoản dịch vụ</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Chính sách bảo mật</a></li>
+                <li><a href="#" className="hover:text-white transition-colors hover:translate-x-1 inline-block">Cookies</a></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Footer */}
+          <div className="border-t border-gray-800 pt-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-gray-400 text-sm">
+                © 2024 My Goals. All rights reserved. Made with ❤️ in Vietnam
+              </p>
+              <div className="flex items-center gap-6 text-sm">
+                <a href="#" className="hover:text-white transition-colors">Privacy</a>
+                <a href="#" className="hover:text-white transition-colors">Terms</a>
+                <a href="#" className="hover:text-white transition-colors">Cookies</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Scroll to Top Button */}
       {showScrollTop && (

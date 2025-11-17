@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Home from "./routes/Home";
 import Dashboard from "./routes/Dashboard";
 import Goals from "./routes/Goals";
+import Profile from "./routes/Profile";
 
 function App() {
   return (
@@ -38,6 +39,16 @@ function App() {
             <Sidebar />
             <div className="flex-1 overflow-auto">
               <TaskBoard />
+            </div>
+          </div>
+        } />
+
+        {/* Profile page với Sidebar */}
+        <Route path="/profile" element={
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 overflow-auto">
+              <Profile />
             </div>
           </div>
         } />
