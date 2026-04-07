@@ -11,15 +11,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             GoalSeeder::class,
-            ProjectSeeder::class,
+            MilestoneSeeder::class,
             TaskSeeder::class,
-            SubtaskSeeder::class,
-            HabitSeeder::class,
-            HabitLogSeeder::class,
-            NoteSeeder::class,
-            NotificationSeeder::class,
-            PomodoroSessionSeeder::class,
-            FollowSeeder::class,
         ]);
     }
 }

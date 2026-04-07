@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'member'])->default('member'); 
-            $table->string('avatar')->nullable();
-            $table->string('timezone')->default('UTC'); 
+            $table->string('avatar_path')->nullable();
+            $table->string('timezone', 64)->default('Asia/Ho_Chi_Minh');
+            $table->string('locale', 10)->default('vi');
             $table->rememberToken();
             $table->timestamps();
         });

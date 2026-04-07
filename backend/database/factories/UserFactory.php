@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Faker\Factory as FakerFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -10,14 +11,16 @@ class UserFactory extends Factory
 {
     public function definition(): array
     {
+        $faker = FakerFactory::create();
+
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'name' => $faker->name(),
+            'email' => $faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
-            'role' => $this->faker->randomElement(['admin', 'member']),
-            'avatar' => $this->faker->imageUrl(100, 100, 'people'),
-            'timezone' => $this->faker->timezone,
+            'avatar_path' => $faker->boolean(30) ? $faker->imageUrl(100, 100, 'people') : null,
+            'timezone' => 'Asia/Ho_Chi_Minh',
+            'locale' => 'vi',
             'remember_token' => Str::random(10),
         ];
     }
@@ -29,17 +32,4 @@ class UserFactory extends Factory
         ]);
     }
 
-    public function admin(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'role' => 'admin',
-        ]);
-    }
-
-    public function member(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'role' => 'member',
-        ]);
-    }
 }

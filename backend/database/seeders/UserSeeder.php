@@ -10,23 +10,36 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Tạo admin user
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-        ]);
+        $users = [
+            [
+                'name' => 'Demo User',
+                'email' => 'demo@example.com',
+            ],
+            [
+                'name' => 'Lan Nguyen',
+                'email' => 'lan@example.com',
+            ],
+            [
+                'name' => 'Minh Tran',
+                'email' => 'minh@example.com',
+            ],
+            [
+                'name' => 'An Pham',
+                'email' => 'an@example.com',
+            ],
+        ];
 
-        // Tạo regular user
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'user@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'member',
-        ]);
-
-        // Tạo thêm 5 users
-        User::factory(5)->create();
+        foreach ($users as $user) {
+            User::updateOrCreate(
+                ['email' => $user['email']],
+                [
+                    'name' => $user['name'],
+                    'password' => Hash::make('password'),
+                    'timezone' => 'Asia/Ho_Chi_Minh',
+                    'locale' => 'vi',
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
     }
 }

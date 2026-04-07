@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -15,9 +16,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
-        'avatar',
+        'avatar_path',
         'timezone',
+        'locale',
     ];
 
     protected $hidden = [
@@ -28,29 +29,35 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'shared_with' => 'array',
     ];
 
-    // Step 1 scope: keep the active flow focused on personal goals and tasks.
-    public function goals()
+    public function goals(): HasMany
     {
         return $this->hasMany(Goal::class);
     }
 
-    public function assignedTasks()
+    public function tasks(): HasMany
     {
-        return $this->hasMany(Task::class, 'assignee_id');
+        return $this->hasMany(Task::class);
     }
 
-    // Scope for active users
-    public function scopeActive($query)
+    public function milestones(): HasMany
     {
-        return $query->whereNotNull('email_verified_at');
+        return $this->hasMany(Milestone::class);
     }
 
-    // Check if user is admin
-    public function isAdmin()
+    public function categories(): HasMany
     {
-        return $this->role === 'admin';
+        return $this->hasMany(Category::class);
+    }
+
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    public function goalLogs(): HasMany
+    {
+        return $this->hasMany(GoalLog::class);
     }
 }

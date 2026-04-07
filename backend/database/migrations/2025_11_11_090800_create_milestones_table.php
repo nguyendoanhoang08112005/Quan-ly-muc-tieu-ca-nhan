@@ -8,37 +8,30 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('milestones', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('goal_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('milestone_id')->nullable()->constrained()->nullOnDelete();
             $table->string('title', 180);
             $table->text('description')->nullable();
             $table->enum('status', ['not_started', 'in_progress', 'completed', 'paused'])->default('not_started');
-            $table->enum('priority', ['low', 'medium', 'high', 'critical'])->default('medium');
             $table->decimal('progress_percentage', 5, 2)->default(0);
-            $table->dateTime('due_at')->nullable();
-            $table->dateTime('started_at')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('target_date')->nullable();
             $table->dateTime('completed_at')->nullable();
-            $table->unsignedInteger('estimated_minutes')->nullable();
-            $table->unsignedInteger('actual_minutes')->nullable();
-            $table->boolean('is_focus')->default(false);
-            $table->integer('sort_order')->default(0);
-            $table->json('metadata')->nullable();
+            $table->unsignedInteger('sequence_no')->default(1);
+            $table->text('note')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
+            $table->index(['goal_id', 'sequence_no']);
             $table->index(['user_id', 'status']);
-            $table->index(['goal_id', 'milestone_id']);
-            $table->index(['user_id', 'due_at']);
-            $table->index(['user_id', 'priority']);
-            $table->index(['user_id', 'is_focus']);
+            $table->index(['user_id', 'target_date']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('milestones');
     }
 };

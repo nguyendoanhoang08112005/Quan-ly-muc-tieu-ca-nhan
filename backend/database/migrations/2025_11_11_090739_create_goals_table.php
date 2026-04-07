@@ -10,29 +10,33 @@ return new class extends Migration
     {
         Schema::create('goals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('title', 180);
+            $table->string('slug', 220)->nullable();
             $table->text('description')->nullable();
-            $table->date('deadline')->nullable();
-            $table->decimal('progress', 5, 2)->default(0.00);
-            $table->enum('status', ['active', 'completed', 'on_hold', 'cancelled'])->default('active');
-            $table->string('color', 7)->default('#3B82F6');
-            $table->boolean('is_public')->default(false);
-            $table->json('shared_with')->nullable();
-            
-            // SMART Goals fields
-            $table->text('smart_specific')->nullable();
-            $table->text('smart_measurable')->nullable();
-            $table->text('smart_achievable')->nullable();
-            $table->text('smart_relevant')->nullable();
-            $table->text('smart_time_bound')->nullable();
-            
+            $table->enum('goal_type', ['short_term', 'mid_term', 'long_term'])->default('short_term');
+            $table->enum('priority', ['low', 'medium', 'high', 'critical'])->default('medium');
+            $table->enum('status', ['not_started', 'in_progress', 'completed', 'paused', 'cancelled'])->default('not_started');
+            $table->decimal('progress_percentage', 5, 2)->default(0);
+            $table->date('start_date')->nullable();
+            $table->date('target_date')->nullable();
+            $table->dateTime('completed_at')->nullable();
+            $table->string('success_metric')->nullable();
+            $table->text('outcome_note')->nullable();
+            $table->longText('note')->nullable();
+            $table->boolean('is_archived')->default(false);
+            $table->boolean('is_recurring')->default(false);
+            $table->json('recurrence_rule')->nullable();
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
-            
-            // Indexes
-            $table->index('user_id');
-            $table->index('status');
-            $table->index('deadline');
+            $table->softDeletes();
+
+            $table->index(['user_id', 'status']);
+            $table->index(['user_id', 'goal_type']);
+            $table->index(['user_id', 'priority']);
+            $table->index(['user_id', 'target_date']);
+            $table->index(['user_id', 'is_archived']);
         });
     }
 
