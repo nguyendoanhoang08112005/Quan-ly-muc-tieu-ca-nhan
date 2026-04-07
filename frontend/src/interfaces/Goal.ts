@@ -3,7 +3,7 @@ export interface Goal {
     title: string;
     description: string;
     due_date: string;
-    status: 'not_started' | 'in_progress' | 'completed';
+    status: 'not_started' | 'in_progress' | 'completed' | 'cancelled';
     priority: 'low' | 'medium' | 'high';
     progress: number;
     created_at: string;

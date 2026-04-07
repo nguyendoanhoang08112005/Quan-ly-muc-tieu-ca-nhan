@@ -1,281 +1,150 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ChartBarIcon,
   CheckCircleIcon,
-  ClockIcon,
   ClipboardDocumentListIcon,
-  PlusCircleIcon,
-  DocumentChartBarIcon,
-  CogIcon,
-  FireIcon,
+  ClockIcon,
   TrophyIcon,
-  BoltIcon,
 } from '@heroicons/react/24/outline';
+import { useAuth } from '../contexts/AuthContext';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const { user } = useAuth();
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
+  const todayLabel = new Intl.DateTimeFormat('vi-VN', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date());
 
-  // Mock data - sẽ thay bằng API thực tế
-  const stats = {
-    totalGoals: 12,
-    inProgress: 5,
-    completed: 7,
-    tasksToday: 8,
-  };
-
-  const recentGoals = [
-    { id: 1, title: 'Học React Advanced', progress: 75, status: 'in_progress', dueDate: '2024-12-31' },
-    { id: 2, title: 'Tập gym 3 lần/tuần', progress: 60, status: 'in_progress', dueDate: '2024-12-15' },
-    { id: 3, title: 'Đọc 2 cuốn sách/tháng', progress: 90, status: 'in_progress', dueDate: '2024-11-30' },
-    { id: 4, title: 'Hoàn thành dự án', progress: 100, status: 'completed', dueDate: '2024-11-10' },
+  const stats = [
+    { label: 'Tong muc tieu', value: 3, icon: TrophyIcon },
+    { label: 'Dang theo duoi', value: 2, icon: ClockIcon },
+    { label: 'Da hoan thanh', value: 1, icon: CheckCircleIcon },
+    { label: 'Viec can lam', value: 5, icon: ClipboardDocumentListIcon },
   ];
 
-  const recentActivities = [
-    { id: 1, action: 'Hoàn thành task', title: 'Design mockup', time: '2 giờ trước' },
-    { id: 2, action: 'Tạo mục tiêu mới', title: 'Học TypeScript', time: '5 giờ trước' },
-    { id: 3, action: 'Cập nhật tiến độ', title: 'Dự án website', time: 'Hôm qua' },
-    { id: 4, action: 'Hoàn thành mục tiêu', title: 'Setup environment', time: '2 ngày trước' },
+  const currentGoals = [
+    { title: 'Hoan thanh buoc 1 don scope repo', progress: 80, deadline: '10/04/2026' },
+    { title: 'Xay flow CRUD muc tieu ca nhan', progress: 35, deadline: '15/04/2026' },
+    { title: 'Chot cau truc tasks gan voi goals', progress: 20, deadline: '18/04/2026' },
   ];
 
-  const quickActions = [
-    { 
-      title: 'Tạo mục tiêu', 
-      icon: TrophyIcon, 
-      action: () => navigate('/goals'),
-      color: 'hover:bg-yellow-500'
-    },
-    { 
-      title: 'Thêm task', 
-      icon: PlusCircleIcon, 
-      action: () => navigate('/tasks'),
-      color: 'hover:bg-blue-600'
-    },
-    { 
-      title: 'Xem báo cáo', 
-      icon: DocumentChartBarIcon, 
-      action: () => navigate('/reports'),
-      color: 'hover:bg-green-600'
-    },
-    { 
-      title: 'Cài đặt', 
-      icon: CogIcon, 
-      action: () => navigate('/settings'),
-      color: 'hover:bg-red-600'
-    },
+  const focusTasks = [
+    'Loai bo toan bo dau vet product va demo routes',
+    'Chuyen task board ve ngon ngu viec can lam ca nhan',
+    'Chot module nao giu, module nao tam bo qua',
+  ];
+
+  const scopeNotes = [
+    'Dashboard nay chi la tong quan co ban, khong phai khu report.',
+    'Chua lam habit, report, calendar hay chat.',
+    'Huong nghiep vu hien tai la auth -> goals -> tasks.',
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header Section */}
-      <div className="bg-black text-white py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div>
-              <div className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">
-                {currentTime.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black tracking-tight">
-                DASHBOARD
-              </h1>
-              <p className="text-gray-400 mt-2">Chào mừng trở lại! Hãy tiếp tục đạt mục tiêu của bạn.</p>
-            </div>
-            <div className="text-right">
-              <div className="text-3xl font-black">{currentTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</div>
-              <div className="text-xs uppercase tracking-wider text-gray-400 mt-1">
-                {stats.tasksToday} nhiệm vụ hôm nay
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-stone-50">
+      <div className="border-b-4 border-black bg-black px-6 py-10 text-white">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">{todayLabel}</div>
+          <h1 className="mt-3 text-4xl font-black uppercase tracking-tight">Tong quan ca nhan</h1>
+          <p className="mt-3 max-w-2xl text-sm text-gray-300">
+            {user?.name ? `${user.name}, ` : ''}
+            day la man tong hop toi gian de giu repo tap trung vao muc tieu ca nhan.
+          </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {[
-            { label: 'Tổng mục tiêu', value: stats.totalGoals, icon: TrophyIcon, change: '+2 tuần này', color: 'text-yellow-500', hoverBg: 'hover:bg-yellow-500' },
-            { label: 'Đang thực hiện', value: stats.inProgress, icon: BoltIcon, change: '5 đang active', color: 'text-blue-600', hoverBg: 'hover:bg-blue-600' },
-            { label: 'Đã hoàn thành', value: stats.completed, icon: CheckCircleIcon, change: '58% hoàn thành', color: 'text-green-600', hoverBg: 'hover:bg-green-600' },
-            { label: 'Tasks hôm nay', value: stats.tasksToday, icon: ClipboardDocumentListIcon, change: '3/8 đã xong', color: 'text-red-600', hoverBg: 'hover:bg-red-600' },
-          ].map((stat, index) => {
+      <div className="mx-auto max-w-6xl px-6 py-10">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {stats.map((stat) => {
             const Icon = stat.icon;
+
             return (
-              <div
-                key={index}
-                className={`bg-white border-2 border-black p-6 ${stat.hoverBg} hover:text-white transition-all group cursor-pointer`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <Icon className={`w-10 h-10 stroke-2 ${stat.color} group-hover:text-white`} />
-                  <div className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-gray-100">
-                    {stat.label}
-                  </div>
+              <div key={stat.label} className="border-2 border-black bg-white p-5">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">{stat.label}</div>
+                  <Icon className="h-6 w-6 stroke-2 text-black" />
                 </div>
-                <div className="text-5xl font-black mb-2">{stat.value}</div>
-                <div className="text-xs text-gray-500 group-hover:text-gray-100">{stat.change}</div>
+                <div className="mt-6 text-4xl font-black text-black">{stat.value}</div>
               </div>
             );
           })}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Recent Goals - 2 columns */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-black uppercase tracking-tight">Mục tiêu gần đây</h2>
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr,1fr]">
+          <section className="border-2 border-black bg-white p-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-black uppercase tracking-tight text-black">Muc tieu dang theo duoi</h2>
               <button
                 onClick={() => navigate('/goals')}
-                className="text-sm font-bold uppercase tracking-wider hover:underline"
+                className="text-xs font-bold uppercase tracking-[0.2em] text-black hover:underline"
               >
-                Xem tất cả →
+                Mo danh sach
               </button>
             </div>
 
-            <div className="space-y-4">
-              {recentGoals.map((goal) => (
-                <div
-                  key={goal.id}
-                  className="bg-white border border-gray-200 p-6 hover:border-black transition-all cursor-pointer group"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold mb-1 group-hover:underline">{goal.title}</h3>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span className="flex items-center gap-1 uppercase tracking-wider">
-                          {goal.status === 'completed' ? (
-                            <>
-                              <CheckCircleIcon className="w-4 h-4 text-green-600" />
-                              <span className="text-green-600 font-bold">Hoàn thành</span>
-                            </>
-                          ) : (
-                            <>
-                              <FireIcon className="w-4 h-4 text-red-600" />
-                              <span className="text-red-600 font-bold">Đang thực hiện</span>
-                            </>
-                          )}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <ClockIcon className="w-4 h-4" />
-                          Hạn: {goal.dueDate}
-                        </span>
+            <div className="mt-6 space-y-4">
+              {currentGoals.map((goal) => (
+                <div key={goal.title} className="border border-gray-200 p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-lg font-bold text-black">{goal.title}</div>
+                      <div className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">
+                        Han {goal.deadline}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-black">{goal.progress}%</div>
-                    </div>
+                    <div className="text-xl font-black text-black">{goal.progress}%</div>
                   </div>
-
-                  {/* Progress Bar */}
-                  <div className="relative h-2 bg-gray-100 overflow-hidden">
-                    <div
-                      className={`absolute inset-y-0 left-0 transition-all ${
-                        goal.status === 'completed' ? 'bg-green-600' : 'bg-blue-600'
-                      }`}
-                      style={{ width: `${goal.progress}%` }}
-                    />
+                  <div className="mt-4 h-2 bg-gray-200">
+                    <div className="h-full bg-black" style={{ width: `${goal.progress}%` }} />
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
 
-          {/* Sidebar - 1 column */}
           <div className="space-y-6">
-            {/* Quick Actions */}
-            <div>
-              <h2 className="text-2xl font-black uppercase tracking-tight mb-6">Thao tác nhanh</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {quickActions.map((action, index) => {
-                  const Icon = action.icon;
-                  return (
-                    <button
-                      key={index}
-                      onClick={action.action}
-                      className={`bg-white border-2 border-black p-6 ${action.color} hover:text-white transition-all group text-center`}
-                    >
-                      <Icon className="w-10 h-10 mx-auto mb-3 stroke-2 group-hover:text-white" />
-                      <div className="text-xs font-bold uppercase tracking-wider">{action.title}</div>
-                    </button>
-                  );
-                })}
+            <section className="border-2 border-black bg-white p-6">
+              <h2 className="text-2xl font-black uppercase tracking-tight text-black">Thao tac nhanh</h2>
+              <div className="mt-6 grid gap-3">
+                <button
+                  onClick={() => navigate('/goals')}
+                  className="border-2 border-black bg-black px-4 py-4 text-left text-sm font-bold uppercase tracking-wider text-white hover:bg-gray-800"
+                >
+                  Mo module muc tieu
+                </button>
+                <button
+                  onClick={() => navigate('/tasks')}
+                  className="border-2 border-black px-4 py-4 text-left text-sm font-bold uppercase tracking-wider text-black hover:bg-black hover:text-white"
+                >
+                  Xem viec can lam
+                </button>
               </div>
-            </div>
+            </section>
 
-            {/* Recent Activity */}
-            <div>
-              <h2 className="text-2xl font-black uppercase tracking-tight mb-6">Hoạt động</h2>
-              <div className="space-y-3">
-                {recentActivities.map((activity) => {
-                  const colors = [
-                    'border-green-600',
-                    'border-blue-600', 
-                    'border-yellow-500',
-                    'border-red-600'
-                  ];
-                  return (
-                    <div key={activity.id} className={`bg-gray-50 p-4 border-l-4 ${colors[activity.id - 1]}`}>
-                      <div className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">
-                        {activity.action}
-                      </div>
-                      <div className="font-bold text-sm mb-1">{activity.title}</div>
-                      <div className="text-xs text-gray-500">{activity.time}</div>
-                    </div>
-                  );
-                })}
+            <section className="border-2 border-black bg-white p-6">
+              <h2 className="text-2xl font-black uppercase tracking-tight text-black">Uu tien hien tai</h2>
+              <div className="mt-6 space-y-3">
+                {focusTasks.map((task) => (
+                  <div key={task} className="border-l-4 border-black pl-4 text-sm font-medium text-gray-700">
+                    {task}
+                  </div>
+                ))}
               </div>
-            </div>
-          </div>
-        </div>
+            </section>
 
-        {/* Progress Overview */}
-        <div className="mt-12 bg-gray-50 p-8 border-2 border-black">
-          <h2 className="text-2xl font-black uppercase tracking-tight mb-6">Tiến độ tuần này</h2>
-          
-          <div className="grid grid-cols-7 gap-4">
-            {['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].map((day, index) => {
-              const completionRate = Math.floor(Math.random() * 100);
-              const colors = [
-                'bg-red-600',
-                'bg-blue-600',
-                'bg-green-600',
-                'bg-yellow-500',
-                'bg-red-600',
-                'bg-blue-600',
-                'bg-green-600'
-              ];
-              return (
-                <div key={index} className="text-center">
-                  <div className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
-                    {day}
+            <section className="border-2 border-black bg-stone-100 p-6">
+              <h2 className="text-2xl font-black uppercase tracking-tight text-black">Pham vi buoc 1</h2>
+              <div className="mt-6 space-y-3">
+                {scopeNotes.map((note) => (
+                  <div key={note} className="text-sm font-medium text-gray-700">
+                    {note}
                   </div>
-                  <div className="relative h-32 bg-white border-2 border-black flex items-end justify-center overflow-hidden">
-                    <div
-                      className={`absolute bottom-0 left-0 right-0 ${colors[index]} transition-all`}
-                      style={{ height: `${completionRate}%` }}
-                    />
-                    <div className="relative z-10 text-xs font-bold mb-2 text-white mix-blend-difference">
-                      {completionRate}%
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Motivational Quote */}
-        <div className="mt-12 bg-black text-white p-12 text-center">
-          <div className="text-3xl md:text-4xl font-black mb-4 tracking-tight">
-            "IMPOSSIBLE IS NOTHING"
-          </div>
-          <div className="text-gray-400 uppercase tracking-widest text-sm">
-            Tiếp tục phấn đấu và đạt được mục tiêu của bạn
+                ))}
+              </div>
+            </section>
           </div>
         </div>
       </div>

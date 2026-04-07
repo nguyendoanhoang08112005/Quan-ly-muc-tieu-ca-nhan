@@ -31,50 +31,15 @@ class User extends Authenticatable
         'shared_with' => 'array',
     ];
 
-    // Relationships
+    // Step 1 scope: keep the active flow focused on personal goals and tasks.
     public function goals()
     {
         return $this->hasMany(Goal::class);
     }
 
-    public function projects()
-    {
-        return $this->hasMany(Project::class);
-    }
-
     public function assignedTasks()
     {
         return $this->hasMany(Task::class, 'assignee_id');
-    }
-
-    public function notes()
-    {
-        return $this->hasMany(Note::class);
-    }
-
-    public function habits()
-    {
-        return $this->hasMany(Habit::class);
-    }
-
-    public function habitLogs()
-    {
-        return $this->hasMany(HabitLog::class);
-    }
-
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class);
-    }
-
-    public function pomodoroSessions()
-    {
-        return $this->hasMany(PomodoroSession::class);
-    }
-
-    public function follows()
-    {
-        return $this->hasMany(Follow::class, 'follower_id');
     }
 
     // Scope for active users

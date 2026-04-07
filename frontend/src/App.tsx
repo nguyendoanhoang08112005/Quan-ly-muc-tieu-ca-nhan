@@ -4,87 +4,80 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Navigation from './components/Navigation';
 import Login from './components/Login';
 import Register from './components/Register';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Dashboard from './routes/Dashboard';
 import Goals from './routes/Goals';
 import TaskBoard from './components/TaskBoard';
 import Sidebar from './components/Sidebar';
 import Home from './routes/Home';
-import './App.css';
 
-const AppContent: React.FC = () => {
+const ProtectedShell = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute>
+    <div className="flex min-h-screen overflow-hidden bg-stone-50">
+      <Sidebar />
+      <main className="flex-1 overflow-auto">{children}</main>
+    </div>
+  </ProtectedRoute>
+);
+
+const AppRoutes: React.FC = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  const showPublicNavigation = !['/dashboard', '/goals', '/tasks'].some((path) =>
+    location.pathname.startsWith(path)
+  );
 
   return (
-    <Router>
-      {/* Navigation sẽ hiển thị trên tất cả các trang */}
-      <Navigation />
-      
+    <>
+      {showPublicNavigation && <Navigation />}
+
       <Routes>
-        {/* Trang chủ - ai cũng xem được */}
         <Route path="/" element={<Home />} />
-        
-        {/* Login/Register - chỉ hiển thị khi chưa đăng nhập */}
-        <Route 
-          path="/login" 
-          element={!user ? <Login /> : <Dashboard />} 
-        />
-        <Route 
-          path="/register" 
-          element={!user ? <Register /> : <Dashboard />} 
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/goals" replace />} />
+        <Route
+          path="/register"
+          element={!user ? <Register /> : <Navigate to="/goals" replace />}
         />
 
-        {/* Các trang protected - cần đăng nhập */}
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
-            <ProtectedRoute>
-              <div className="flex h-screen overflow-hidden">
-                <Sidebar />
-                <div className="flex-1 overflow-auto">
-                  <Dashboard />
-                </div>
-              </div>
-            </ProtectedRoute>
+            <ProtectedShell>
+              <Dashboard />
+            </ProtectedShell>
           } 
         />
 
-        <Route 
-          path="/goals" 
+        <Route
+          path="/goals"
           element={
-            <ProtectedRoute>
-              <div className="flex h-screen overflow-hidden">
-                <Sidebar />
-                <div className="flex-1 overflow-auto">
-                  <Goals />
-                </div>
-              </div>
-            </ProtectedRoute>
+            <ProtectedShell>
+              <Goals />
+            </ProtectedShell>
           } 
         />
 
-        <Route 
-          path="/tasks" 
+        <Route
+          path="/tasks"
           element={
-            <ProtectedRoute>
-              <div className="flex h-screen overflow-hidden">
-                <Sidebar />
-                <div className="flex-1 overflow-auto">
-                  <TaskBoard />
-                </div>
-              </div>
-            </ProtectedRoute>
+            <ProtectedShell>
+              <TaskBoard />
+            </ProtectedShell>
           } 
         />
+
+        <Route path="*" element={<Navigate to={user ? '/goals' : '/'} replace />} />
       </Routes>
-    </Router>
+    </>
   );
 };
 
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <Router>
+        <AppRoutes />
+      </Router>
     </AuthProvider>
   );
 }

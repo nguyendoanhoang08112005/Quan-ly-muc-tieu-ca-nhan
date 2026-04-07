@@ -38,7 +38,7 @@ const Login: React.FC = () => {
     setIsLoading(true);
     try {
       await login(values);
-      navigate('/tasks');
+      navigate('/goals');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Đăng nhập thất bại');
     } finally {

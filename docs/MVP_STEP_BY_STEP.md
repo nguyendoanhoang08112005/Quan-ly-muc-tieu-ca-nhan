@@ -6,15 +6,18 @@
 - Nếu bị rối, quay lại kiểm tra xem mình đang ở bước nào.
 - File này chỉ tập trung vào MVP, chưa bàn đến AI, gamification, Google Calendar, export nâng cao.
 
+## Khóa phạm vi hiện tại
+- Từ ngày `07/04/2026`, flow chính của dự án chỉ còn `auth -> goals -> tasks theo mục tiêu`.
+- `milestones`, `habit`, `report`, `calendar`, `AI`, `projects`, `subtasks` cũ và các phần social/demo đều không nằm trong phạm vi active của Bước 1.
+
 ## Mục tiêu cuối cùng của MVP
 Khi xong file này, hệ thống phải làm được đúng luồng sau:
 1. user đăng ký hoặc đăng nhập
 2. user tạo goal
-3. user tạo milestone
-4. user tạo task
-5. user hoàn thành task
-6. progress tự cập nhật
-7. user xem được dashboard cơ bản
+3. user tạo task theo goal
+4. user cập nhật trạng thái task
+5. progress goal tự cập nhật
+6. user xem được dashboard cơ bản
 
 ---
 
@@ -22,11 +25,13 @@ Khi xong file này, hệ thống phải làm được đúng luồng sau:
 
 ### Bạn cần làm gì
 - Xác định rõ dự án này chỉ làm `quản lý mục tiêu cá nhân`.
+- Chốt lại flow chính là `auth -> goals -> tasks theo mục tiêu`.
 - Tạm bỏ qua các phần không liên quan như:
   - `projects`
   - `subtasks` cũ
   - `productApi`
   - `follow`
+  - `milestones`
   - các màn hình demo cũ không thuộc flow chính
 
 ### Mục đích của bước này
@@ -79,20 +84,14 @@ Khi xong file này, hệ thống phải làm được đúng luồng sau:
 - Tạo hoặc refactor migration cho các bảng:
   - `users`
   - `goals`
-  - `milestones`
   - `tasks`
   - `categories`
   - `tags`
   - `goal_logs`
-- Nếu còn thời gian trong bước này thì thêm:
-  - `habits`
-  - `habit_logs`
-  - `reminders`
-  - `journal_entries`
 
 ### Cần nhớ
-- `goals -> milestones -> tasks` là trục chính.
-- `tasks` phải có `goal_id` và `milestone_id`.
+- `goals -> tasks` là trục chính đang active.
+- `tasks` phải có `goal_id`.
 - Các bảng nghiệp vụ phải có `user_id`.
 
 ### Mục đích của bước này

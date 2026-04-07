@@ -10,67 +10,51 @@ const Navigation: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="border-b-2 border-black bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          {/* Logo/Brand */}
           <div className="flex items-center">
-            <Link to="/" className="text-xl font-bold text-gray-800">
-              My App
+            <Link
+              to={user ? '/goals' : '/'}
+              className="text-lg font-black uppercase tracking-tight text-black"
+            >
+              Muc tieu ca nhan
             </Link>
           </div>
-          
-          {/* Navigation Links */}
+
           <div className="flex items-center space-x-4">
             {user ? (
-              // Đã đăng nhập
               <>
-                <Link 
-                  to="/dashboard" 
-                  className="text-gray-700 hover:text-indigo-600"
-                >
-                  Dashboard
+                <Link to="/dashboard" className="text-sm font-bold uppercase text-gray-700 hover:text-black">
+                  Tong quan
                 </Link>
-                <Link 
-                  to="/goals" 
-                  className="text-gray-700 hover:text-indigo-600"
-                >
-                  Goals
+                <Link to="/goals" className="text-sm font-bold uppercase text-gray-700 hover:text-black">
+                  Muc tieu
                 </Link>
-                <Link 
-                  to="/tasks" 
-                  className="text-gray-700 hover:text-indigo-600"
-                >
-                  Tasks
+                <Link to="/tasks" className="text-sm font-bold uppercase text-gray-700 hover:text-black">
+                  Viec can lam
                 </Link>
-                <span className="text-gray-700">Xin chào, {user.name}</span>
+                <span className="text-sm text-gray-700">Xin chao, {user.name}</span>
                 <button
                   onClick={handleLogout}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-black px-4 py-2 text-sm font-bold uppercase text-white hover:bg-gray-800"
                 >
-                  Đăng xuất
+                  Dang xuat
                 </button>
               </>
             ) : (
-              // Chưa đăng nhập
               <>
-                <Link 
-                  to="/" 
-                  className="text-gray-700 hover:text-indigo-600"
-                >
-                  Trang chủ
+                <Link to="/" className="text-sm font-bold uppercase text-gray-700 hover:text-black">
+                  Gioi thieu
                 </Link>
-                <Link 
-                  to="/login" 
-                  className="text-gray-700 hover:text-indigo-600"
-                >
-                  Đăng nhập
+                <Link to="/login" className="text-sm font-bold uppercase text-gray-700 hover:text-black">
+                  Dang nhap
                 </Link>
-                <Link 
-                  to="/register" 
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+                <Link
+                  to="/register"
+                  className="bg-black px-4 py-2 text-sm font-bold uppercase text-white hover:bg-gray-800"
                 >
-                  Đăng ký
+                  Tao tai khoan
                 </Link>
               </>
             )}

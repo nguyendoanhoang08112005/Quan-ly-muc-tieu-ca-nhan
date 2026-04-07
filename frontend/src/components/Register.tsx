@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useForm } from '../hooks/useForm';
 import { RegisterData } from '../types/auth';
+import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const { register } = useAuth();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -48,6 +50,7 @@ const Register: React.FC = () => {
     setIsLoading(true);
     try {
       await register(values);
+      navigate('/goals');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Đăng ký thất bại');
     } finally {

@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios';
-import { Goal } from '../interfaces/Goal';
 import {
   XMarkIcon,
   CalendarIcon,
@@ -8,14 +6,17 @@ import {
   SparklesIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
+import { CreateGoalPayload, goalsApi } from '../api/goalsApi';
 
 interface CreateGoalProps {
   onClose?: () => void;
   onSuccess?: () => void;
 }
 
+type CreateGoalFormData = CreateGoalPayload;
+
 const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CreateGoalFormData>({
     title: '',
     description: '',
     due_date: '',
@@ -71,7 +72,7 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
     setIsSubmitting(true);
     
     try {
-      await axios.post('http://127.0.0.1:8000/api/goals', formData);
+      await goalsApi.create(formData);
       
       setShowSuccess(true);
       
@@ -89,14 +90,14 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
       }, 1500);
       
     } catch (error) {
-      console.error('Lỗi khi tạo mục tiêu:', error);
-      setErrors({ submit: 'Có lỗi xảy ra. Vui lòng thử lại!' });
+      console.error('Loi khi tao muc tieu:', error);
+      setErrors({ submit: 'Khong tao duoc muc tieu. Kiem tra backend Goal API roi thu lai.' });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = <K extends keyof CreateGoalFormData>(field: K, value: CreateGoalFormData[K]) => {
     setFormData({ ...formData, [field]: value });
     // Clear error when user starts typing
     if (errors[field]) {
@@ -251,7 +252,7 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
                 <select
                   id="priority"
                   value={formData.priority}
-                  onChange={(e) => handleChange('priority', e.target.value)}
+                  onChange={(e) => handleChange('priority', e.target.value as CreateGoalFormData['priority'])}
                   className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer hover:border-gray-300"
                   disabled={isSubmitting}
                 >

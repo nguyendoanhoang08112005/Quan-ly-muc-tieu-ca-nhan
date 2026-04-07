@@ -5,6 +5,11 @@ Tài liệu này dùng để chuyển bản đặc tả sản phẩm thành mộ
 
 Tài liệu này không thay thế file đặc tả sản phẩm. Nó là file “playbook thi công” đi kèm với [PROJECT_SPEC.md](/Users/dangduytien/Quan-ly-muc-tieu-ca-nhan/docs/PROJECT_SPEC.md).
 
+## 1.1 Khóa phạm vi hiện tại
+- Từ ngày `07/04/2026`, sản phẩm active của repo chỉ là `ứng dụng quản lý mục tiêu cá nhân`.
+- Flow cốt lõi duy nhất cần ưu tiên là `auth -> goals -> tasks theo goal`.
+- `milestones`, `projects`, `subtasks` cũ, `follow`, `habit`, `report`, `calendar`, `AI` và các màn hình demo không nằm trong phạm vi active của Bước 1.
+
 ## 2. Nguyên tắc triển khai bắt buộc
 
 ### 2.1 Không nhảy bước
@@ -53,11 +58,10 @@ Cách đúng là:
 Luồng giá trị cốt lõi của sản phẩm là:
 1. đăng ký/đăng nhập
 2. tạo goal
-3. tạo milestone
-4. tạo task
-5. cập nhật task
-6. tự tính progress
-7. xem dashboard cơ bản
+3. tạo task theo goal
+4. cập nhật task
+5. tự tính progress goal
+6. xem dashboard cơ bản
 
 Nếu luồng này chưa chạy ổn, không nên mở rộng tính năng khác.
 
@@ -68,11 +72,11 @@ Nếu luồng này chưa chạy ổn, không nên mở rộng tính năng khác.
 2. Giai đoạn 1: Dựng nền kỹ thuật và môi trường
 3. Giai đoạn 2: Thiết kế lại schema và domain backend
 4. Giai đoạn 3: Hoàn thiện auth và profile
-5. Giai đoạn 4: Hoàn thiện Goal, Milestone, Task end-to-end
+5. Giai đoạn 4: Hoàn thiện Goal và Task end-to-end
 6. Giai đoạn 5: Dựng App Shell và các trang nền frontend
-7. Giai đoạn 6: Dashboard, filter, search, calendar cơ bản
-8. Giai đoạn 7: Habit, reminder, journal
-9. Giai đoạn 8: Reports và performance score
+7. Giai đoạn 6: Dashboard, filter và search cơ bản
+8. Giai đoạn 7: Xem lại backlog milestone, habit, reminder, journal
+9. Giai đoạn 8: Reports và performance score nếu flow cốt lõi đã ổn
 10. Giai đoạn 9: Hardening, testing, staging deploy
 11. Giai đoạn 10: Tính năng nâng cao
 12. Giai đoạn 11: AI và tự động hóa
@@ -81,7 +85,7 @@ Nếu luồng này chưa chạy ổn, không nên mở rộng tính năng khác.
 - Giai đoạn 0 là tiền đề cho tất cả các giai đoạn sau.
 - Giai đoạn 2 phải xong trước khi làm backend nghiệp vụ thật.
 - Giai đoạn 3 và 4 phải xong trước khi dashboard có dữ liệu thật.
-- Giai đoạn 7 và 8 phụ thuộc vào dữ liệu từ goal/task/habit.
+- Giai đoạn 7 và 8 chỉ được mở khi dữ liệu goal/task cốt lõi đã ổn định.
 - Giai đoạn AI chỉ bắt đầu khi dữ liệu cốt lõi đã ổn định.
 
 ## 4. Giai đoạn 0: Chốt scope và dọn repo
@@ -91,6 +95,7 @@ Nếu luồng này chưa chạy ổn, không nên mở rộng tính năng khác.
 
 ### 4.2 Việc phải làm
 - Đọc lại file đặc tả và chốt rằng sản phẩm hiện tại là “quản lý mục tiêu cá nhân”.
+- Khóa flow active thành `auth -> goals -> tasks theo goal`.
 - Rà soát backend hiện có:
   - `projects`
   - `subtasks`
@@ -111,6 +116,7 @@ Nếu luồng này chưa chạy ổn, không nên mở rộng tính năng khác.
   - module giữ lại
   - module bỏ qua
   - module cần refactor
+- Tài liệu gốc không còn mô tả flow active như một hệ nhiều sản phẩm khác nhau.
 - Route auth hiện tại vẫn chạy được.
 - Repo không còn lẫn lộn định hướng “project management”, “product API”, “social follow”.
 

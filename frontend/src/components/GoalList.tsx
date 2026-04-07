@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Goal } from '../interfaces/Goal';
 import {
   FlagIcon,
   CalendarIcon,
-  ChartBarIcon,
   EllipsisVerticalIcon,
   PencilIcon,
   TrashIcon,
@@ -15,6 +13,7 @@ import {
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 import CreateGoal from './CreateGoal';
+import { goalsApi } from '../api/goalsApi';
 
 const GoalList = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -27,24 +26,24 @@ const GoalList = () => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
 
   useEffect(() => {
-    loadGoals();
+    void loadGoals();
   }, []);
 
-  const loadGoals = () => {
+  const loadGoals = async () => {
     setIsLoading(true);
-    axios.get("http://127.0.0.1:8000/api/goals")
-      .then(res => {
-        console.log("Dữ liệu mục tiêu:", res.data);
-        setGoals(res.data);
-        setError(null);
-      })
-      .catch(err => {
-        console.error("Lỗi khi tải mục tiêu:", err);
-        setError(err.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+
+    try {
+      const data = await goalsApi.list();
+      setGoals(data);
+      setError(null);
+    } catch (error) {
+      console.error('Loi khi tai muc tieu:', error);
+      setError(
+        'Khong tai duoc du lieu muc tieu. Module nay van la phan cot loi, nhung Goal API o backend co the chua san sang trong giai doan hien tai.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getStatusLabel = (status: string) => {
@@ -112,7 +111,7 @@ const GoalList = () => {
           <h3 className="text-xl font-bold text-gray-900 mb-2">Có lỗi xảy ra</h3>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={loadGoals}
+            onClick={() => void loadGoals()}
             className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all"
           >
             Thử lại

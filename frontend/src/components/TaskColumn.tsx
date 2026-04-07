@@ -1,3 +1,4 @@
+import { ComponentType } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { PlusIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
@@ -8,7 +9,7 @@ interface TaskColumnProps {
   id: string;
   title: string;
   color: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
   tasks: Task[];
   onAddTask: () => void;
 }
@@ -60,7 +61,7 @@ const TaskColumn = ({ id, title, color, icon: Icon, tasks, onAddTask }: TaskColu
           className="w-full py-3 text-sm text-black font-bold hover:bg-black hover:text-white border-2 border-dashed border-black transition-all flex items-center justify-center space-x-2 uppercase tracking-wider"
         >
           <PlusIcon className="w-4 h-4 stroke-2" />
-          <span>Thêm task</span>
+          <span>Them viec</span>
         </button>
       </div>
     </div>

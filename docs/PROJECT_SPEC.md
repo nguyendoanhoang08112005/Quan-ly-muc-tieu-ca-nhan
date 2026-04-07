@@ -1,43 +1,67 @@
 # Đặc tả sản phẩm: Ứng dụng web quản lý mục tiêu cá nhân
 
+## 0. Khóa phạm vi hiện tại
+
+Từ ngày `07/04/2026`, dự án này được khóa lại theo phạm vi triển khai hiện tại như sau:
+
+- Sản phẩm đang làm là `ứng dụng quản lý mục tiêu cá nhân`.
+- Flow chính đang active chỉ còn: `auth -> goals -> tasks theo mục tiêu`.
+- `tasks` được xem là các việc cần làm để hoàn thành một `goal`, không phải module quản lý project/team.
+- Các phần dưới đây được xem là backlog hoặc tạm đóng băng ở Bước 1:
+  - `projects`
+  - `subtasks` cũ
+  - `productApi`
+  - `follow` và các ý tưởng social
+  - `milestones`
+  - `habit`
+  - `report`
+  - `calendar`
+  - `AI`
+
+Phần nội dung sâu hơn trong tài liệu này có thể còn chứa ý tưởng mở rộng cho tương lai, nhưng không được xem là phạm vi active của codebase ở thời điểm hiện tại.
+
 ## 1. Tổng quan sản phẩm
 
 ### 1.1 Tầm nhìn sản phẩm
-Xây dựng một ứng dụng web fullstack giúp người dùng thiết lập mục tiêu cá nhân, chia mục tiêu thành lộ trình thực thi, theo dõi tiến độ, duy trì thói quen và đánh giá kết quả theo thời gian, với trải nghiệm hiện đại, tối giản, ưu tiên desktop trước nhưng vẫn responsive tốt trên mobile.
+Xây dựng một ứng dụng web fullstack giúp người dùng thiết lập mục tiêu cá nhân, theo dõi tiến độ và quản lý các việc cần làm gắn với từng mục tiêu, với trải nghiệm hiện đại, tối giản, ưu tiên desktop trước nhưng vẫn responsive tốt trên mobile.
 
 ### 1.2 Mục tiêu của hệ thống
 - Biến những mục tiêu mơ hồ thành kế hoạch có cấu trúc, có thể đo lường và có hạn hoàn thành rõ ràng.
-- Giúp người dùng duy trì tính nhất quán bằng deadline, nhắc việc, habit tracker, nhật ký tiến độ và báo cáo định kỳ.
-- Cung cấp góc nhìn tổng thể về tiến độ, rủi ro trễ hạn và hiệu suất cá nhân.
-- Tạo nền tảng đủ tốt để phát triển dần từ một MVP quản lý mục tiêu sang một hệ thống “personal operating system” có AI hỗ trợ.
+- Giúp người dùng theo dõi những việc cần làm trực tiếp theo từng mục tiêu thay vì quản lý nhiều loại sản phẩm khác nhau trong cùng một repo.
+- Cung cấp góc nhìn tổng thể ở mức cơ bản về tiến độ mục tiêu và khối lượng việc cần làm hiện tại.
+- Tạo một lõi sản phẩm đủ gọn để hoàn thiện flow thật trước khi mở rộng sang các lớp sau.
 
 ### 1.3 Nhóm người dùng mục tiêu
 - Sinh viên muốn quản lý kế hoạch học tập, ngoại ngữ, chứng chỉ, kỹ năng cá nhân.
 - Nhân viên văn phòng quản lý mục tiêu nghề nghiệp, sức khỏe, tài chính, side-project.
 - Freelancer hoặc solopreneur cần theo dõi mục tiêu dài hạn song song với công việc hằng ngày.
-- Người theo đuổi self-improvement, cần streak, focus mode, habit tracker và báo cáo cá nhân.
-- Power user thích phân rã kế hoạch, đo lường tiến độ và xem phân tích hiệu suất theo tuần/tháng/quý.
+- Người theo đuổi self-improvement và muốn biến mục tiêu thành danh sách việc cần làm rõ ràng.
+- Power user thích phân rã kế hoạch và đo lường tiến độ theo cách đơn giản, dễ theo dõi.
 
 ### 1.4 Các bài toán hệ thống giải quyết
 - Người dùng đặt mục tiêu quá chung chung và không biết bắt đầu từ đâu.
-- Mục tiêu không được chia thành milestone, task hằng ngày và thói quen hỗ trợ.
+- Mục tiêu không được chia thành các việc cần làm cụ thể theo từng mục tiêu.
 - Tiến độ khó đo lường, đặc biệt với mục tiêu trung hạn và dài hạn.
-- Người dùng mất động lực vì không thấy rõ mức độ hoàn thành, streak hay rủi ro trễ hạn.
-- Sau mỗi chu kỳ làm việc, người dùng không có dữ liệu để review và cải thiện cách lập kế hoạch.
+- Người dùng mất động lực vì không thấy rõ mức độ hoàn thành và việc nào đang bị kẹt.
+- Codebase dễ gây hiểu nhầm nếu cùng lúc mang hướng project management, social và nhiều bản demo khác nhau.
 
 ### 1.5 Giá trị cốt lõi của sản phẩm
 - Rõ ràng: biến mục tiêu thành các bước cụ thể, có deadline, có logic thực thi.
-- Kỷ luật: duy trì nhịp làm việc qua habit, reminder, focus mode và log tiến độ.
-- Minh bạch: dashboard, lịch, báo cáo và biểu đồ giúp nhìn thấy cái gì đang tiến triển và cái gì đang bị kẹt.
-- Tự phản hồi: nhật ký, lịch sử chỉnh sửa và performance score giúp người dùng review bản thân.
-- Mở rộng tốt: kiến trúc đủ linh hoạt để thêm AI, gamification, export, sync lịch và automation.
+- Tập trung: codebase chỉ phục vụ một sản phẩm là quản lý mục tiêu cá nhân, không trộn thêm project, social hay product demo.
+- Minh bạch: người dùng nhìn thấy mục tiêu nào đang làm, việc nào đang chờ, việc nào đã hoàn thành.
+- Mở rộng có kiểm soát: chỉ mở rộng khi flow cốt lõi đã chạy ổn định.
 
 ### 1.6 Phạm vi sản phẩm và giả định ban đầu
-- Giai đoạn đầu là hệ thống một người dùng một workspace cá nhân, chưa ưu tiên collaboration.
+- Giai đoạn đầu là hệ thống một người dùng một không gian cá nhân, chưa ưu tiên collaboration.
 - Toàn bộ dữ liệu cốt lõi đều là dữ liệu riêng tư theo `user_id`.
+- Domain active hiện tại chỉ gồm:
+  - `auth`
+  - `goals`
+  - `tasks theo goal`
+- `projects`, `milestones`, `habit`, `report`, `follow`, `calendar` và các module social/demo không nằm trong phạm vi active của Bước 1.
 - API được version hóa ngay từ đầu theo chuẩn `/api/v1`.
 - Frontend và backend tách biệt, giao tiếp qua RESTful API.
-- Đính kèm file là tính năng nên có từ Phase 2, không bắt buộc trong MVP đầu tiên.
+- Đính kèm file hoặc các lớp mở rộng khác là tính năng để sau, không bắt buộc trong flow cốt lõi hiện tại.
 
 ### 1.7 Kiến trúc công nghệ đề xuất
 
@@ -49,18 +73,18 @@ Xây dựng một ứng dụng web fullstack giúp người dùng thiết lập 
 - `Radix UI` hoặc `Headless UI` cho các primitive component dễ kiểm soát giao diện.
 - `React Hook Form + Zod` cho form handling và validation phía frontend.
 - `TanStack Query` cho server state: cache, fetch, invalidation, optimistic update.
-- `Zustand` cho UI state nhẹ: sidebar collapse, filter, theme, focus mode, calendar mode.
+- `Zustand` cho UI state nhẹ: sidebar collapse, filter, theme.
 - `Axios` làm API client.
-- `Recharts` hoặc `Apache ECharts` để hiển thị dashboard và biểu đồ.
+- `Recharts` hoặc `Apache ECharts` chỉ nên đưa vào khi dashboard dữ liệu thật đã ổn định.
 - `dayjs` để xử lý ngày giờ, timezone, format.
-- `dnd-kit` cho kéo thả task/milestone.
+- `dnd-kit` cho kéo thả task.
 
 #### Backend stack đề xuất
 - `Laravel 12 + PHP 8.2`
 - `Laravel Sanctum` làm auth mặc định
 - `MySQL 8.0+`
-- `Laravel Queue` cho reminder, notification, export, AI jobs
-- `Laravel Scheduler` cho các tác vụ lặp: overdue scan, nhắc việc, weekly report
+- `Laravel Queue` chỉ cần đưa vào khi đã vượt qua flow cốt lõi hiện tại
+- `Laravel Scheduler` chỉ cần đưa vào khi đã có nhu cầu nhắc việc hoặc tác vụ lặp thật
 - `Form Request` cho validation
 - `API Resource` cho chuẩn hóa response
 - `Policy` cho phân quyền theo ownership
@@ -103,15 +127,7 @@ frontend/
       auth/
       dashboard/
       goals/
-      milestones/
       tasks/
-      habits/
-      reminders/
-      notifications/
-      journal/
-      reports/
-      settings/
-      templates/
     hooks/
     lib/
       api/
@@ -197,35 +213,31 @@ backend/
 
 ### 1.11 Hiện trạng repo hiện tại và định hướng refactor
 - Frontend hiện đang dùng `react-scripts` và cấu trúc thiên về route-based.
-- Backend hiện đang có sẵn auth cơ bản với Sanctum, cùng các model thử nghiệm như `Goal`, `Task`, `Habit`.
+- Backend hiện đang có sẵn auth cơ bản với Sanctum, cùng một số model thử nghiệm cũ.
 - Schema hiện tại còn một số phần chưa đồng nhất với domain “quản lý mục tiêu cá nhân”, ví dụ `project_id`, `subtasks`, một số model social/product không liên quan.
 - Hướng triển khai thực tế:
   - Giữ lại nền auth hiện tại.
   - Tạo API version `v1`.
-  - Chuẩn hóa domain chính thành `goals -> milestones -> tasks`.
+  - Chuẩn hóa domain chính thành `auth -> goals -> tasks theo goal`.
+  - Đóng băng các phần như `milestones`, `habit`, `report`, `follow`, `product` cho đến khi flow cốt lõi chạy ổn.
   - Giảm hoặc loại bỏ các module thử nghiệm không nằm trong sản phẩm mục tiêu.
 
 ## 2. Phân rã chức năng
 
 ### 2.1 Phân tầng chức năng tổng thể
-- `Base cơ bản`: đủ để tạo mục tiêu, chia milestone/task, theo dõi tiến độ.
-- `Trung cấp`: tăng khả năng duy trì kỷ luật, nhắc việc, habit tracker, báo cáo.
-- `Nâng cao`: AI, template, export, backup, gamification, đa ngôn ngữ, sync.
-- `Mở rộng tương lai`: collaboration, community, mobile app, coaching, automation sâu.
+- `Base cơ bản đang active`: auth, dashboard cơ bản, CRUD mục tiêu, task theo mục tiêu, progress cơ bản.
+- `Lớp để sau`: milestone, habit, reminder, report.
+- `Mở rộng tương lai`: AI, template, export, backup, gamification, đa ngôn ngữ, sync, collaboration.
 
 ### 2.2 Base cơ bản
 - Đăng ký, đăng nhập, quên mật khẩu, đặt lại mật khẩu, cập nhật hồ sơ.
 - Dashboard cá nhân.
 - CRUD mục tiêu cá nhân.
-- Phân loại mục tiêu: ngắn hạn, trung hạn, dài hạn.
-- Chia mục tiêu thành milestone.
-- Chia milestone thành task nhỏ.
-- Deadline cho goal, milestone, task.
+- Chia mục tiêu thành danh sách task cần làm.
+- Deadline cho goal và task.
 - Trạng thái: chưa bắt đầu, đang làm, hoàn thành, tạm dừng.
 - Theo dõi phần trăm tiến độ.
-- Ghi chú cho từng mục tiêu.
 - Bộ lọc và tìm kiếm.
-- Giao diện lịch trình cơ bản theo ngày/tuần/tháng.
 
 ### 2.3 Trung cấp
 - Habit tracker theo ngày.
