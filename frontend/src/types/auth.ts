@@ -2,6 +2,9 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  avatar_path?: string | null;
+  timezone?: string;
+  locale?: 'vi' | 'en';
   email_verified_at?: string;
   created_at: string;
   updated_at: string;
@@ -22,4 +25,12 @@ export interface RegisterData {
   email: string;
   password: string;
   password_confirmation: string;
+}
+
+export interface UpdateProfileData {
+  name?: string;
+  email?: string;
+  timezone?: string;
+  locale?: 'vi' | 'en';
+  avatar_path?: string | null;
 }

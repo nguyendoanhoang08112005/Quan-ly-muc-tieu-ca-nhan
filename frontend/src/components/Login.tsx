@@ -23,7 +23,7 @@ const Login: React.FC = () => {
       },
       password: (value) => {
         if (!value) return 'Mật khẩu là bắt buộc';
-        if (value.length < 6) return 'Mật khẩu phải có ít nhất 6 ký tự';
+        if (value.length < 8) return 'Mật khẩu phải có ít nhất 8 ký tự';
         return null;
       },
     }
