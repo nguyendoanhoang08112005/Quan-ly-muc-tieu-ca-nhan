@@ -48,7 +48,13 @@ class GoalController extends Controller
 
     public function show(Goal $goal): GoalResource
     {
-        $goal->loadCount(['tasks', 'milestones']);
+        $goal
+            ->load([
+                'milestones' => fn ($query) => $query
+                    ->withCount('tasks')
+                    ->orderBy('sequence_no'),
+            ])
+            ->loadCount(['tasks', 'milestones']);
 
         return new GoalResource($goal);
     }

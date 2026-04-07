@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Goal;
+use App\Models\Milestone;
 use App\Policies\GoalPolicy;
+use App\Policies\MilestonePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Goal::class, GoalPolicy::class);
+        Gate::policy(Milestone::class, MilestonePolicy::class);
     }
 }

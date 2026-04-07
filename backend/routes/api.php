@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\GoalController;
+use App\Http\Controllers\Api\V1\MilestoneController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,5 +31,10 @@ Route::prefix('v1')->group(function () {
 
         Route::patch('/profile', [ProfileController::class, 'update']);
         Route::apiResource('goals', GoalController::class);
+        Route::get('goals/{goal}/milestones', [MilestoneController::class, 'index']);
+        Route::post('goals/{goal}/milestones', [MilestoneController::class, 'store']);
+        Route::get('milestones/{milestone}', [MilestoneController::class, 'show']);
+        Route::patch('milestones/{milestone}', [MilestoneController::class, 'update']);
+        Route::delete('milestones/{milestone}', [MilestoneController::class, 'destroy']);
     });
 });
