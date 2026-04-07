@@ -52,7 +52,16 @@ class MilestoneController extends Controller
     {
         $this->authorize('view', $milestone);
 
-        return new MilestoneResource($milestone->loadCount('tasks'));
+        return new MilestoneResource(
+            $milestone
+                ->load([
+                    'tasks' => fn ($query) => $query
+                        ->orderByDesc('is_focus')
+                        ->orderBy('sort_order')
+                        ->orderBy('due_at'),
+                ])
+                ->loadCount('tasks')
+        );
     }
 
     public function update(UpdateMilestoneRequest $request, Milestone $milestone): JsonResponse

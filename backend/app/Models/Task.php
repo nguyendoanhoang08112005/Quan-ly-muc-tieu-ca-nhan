@@ -94,7 +94,9 @@ class Task extends Model
             'completed_at' => now(),
         ]);
 
-        if ($this->goal) {
+        if ($this->milestone) {
+            $this->milestone->updateProgress();
+        } elseif ($this->goal) {
             $this->goal->updateProgress();
         }
     }

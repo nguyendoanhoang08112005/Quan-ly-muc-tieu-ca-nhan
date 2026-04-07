@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\GoalController;
 use App\Http\Controllers\Api\V1\MilestoneController;
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\TaskController;
 use Illuminate\Support\Facades\Route;
 
 // Backward-compatible aliases while older frontend bundles or browser cache
@@ -36,5 +37,10 @@ Route::prefix('v1')->group(function () {
         Route::get('milestones/{milestone}', [MilestoneController::class, 'show']);
         Route::patch('milestones/{milestone}', [MilestoneController::class, 'update']);
         Route::delete('milestones/{milestone}', [MilestoneController::class, 'destroy']);
+        Route::post('milestones/{milestone}/tasks', [TaskController::class, 'store']);
+        Route::get('tasks/{task}', [TaskController::class, 'show']);
+        Route::patch('tasks/{task}', [TaskController::class, 'update']);
+        Route::delete('tasks/{task}', [TaskController::class, 'destroy']);
+        Route::patch('tasks/{task}/complete', [TaskController::class, 'complete']);
     });
 });

@@ -52,6 +52,12 @@ class GoalController extends Controller
             ->load([
                 'milestones' => fn ($query) => $query
                     ->withCount('tasks')
+                    ->with([
+                        'tasks' => fn ($taskQuery) => $taskQuery
+                            ->orderByDesc('is_focus')
+                            ->orderBy('sort_order')
+                            ->orderBy('due_at'),
+                    ])
                     ->orderBy('sequence_no'),
             ])
             ->loadCount(['tasks', 'milestones']);

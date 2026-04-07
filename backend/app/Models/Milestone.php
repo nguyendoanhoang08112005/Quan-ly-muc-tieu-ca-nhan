@@ -52,4 +52,28 @@ class Milestone extends Model
     {
         return $this->hasMany(GoalLog::class);
     }
+
+    public function updateProgress(): void
+    {
+        $totalTasks = $this->tasks()->count();
+
+        if ($totalTasks === 0) {
+            $this->update(['progress_percentage' => 0]);
+
+            if ($this->goal) {
+                $this->goal->updateProgress();
+            }
+
+            return;
+        }
+
+        $completedTasks = $this->tasks()->where('status', 'completed')->count();
+        $progress = ($completedTasks / $totalTasks) * 100;
+
+        $this->update(['progress_percentage' => round($progress, 2)]);
+
+        if ($this->goal) {
+            $this->goal->updateProgress();
+        }
+    }
 }
