@@ -18,8 +18,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   if (!user) {
-    // Chuyển hướng đến trang chủ thay vì login
-    return <Navigate to="/" />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;

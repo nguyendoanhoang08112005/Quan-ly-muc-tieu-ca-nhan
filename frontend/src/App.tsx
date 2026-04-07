@@ -5,11 +5,11 @@ import Navigation from './components/layout/Navigation';
 import Login from './components/Login';
 import Register from './components/Register';
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import Dashboard from './routes/Dashboard';
 import Goals from './routes/Goals';
-import TaskBoard from './components/TaskBoard';
 import Sidebar from './components/layout/Sidebar';
 import Home from './routes/Home';
+import GoalCreate from './routes/GoalCreate';
+import GoalDetail from './routes/GoalDetail';
 
 const ProtectedShell = ({ children }: { children: React.ReactNode }) => (
   <ProtectedRoute>
@@ -40,31 +40,34 @@ const AppRoutes: React.FC = () => {
         />
 
         <Route
-          path="/dashboard"
-          element={
-            <ProtectedShell>
-              <Dashboard />
-            </ProtectedShell>
-          } 
-        />
-
-        <Route
           path="/goals"
           element={
             <ProtectedShell>
               <Goals />
             </ProtectedShell>
-          } 
+          }
         />
 
         <Route
-          path="/tasks"
+          path="/goals/new"
           element={
             <ProtectedShell>
-              <TaskBoard />
+              <GoalCreate />
             </ProtectedShell>
-          } 
+          }
         />
+
+        <Route
+          path="/goals/:goalId"
+          element={
+            <ProtectedShell>
+              <GoalDetail />
+            </ProtectedShell>
+          }
+        />
+
+        <Route path="/dashboard" element={<Navigate to={user ? '/goals' : '/login'} replace />} />
+        <Route path="/tasks" element={<Navigate to={user ? '/goals' : '/login'} replace />} />
 
         <Route path="*" element={<Navigate to={user ? '/goals' : '/'} replace />} />
       </Routes>

@@ -4,8 +4,6 @@ import {
   ArrowRightOnRectangleIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ClipboardDocumentListIcon,
-  HomeIcon,
   PlusIcon,
   TrophyIcon,
 } from '@heroicons/react/24/outline';
@@ -17,18 +15,14 @@ const Sidebar = () => {
   const { user, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const menuItems = [
-    { path: '/dashboard', label: 'Tong quan', icon: HomeIcon },
-    { path: '/goals', label: 'Muc tieu', icon: TrophyIcon },
-    { path: '/tasks', label: 'Viec can lam', icon: ClipboardDocumentListIcon },
-  ];
+  const menuItems = [{ path: '/goals', label: 'Muc tieu', icon: TrophyIcon }];
 
   const scopeNotes = [
-    'Chi giu auth, muc tieu va viec can lam',
-    'Tam bo projects, subtasks cu, habit va report',
+    'Flow active: auth -> goals -> milestones -> tasks',
+    'UI hien tai uu tien thao tac tao goal, milestone va task',
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname.startsWith(path);
 
   const handleLogout = async () => {
     await logout();
@@ -41,7 +35,7 @@ const Sidebar = () => {
     >
       <div className="border-b-4 border-black p-6">
         {!isCollapsed ? (
-          <button className="flex items-center space-x-3 text-left" onClick={() => navigate('/dashboard')}>
+          <button className="flex items-center space-x-3 text-left" onClick={() => navigate('/goals')}>
             <div className="flex h-12 w-12 items-center justify-center bg-black text-xl font-black text-white">
               M
             </div>
@@ -63,11 +57,11 @@ const Sidebar = () => {
         <div>
           {!isCollapsed && (
             <button
-              onClick={() => navigate('/goals')}
+              onClick={() => navigate('/goals/new')}
               className="mb-6 flex w-full items-center justify-center gap-2 bg-black px-4 py-3 text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-gray-800"
             >
               <PlusIcon className="h-5 w-5 stroke-2" />
-              <span>Tao muc tieu</span>
+              <span>Tao goal</span>
             </button>
           )}
 
@@ -95,7 +89,7 @@ const Sidebar = () => {
 
           {!isCollapsed && (
             <div className="mt-6 border-2 border-black bg-stone-50 p-4">
-              <div className="text-xs font-black uppercase tracking-[0.2em] text-gray-500">Buoc 1</div>
+              <div className="text-xs font-black uppercase tracking-[0.2em] text-gray-500">Flow chinh</div>
               <div className="mt-4 space-y-3">
                 {scopeNotes.map((item) => (
                   <div key={item} className="border-l-4 border-black pl-3 text-xs font-semibold text-gray-700">
