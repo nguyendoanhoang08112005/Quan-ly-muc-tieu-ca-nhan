@@ -13,7 +13,7 @@ import {
   MagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 import CreateGoal from './CreateGoal';
-import { goalsApi } from '../api/goalsApi';
+import { goalsApi } from '../lib/api/goalsApi';
 
 const GoalList = () => {
   const [goals, setGoals] = useState<Goal[]>([]);

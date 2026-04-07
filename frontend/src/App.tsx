@@ -1,14 +1,14 @@
 import React from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Navigation from './components/Navigation';
+import Navigation from './components/layout/Navigation';
 import Login from './components/Login';
 import Register from './components/Register';
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Dashboard from './routes/Dashboard';
 import Goals from './routes/Goals';
 import TaskBoard from './components/TaskBoard';
-import Sidebar from './components/Sidebar';
+import Sidebar from './components/layout/Sidebar';
 import Home from './routes/Home';
 
 const ProtectedShell = ({ children }: { children: React.ReactNode }) => (

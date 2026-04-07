@@ -6,7 +6,7 @@ import {
   SparklesIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
-import { CreateGoalPayload, goalsApi } from '../api/goalsApi';
+import { CreateGoalPayload, goalsApi } from '../lib/api/goalsApi';
 
 interface CreateGoalProps {
   onClose?: () => void;
