@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\GoalProgressService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -87,17 +88,8 @@ class Goal extends Model
         return $query->where('status', 'completed');
     }
 
-    public function updateProgress()
+    public function updateProgress(): void
     {
-        $totalTasks = $this->tasks()->count();
-        if ($totalTasks === 0) {
-            $this->update(['progress_percentage' => 0]);
-            return;
-        }
-
-        $completedTasks = $this->tasks()->where('status', 'completed')->count();
-        $progress = ($completedTasks / $totalTasks) * 100;
-
-        $this->update(['progress_percentage' => round($progress, 2)]);
+        app(GoalProgressService::class)->syncGoal($this);
     }
 }

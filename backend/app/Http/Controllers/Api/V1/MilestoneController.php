@@ -8,12 +8,18 @@ use App\Http\Requests\UpdateMilestoneRequest;
 use App\Http\Resources\MilestoneResource;
 use App\Models\Goal;
 use App\Models\Milestone;
+use App\Services\GoalProgressService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class MilestoneController extends Controller
 {
+    public function __construct(
+        private readonly GoalProgressService $goalProgressService
+    ) {
+    }
+
     public function index(Request $request, Goal $goal)
     {
         $this->authorize('viewAny', [Milestone::class, $goal]);
@@ -41,6 +47,8 @@ class MilestoneController extends Controller
             'progress_percentage' => $status === 'completed' ? 100 : 0,
             'completed_at' => $status === 'completed' ? now() : null,
         ]);
+
+        $this->goalProgressService->syncGoal($goal, $milestone);
 
         return response()->json([
             'message' => 'Tao milestone thanh cong.',
@@ -95,7 +103,15 @@ class MilestoneController extends Controller
     {
         $this->authorize('delete', $milestone);
 
+        $goal = $milestone->goal;
+        $deletedMilestone = $milestone->replicate();
+        $deletedMilestone->id = $milestone->id;
+
         $milestone->delete();
+
+        if ($goal) {
+            $this->goalProgressService->syncGoal($goal, $deletedMilestone);
+        }
 
         return response()->noContent();
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\GoalProgressService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,25 +56,6 @@ class Milestone extends Model
 
     public function updateProgress(): void
     {
-        $totalTasks = $this->tasks()->count();
-
-        if ($totalTasks === 0) {
-            $this->update(['progress_percentage' => 0]);
-
-            if ($this->goal) {
-                $this->goal->updateProgress();
-            }
-
-            return;
-        }
-
-        $completedTasks = $this->tasks()->where('status', 'completed')->count();
-        $progress = ($completedTasks / $totalTasks) * 100;
-
-        $this->update(['progress_percentage' => round($progress, 2)]);
-
-        if ($this->goal) {
-            $this->goal->updateProgress();
-        }
+        app(GoalProgressService::class)->syncMilestone($this);
     }
 }

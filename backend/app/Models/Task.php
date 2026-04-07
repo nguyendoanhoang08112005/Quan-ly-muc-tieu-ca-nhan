@@ -93,12 +93,6 @@ class Task extends Model
             'progress_percentage' => 100,
             'completed_at' => now(),
         ]);
-
-        if ($this->milestone) {
-            $this->milestone->updateProgress();
-        } elseif ($this->goal) {
-            $this->goal->updateProgress();
-        }
     }
 
     public function isOverdue()

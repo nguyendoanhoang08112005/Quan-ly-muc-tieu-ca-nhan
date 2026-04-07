@@ -6,14 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
-use App\Models\Goal;
 use App\Models\Milestone;
 use App\Models\Task;
+use App\Services\GoalProgressService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
+    public function __construct(
+        private readonly GoalProgressService $goalProgressService
+    ) {
+    }
+
     public function store(StoreTaskRequest $request, Milestone $milestone): JsonResponse
     {
         $this->authorize('create', [Task::class, $milestone]);
@@ -33,7 +38,7 @@ class TaskController extends Controller
             'is_focus' => (bool) ($data['is_focus'] ?? false),
         ]);
 
-        $this->refreshProgress($task);
+        $this->goalProgressService->syncFromTask($task);
 
         return response()->json([
             'message' => 'Tao task thanh cong.',
@@ -72,7 +77,7 @@ class TaskController extends Controller
         }
 
         $task->update($data);
-        $this->refreshProgress($task->fresh());
+        $this->goalProgressService->syncFromTask($task->fresh());
 
         return response()->json([
             'message' => 'Cap nhat task thanh cong.',
@@ -90,9 +95,9 @@ class TaskController extends Controller
         $task->delete();
 
         if ($milestone) {
-            $milestone->updateProgress();
-        } else {
-            $goal?->updateProgress();
+            $this->goalProgressService->syncMilestone($milestone, $task);
+        } elseif ($goal) {
+            $this->goalProgressService->syncGoal($goal, null, $task);
         }
 
         return response()->noContent();
@@ -103,23 +108,11 @@ class TaskController extends Controller
         $this->authorize('complete', $task);
 
         $task->markAsCompleted();
+        $this->goalProgressService->syncFromTask($task->fresh());
 
         return response()->json([
             'message' => 'Hoan thanh task thanh cong.',
             'data' => new TaskResource($task->fresh()),
         ]);
-    }
-
-    private function refreshProgress(Task $task): void
-    {
-        if ($task->milestone) {
-            $task->milestone->updateProgress();
-
-            return;
-        }
-
-        /** @var Goal|null $goal */
-        $goal = $task->goal;
-        $goal?->updateProgress();
     }
 }
