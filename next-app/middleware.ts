@@ -1,11 +1,26 @@
-import { NextResponse } from "next/server";
+import { withAuth } from "next-auth/middleware";
+import { authRoutes } from "@/lib/auth/routes";
 
-export function middleware() {
-  // Phase 1 chi dung middleware placeholder.
-  // Phase 3 se dua auth gate vao day neu can.
-  return NextResponse.next();
-}
+export default withAuth({
+  pages: {
+    signIn: authRoutes.signIn
+  }
+});
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"]
+  matcher: [
+    "/dashboard/:path*",
+    "/goals/:path*",
+    "/milestones/:path*",
+    "/tasks/:path*",
+    "/categories/:path*",
+    "/tags/:path*",
+    "/notes/:path*",
+    "/habits/:path*",
+    "/notifications/:path*",
+    "/pomodoro/:path*",
+    "/projects/:path*",
+    "/follows/:path*",
+    "/settings/:path*"
+  ]
 };

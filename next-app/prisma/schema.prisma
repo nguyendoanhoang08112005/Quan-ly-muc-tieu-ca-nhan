@@ -4,8 +4,644 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
 }
 
-// Phase 2 se thay file nay bang schema day du cua he thong.
+// Phase 2 decision:
+// Auth.js will be implemented with Credentials + JWT against the User table first.
+// We intentionally do not force the Prisma Adapter tables here because the legacy
+// MySQL schema uses unsigned bigint ids and the migration target should stay
+// compatible with the current data model.
 
+enum UserTheme {
+  LIGHT  @map("light")
+  DARK   @map("dark")
+  SYSTEM @map("system")
+}
+
+enum GoalType {
+  SHORT_TERM @map("short_term")
+  MID_TERM   @map("mid_term")
+  LONG_TERM  @map("long_term")
+}
+
+enum GoalStatus {
+  NOT_STARTED @map("not_started")
+  IN_PROGRESS @map("in_progress")
+  COMPLETED   @map("completed")
+  PAUSED      @map("paused")
+  CANCELLED   @map("cancelled")
+}
+
+enum WorkStatus {
+  NOT_STARTED @map("not_started")
+  IN_PROGRESS @map("in_progress")
+  COMPLETED   @map("completed")
+  PAUSED      @map("paused")
+}
+
+enum Priority {
+  LOW      @map("low")
+  MEDIUM   @map("medium")
+  HIGH     @map("high")
+  CRITICAL @map("critical")
+}
+
+enum HabitFrequency {
+  DAILY   @map("daily")
+  WEEKLY  @map("weekly")
+  MONTHLY @map("monthly")
+}
+
+enum HabitStatus {
+  ACTIVE    @map("active")
+  PAUSED    @map("paused")
+  COMPLETED @map("completed")
+  ARCHIVED  @map("archived")
+}
+
+enum CategoryType {
+  GOAL  @map("goal")
+  TASK  @map("task")
+  HABIT @map("habit")
+  ALL   @map("all")
+}
+
+enum GoalLogType {
+  PROGRESS_UPDATE @map("progress_update")
+  STATUS_CHANGE   @map("status_change")
+  NOTE            @map("note")
+  RISK            @map("risk")
+  COMPLETION      @map("completion")
+  AI_SUGGESTION   @map("ai_suggestion")
+}
+
+enum ReminderChannel {
+  IN_APP @map("in_app")
+  EMAIL  @map("email")
+  PUSH   @map("push")
+}
+
+enum ReminderStatus {
+  PENDING   @map("pending")
+  SENT      @map("sent")
+  CANCELLED @map("cancelled")
+  FAILED    @map("failed")
+}
+
+enum RemindableType {
+  GOAL      @map("goal")
+  MILESTONE @map("milestone")
+  TASK      @map("task")
+  HABIT     @map("habit")
+}
+
+enum RelatedEntityType {
+  GOAL             @map("goal")
+  MILESTONE        @map("milestone")
+  TASK             @map("task")
+  HABIT            @map("habit")
+  PROJECT          @map("project")
+  JOURNAL_ENTRY    @map("journal_entry")
+  REMINDER         @map("reminder")
+  NOTE             @map("note")
+  POMODORO_SESSION @map("pomodoro_session")
+}
+
+enum AttachableType {
+  GOAL          @map("goal")
+  MILESTONE     @map("milestone")
+  TASK          @map("task")
+  JOURNAL_ENTRY @map("journal_entry")
+  NOTE          @map("note")
+  PROJECT       @map("project")
+}
+
+enum NoteableType {
+  GOAL          @map("goal")
+  MILESTONE     @map("milestone")
+  TASK          @map("task")
+  HABIT         @map("habit")
+  PROJECT       @map("project")
+  JOURNAL_ENTRY @map("journal_entry")
+}
+
+enum FollowableType {
+  GOAL    @map("goal")
+  PROJECT @map("project")
+  HABIT   @map("habit")
+}
+
+enum ProjectStatus {
+  PLANNING  @map("planning")
+  ACTIVE    @map("active")
+  PAUSED    @map("paused")
+  COMPLETED @map("completed")
+  CANCELLED @map("cancelled")
+  ARCHIVED  @map("archived")
+}
+
+enum SubtaskStatus {
+  PENDING     @map("pending")
+  IN_PROGRESS @map("in_progress")
+  COMPLETED   @map("completed")
+}
+
+model User {
+  id                    BigInt            @id @default(autoincrement()) @db.UnsignedBigInt
+  name                  String            @db.VarChar(150)
+  email                 String            @unique(map: "users_email_unique") @db.VarChar(190)
+  emailVerifiedAt       DateTime?         @map("email_verified_at")
+  password              String            @db.VarChar(255)
+  avatarPath            String?           @map("avatar_path") @db.VarChar(255)
+  timezone              String            @default("Asia/Ho_Chi_Minh") @db.VarChar(64)
+  locale                String            @default("vi") @db.VarChar(10)
+  theme                 UserTheme         @default(LIGHT)
+  weekStartsOn          Int               @default(1) @map("week_starts_on") @db.UnsignedTinyInt
+  onboardingCompletedAt DateTime?         @map("onboarding_completed_at")
+  lastActiveAt          DateTime?         @map("last_active_at")
+  rememberToken         String?           @map("remember_token") @db.VarChar(100)
+  createdAt             DateTime          @default(now()) @map("created_at")
+  updatedAt             DateTime          @updatedAt @map("updated_at")
+  deletedAt             DateTime?         @map("deleted_at")
+  attachments           Attachment[]
+  categories            Category[]
+  follows               Follow[]          @relation("FollowerFollows")
+  goalLogs              GoalLog[]
+  goalTemplates         GoalTemplate[]
+  goals                 Goal[]
+  habitLogs             HabitLog[]
+  habits                Habit[]
+  journalEntries        JournalEntry[]
+  milestones            Milestone[]
+  notes                 Note[]
+  notifications         Notification[]
+  pomodoroSessions      PomodoroSession[]
+  projects              Project[]
+  reminders             Reminder[]
+  tags                  Tag[]
+  tasks                 Task[]
+
+  @@index([onboardingCompletedAt], map: "users_onboarding_completed_at_index")
+  @@index([lastActiveAt], map: "users_last_active_at_index")
+  @@map("users")
+}
+
+model PasswordResetToken {
+  email     String    @id @db.VarChar(190)
+  token     String    @db.VarChar(255)
+  createdAt DateTime? @map("created_at")
+
+  @@map("password_reset_tokens")
+}
+
+model Category {
+  id             BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  userId         BigInt?        @map("user_id") @db.UnsignedBigInt
+  name           String         @db.VarChar(100)
+  slug           String?        @db.VarChar(120)
+  color          String?        @db.VarChar(20)
+  icon           String?        @db.VarChar(50)
+  type           CategoryType   @default(GOAL)
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  deletedAt      DateTime?      @map("deleted_at")
+  user           User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  primaryGoals   Goal[]         @relation("PrimaryGoalCategory")
+  goalCategories GoalCategory[]
+  goalTemplates  GoalTemplate[]
+
+  @@unique([userId, name, type], map: "categories_user_id_name_type_unique")
+  @@index([type], map: "categories_type_index")
+  @@map("categories")
+}
+
+model Tag {
+  id        BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  userId    BigInt    @map("user_id") @db.UnsignedBigInt
+  name      String    @db.VarChar(60)
+  color     String?   @db.VarChar(20)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goalLinks GoalTag[]
+
+  @@unique([userId, name], map: "tags_user_id_name_unique")
+  @@map("tags")
+}
+
+model Goal {
+  id                 BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  userId             BigInt         @map("user_id") @db.UnsignedBigInt
+  categoryId         BigInt?        @map("category_id") @db.UnsignedBigInt
+  title              String         @db.VarChar(180)
+  slug               String?        @db.VarChar(220)
+  description        String?        @db.Text
+  goalType           GoalType       @default(SHORT_TERM) @map("goal_type")
+  priority           Priority       @default(MEDIUM)
+  status             GoalStatus     @default(NOT_STARTED)
+  progressPercentage Decimal        @default(0) @map("progress_percentage") @db.Decimal(5, 2)
+  startDate          DateTime?      @map("start_date") @db.Date
+  targetDate         DateTime?      @map("target_date") @db.Date
+  completedAt        DateTime?      @map("completed_at")
+  successMetric      String?        @map("success_metric") @db.VarChar(255)
+  outcomeNote        String?        @map("outcome_note") @db.Text
+  note               String?        @db.LongText
+  isArchived         Boolean        @default(false) @map("is_archived")
+  isRecurring        Boolean        @default(false) @map("is_recurring")
+  recurrenceRule     Json?          @map("recurrence_rule")
+  sortOrder          Int            @default(0) @map("sort_order")
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+  deletedAt          DateTime?      @map("deleted_at")
+  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category           Category?      @relation("PrimaryGoalCategory", fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryLinks      GoalCategory[]
+  habits             Habit[]
+  journalEntries     JournalEntry[]
+  logs               GoalLog[]
+  milestones         Milestone[]
+  projects           Project[]
+  tagLinks           GoalTag[]
+  tasks              Task[]
+
+  @@unique([userId, slug], map: "goals_user_id_slug_unique")
+  @@index([userId, status], map: "goals_user_id_status_index")
+  @@index([userId, goalType], map: "goals_user_id_goal_type_index")
+  @@index([userId, priority], map: "goals_user_id_priority_index")
+  @@index([userId, targetDate], map: "goals_user_id_target_date_index")
+  @@index([userId, isArchived], map: "goals_user_id_is_archived_index")
+  @@map("goals")
+}
+
+model GoalTag {
+  goalId    BigInt   @map("goal_id") @db.UnsignedBigInt
+  tagId     BigInt   @map("tag_id") @db.UnsignedBigInt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  goal      Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([goalId, tagId])
+  @@index([tagId], map: "goal_tag_tag_id_index")
+  @@map("goal_tag")
+}
+
+model GoalCategory {
+  goalId     BigInt   @map("goal_id") @db.UnsignedBigInt
+  categoryId BigInt   @map("category_id") @db.UnsignedBigInt
+  createdAt  DateTime @default(now()) @map("created_at")
+  goal       Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([goalId, categoryId])
+  @@index([categoryId], map: "goal_category_category_id_index")
+  @@map("goal_category")
+}
+
+model Milestone {
+  id                 BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  userId             BigInt     @map("user_id") @db.UnsignedBigInt
+  goalId             BigInt     @map("goal_id") @db.UnsignedBigInt
+  title              String     @db.VarChar(180)
+  description        String?    @db.Text
+  status             WorkStatus @default(NOT_STARTED)
+  progressPercentage Decimal    @default(0) @map("progress_percentage") @db.Decimal(5, 2)
+  startDate          DateTime?  @map("start_date") @db.Date
+  targetDate         DateTime?  @map("target_date") @db.Date
+  completedAt        DateTime?  @map("completed_at")
+  sequenceNo         Int        @default(1) @map("sequence_no") @db.UnsignedInt
+  checklistJson      Json?      @map("checklist_json")
+  note               String?    @db.Text
+  createdAt          DateTime   @default(now()) @map("created_at")
+  updatedAt          DateTime   @updatedAt @map("updated_at")
+  deletedAt          DateTime?  @map("deleted_at")
+  user               User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal               Goal       @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  logs               GoalLog[]
+  tasks              Task[]
+
+  @@index([goalId, sequenceNo], map: "milestones_goal_id_sequence_no_index")
+  @@index([userId, status], map: "milestones_user_id_status_index")
+  @@index([userId, targetDate], map: "milestones_user_id_target_date_index")
+  @@map("milestones")
+}
+
+model Task {
+  id                 BigInt            @id @default(autoincrement()) @db.UnsignedBigInt
+  userId             BigInt            @map("user_id") @db.UnsignedBigInt
+  goalId             BigInt            @map("goal_id") @db.UnsignedBigInt
+  milestoneId        BigInt?           @map("milestone_id") @db.UnsignedBigInt
+  parentTaskId       BigInt?           @map("parent_task_id") @db.UnsignedBigInt
+  projectId          BigInt?           @map("project_id") @db.UnsignedBigInt
+  title              String            @db.VarChar(180)
+  description        String?           @db.Text
+  status             WorkStatus        @default(NOT_STARTED)
+  priority           Priority          @default(MEDIUM)
+  progressPercentage Decimal           @default(0) @map("progress_percentage") @db.Decimal(5, 2)
+  dueAt              DateTime?         @map("due_at")
+  startedAt          DateTime?         @map("started_at")
+  completedAt        DateTime?         @map("completed_at")
+  estimatedMinutes   Int?              @map("estimated_minutes") @db.UnsignedInt
+  actualMinutes      Int?              @map("actual_minutes") @db.UnsignedInt
+  isFocus            Boolean           @default(false) @map("is_focus")
+  sortOrder          Int               @default(0) @map("sort_order")
+  metadata           Json?
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @updatedAt @map("updated_at")
+  deletedAt          DateTime?         @map("deleted_at")
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal               Goal              @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  milestone          Milestone?        @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+  project            Project?          @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  parentTask         Task?             @relation("TaskHierarchy", fields: [parentTaskId], references: [id], onDelete: SetNull)
+  childTasks         Task[]            @relation("TaskHierarchy")
+  logs               GoalLog[]
+  pomodoroSessions   PomodoroSession[]
+  subtasks           Subtask[]
+
+  @@index([userId, status], map: "tasks_user_id_status_index")
+  @@index([goalId, milestoneId], map: "tasks_goal_id_milestone_id_index")
+  @@index([userId, dueAt], map: "tasks_user_id_due_at_index")
+  @@index([userId, priority], map: "tasks_user_id_priority_index")
+  @@index([userId, isFocus], map: "tasks_user_id_is_focus_index")
+  @@index([parentTaskId], map: "tasks_parent_task_id_index")
+  @@index([projectId], map: "tasks_project_id_index")
+  @@map("tasks")
+}
+
+model GoalLog {
+  id               BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
+  userId           BigInt      @map("user_id") @db.UnsignedBigInt
+  goalId           BigInt      @map("goal_id") @db.UnsignedBigInt
+  milestoneId      BigInt?     @map("milestone_id") @db.UnsignedBigInt
+  taskId           BigInt?     @map("task_id") @db.UnsignedBigInt
+  logType          GoalLogType @map("log_type")
+  title            String?     @db.VarChar(180)
+  content          String?     @db.LongText
+  oldValue         Json?       @map("old_value")
+  newValue         Json?       @map("new_value")
+  progressSnapshot Decimal?    @map("progress_snapshot") @db.Decimal(5, 2)
+  loggedAt         DateTime    @default(now()) @map("logged_at")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal             Goal        @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  milestone        Milestone?  @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+  task             Task?       @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([goalId, loggedAt], map: "goal_logs_goal_id_logged_at_index")
+  @@index([userId, logType], map: "goal_logs_user_id_log_type_index")
+  @@index([milestoneId], map: "goal_logs_milestone_id_index")
+  @@index([taskId], map: "goal_logs_task_id_index")
+  @@map("goal_logs")
+}
+
+model Habit {
+  id            BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  userId        BigInt         @map("user_id") @db.UnsignedBigInt
+  goalId        BigInt?        @map("goal_id") @db.UnsignedBigInt
+  title         String         @db.VarChar(180)
+  description   String?        @db.Text
+  frequency     HabitFrequency
+  targetCount   Int            @default(1) @map("target_count") @db.UnsignedInt
+  unit          String         @default("times") @db.VarChar(50)
+  reminderTime  DateTime?      @map("reminder_time") @db.Time(0)
+  currentStreak Int            @default(0) @map("current_streak") @db.UnsignedInt
+  bestStreak    Int            @default(0) @map("best_streak") @db.UnsignedInt
+  lastLoggedAt  DateTime?      @map("last_logged_at")
+  status        HabitStatus    @default(ACTIVE)
+  startDate     DateTime?      @map("start_date") @db.Date
+  endDate       DateTime?      @map("end_date") @db.Date
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  deletedAt     DateTime?      @map("deleted_at")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal          Goal?          @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  logs          HabitLog[]
+
+  @@index([userId, status], map: "habits_user_id_status_index")
+  @@index([goalId], map: "habits_goal_id_index")
+  @@index([userId, frequency], map: "habits_user_id_frequency_index")
+  @@index([userId, reminderTime], map: "habits_user_id_reminder_time_index")
+  @@map("habits")
+}
+
+model HabitLog {
+  id                  BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  userId              BigInt   @map("user_id") @db.UnsignedBigInt
+  habitId             BigInt   @map("habit_id") @db.UnsignedBigInt
+  logDate             DateTime @map("log_date") @db.Date
+  completedCount      Int      @default(0) @map("completed_count") @db.UnsignedInt
+  targetCountSnapshot Int      @default(1) @map("target_count_snapshot") @db.UnsignedInt
+  isCompleted         Boolean  @default(false) @map("is_completed")
+  note                String?  @db.Text
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habit               Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, logDate], map: "habit_logs_habit_id_log_date_unique")
+  @@index([userId, logDate], map: "habit_logs_user_id_log_date_index")
+  @@index([userId, isCompleted], map: "habit_logs_user_id_is_completed_index")
+  @@map("habit_logs")
+}
+
+model Reminder {
+  id             BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  userId         BigInt          @map("user_id") @db.UnsignedBigInt
+  remindableType RemindableType  @map("remindable_type")
+  remindableId   BigInt          @map("remindable_id") @db.UnsignedBigInt
+  title          String          @db.VarChar(180)
+  message        String?         @db.Text
+  remindAt       DateTime        @map("remind_at")
+  channel        ReminderChannel @default(IN_APP)
+  status         ReminderStatus  @default(PENDING)
+  sentAt         DateTime?       @map("sent_at")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  deletedAt      DateTime?       @map("deleted_at")
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, remindAt], map: "reminders_user_id_remind_at_index")
+  @@index([status, remindAt], map: "reminders_status_remind_at_index")
+  @@index([remindableType, remindableId], map: "reminders_remindable_type_remindable_id_index")
+  @@map("reminders")
+}
+
+model Notification {
+  id          String             @id @default(uuid()) @db.Char(36)
+  userId      BigInt             @map("user_id") @db.UnsignedBigInt
+  type        String             @db.VarChar(150)
+  title       String             @db.VarChar(180)
+  body        String?            @db.Text
+  data        Json?
+  relatedType RelatedEntityType? @map("related_type")
+  relatedId   BigInt?            @map("related_id") @db.UnsignedBigInt
+  readAt      DateTime?          @map("read_at")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt], map: "notifications_user_id_read_at_index")
+  @@index([userId, createdAt], map: "notifications_user_id_created_at_index")
+  @@index([relatedType, relatedId], map: "notifications_related_type_related_id_index")
+  @@map("notifications")
+}
+
+model JournalEntry {
+  id                BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  userId            BigInt    @map("user_id") @db.UnsignedBigInt
+  goalId            BigInt?   @map("goal_id") @db.UnsignedBigInt
+  entryDate         DateTime  @map("entry_date") @db.Date
+  title             String?   @db.VarChar(180)
+  content           String    @db.LongText
+  moodScore         Int?      @map("mood_score") @db.UnsignedTinyInt
+  energyScore       Int?      @map("energy_score") @db.UnsignedTinyInt
+  productivityScore Int?      @map("productivity_score") @db.UnsignedTinyInt
+  blockers          String?   @db.Text
+  wins              String?   @db.Text
+  nextSteps         String?   @map("next_steps") @db.Text
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal              Goal?     @relation(fields: [goalId], references: [id], onDelete: SetNull)
+
+  @@index([userId, entryDate], map: "journal_entries_user_id_entry_date_index")
+  @@index([goalId, entryDate], map: "journal_entries_goal_id_entry_date_index")
+  @@map("journal_entries")
+}
+
+model Attachment {
+  id             BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  userId         BigInt         @map("user_id") @db.UnsignedBigInt
+  attachableType AttachableType @map("attachable_type")
+  attachableId   BigInt         @map("attachable_id") @db.UnsignedBigInt
+  disk           String         @db.VarChar(50)
+  path           String         @db.VarChar(255)
+  originalName   String         @map("original_name") @db.VarChar(255)
+  mimeType       String?        @map("mime_type") @db.VarChar(120)
+  fileSize       BigInt         @map("file_size") @db.UnsignedBigInt
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  deletedAt      DateTime?      @map("deleted_at")
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([attachableType, attachableId], map: "attachments_attachable_type_attachable_id_index")
+  @@index([userId, createdAt], map: "attachments_user_id_created_at_index")
+  @@map("attachments")
+}
+
+model GoalTemplate {
+  id                    BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  userId                BigInt?   @map("user_id") @db.UnsignedBigInt
+  categoryId            BigInt?   @map("category_id") @db.UnsignedBigInt
+  name                  String    @db.VarChar(180)
+  description           String?   @db.Text
+  goalType              GoalType  @map("goal_type")
+  estimatedDurationDays Int?      @map("estimated_duration_days") @db.UnsignedInt
+  templatePayload       Json      @map("template_payload")
+  isPublic              Boolean   @default(false) @map("is_public")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  deletedAt             DateTime? @map("deleted_at")
+  user                  User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  category              Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([userId, isPublic], map: "goal_templates_user_id_is_public_index")
+  @@index([categoryId], map: "goal_templates_category_id_index")
+  @@map("goal_templates")
+}
+
+model Note {
+  id           BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  userId       BigInt       @map("user_id") @db.UnsignedBigInt
+  noteableType NoteableType @map("noteable_type")
+  noteableId   BigInt       @map("noteable_id") @db.UnsignedBigInt
+  content      String       @db.LongText
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  deletedAt    DateTime?    @map("deleted_at")
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([noteableType, noteableId], map: "notes_noteable_type_noteable_id_index")
+  @@index([userId, createdAt], map: "notes_user_id_created_at_index")
+  @@map("notes")
+}
+
+model PomodoroSession {
+  id              BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  userId          BigInt    @map("user_id") @db.UnsignedBigInt
+  taskId          BigInt    @map("task_id") @db.UnsignedBigInt
+  startedAt       DateTime  @map("start_time")
+  endedAt         DateTime? @map("end_time")
+  durationMinutes Int?      @map("duration_minutes") @db.UnsignedInt
+  completed       Boolean   @default(false)
+  notes           String?   @db.Text
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task            Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startedAt], map: "pomodoro_sessions_user_id_start_time_index")
+  @@index([taskId, startedAt], map: "pomodoro_sessions_task_id_start_time_index")
+  @@index([userId, completed], map: "pomodoro_sessions_user_id_completed_index")
+  @@map("pomodoro_sessions")
+}
+
+model Project {
+  id                 BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  userId             BigInt        @map("user_id") @db.UnsignedBigInt
+  goalId             BigInt?       @map("goal_id") @db.UnsignedBigInt
+  name               String        @db.VarChar(180)
+  description        String?       @db.Text
+  status             ProjectStatus @default(PLANNING)
+  color              String?       @db.VarChar(20)
+  startDate          DateTime?     @map("start_date") @db.Date
+  endDate            DateTime?     @map("end_date") @db.Date
+  progressPercentage Decimal       @default(0) @map("progress") @db.Decimal(5, 2)
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+  deletedAt          DateTime?     @map("deleted_at")
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal               Goal?         @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  tasks              Task[]
+
+  @@index([userId, status], map: "projects_user_id_status_index")
+  @@index([goalId], map: "projects_goal_id_index")
+  @@index([userId, endDate], map: "projects_user_id_end_date_index")
+  @@map("projects")
+}
+
+model Subtask {
+  id          BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  taskId      BigInt        @map("task_id") @db.UnsignedBigInt
+  name        String        @db.VarChar(180)
+  status      SubtaskStatus @default(PENDING)
+  completedAt DateTime?     @map("completed_at")
+  sortOrder   Int           @default(0) @map("sort_order")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  deletedAt   DateTime?     @map("deleted_at")
+  task        Task          @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, status], map: "subtasks_task_id_status_index")
+  @@index([taskId, sortOrder], map: "subtasks_task_id_sort_order_index")
+  @@map("subtasks")
+}
+
+model Follow {
+  id             BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  followerId     BigInt         @map("follower_id") @db.UnsignedBigInt
+  followableType FollowableType @map("followable_type")
+  followableId   BigInt         @map("followable_id") @db.UnsignedBigInt
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  follower       User           @relation("FollowerFollows", fields: [followerId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followableType, followableId], map: "follows_follower_id_followable_type_followable_id_unique")
+  @@index([followableType, followableId], map: "follows_followable_type_followable_id_index")
+  @@index([followerId, createdAt], map: "follows_follower_id_created_at_index")
+  @@map("follows")
+}

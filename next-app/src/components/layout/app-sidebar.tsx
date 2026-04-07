@@ -1,14 +1,14 @@
 import Link from "next/link";
 import type { Route } from "next";
+import type { AppSessionUser } from "@/lib/auth/session";
+import { SignOutButton } from "@/components/layout/sign-out-button";
 
 const items = [
   { href: "/dashboard" as Route, label: "Dashboard" },
-  { href: "/goals" as Route, label: "Goals" },
-  { href: "/login" as Route, label: "Login" },
-  { href: "/register" as Route, label: "Register" }
+  { href: "/goals" as Route, label: "Goals" }
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ user }: { user: AppSessionUser }) {
   return (
     <aside className="sticky top-0 hidden min-h-screen w-72 shrink-0 border-r-4 border-black bg-white lg:block">
       <div className="border-b-4 border-black p-6">
@@ -19,8 +19,16 @@ export function AppSidebar() {
           Muc tieu ca nhan
         </h2>
         <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
-          Next.js migrate shell
+          NextAuth credentials session
         </p>
+      </div>
+
+      <div className="border-b border-stone-200 px-4 py-5">
+        <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-500">
+          Dang nhap boi
+        </p>
+        <p className="mt-3 text-sm font-semibold text-stone-900">{user.name}</p>
+        <p className="mt-1 text-sm text-stone-500">{user.email}</p>
       </div>
 
       <nav className="space-y-2 p-4">
@@ -34,6 +42,10 @@ export function AppSidebar() {
           </Link>
         ))}
       </nav>
+
+      <div className="p-4">
+        <SignOutButton />
+      </div>
     </aside>
   );
 }

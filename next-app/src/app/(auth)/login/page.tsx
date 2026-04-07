@@ -1,16 +1,59 @@
-export default function LoginPage() {
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { AuthShell } from "@/features/auth/components/auth-shell";
+import { LoginForm } from "@/features/auth/components/login-form";
+import { authRoutes } from "@/lib/auth/routes";
+import { getServerAuthSession } from "@/lib/auth/session";
+
+type LoginPageProps = {
+  searchParams?: Promise<{
+    callbackUrl?: string | string[];
+    email?: string | string[];
+    registered?: string | string[];
+  }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const session = await getServerAuthSession();
+
+  if (session?.user?.id) {
+    redirect(authRoutes.afterSignIn);
+  }
+
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+
+  const callbackUrl =
+    typeof resolvedSearchParams?.callbackUrl === "string"
+      ? resolvedSearchParams.callbackUrl
+      : undefined;
+  const defaultEmail =
+    typeof resolvedSearchParams?.email === "string"
+      ? resolvedSearchParams.email
+      : "";
+  const showRegisteredMessage = resolvedSearchParams?.registered === "1";
+
   return (
-    <main className="flex min-h-screen items-center justify-center px-6 py-16">
-      <div className="w-full max-w-md rounded-3xl border border-stone-300 bg-white p-8 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-500">
-          Auth placeholder
+    <AuthShell
+      description="Dang nhap de truy cap dashboard va bat dau migrate tung module nghiep vu tren app moi."
+      eyebrow="Authentication"
+      footer={
+        <p>
+          Chua co tai khoan?{" "}
+          <Link
+            className="font-semibold text-stone-950 underline decoration-stone-300 underline-offset-4"
+            href={authRoutes.register}
+          >
+            Tao tai khoan
+          </Link>
         </p>
-        <h1 className="mt-3 text-3xl font-black text-stone-950">Dang nhap</h1>
-        <p className="mt-4 text-sm leading-6 text-stone-600">
-          Form dang nhap that se duoc dua vao o Phase 3 cung voi Auth.js.
-        </p>
-      </div>
-    </main>
+      }
+      title="Dang nhap vao he thong moi"
+    >
+      <LoginForm
+        callbackUrl={callbackUrl}
+        defaultEmail={defaultEmail}
+        showRegisteredMessage={showRegisteredMessage}
+      />
+    </AuthShell>
   );
 }
-

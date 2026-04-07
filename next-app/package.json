@@ -13,10 +13,13 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@prisma/adapter-mariadb": "^7.6.0",
     "@prisma/client": "latest",
+    "bcryptjs": "^3.0.3",
     "class-variance-authority": "latest",
     "clsx": "latest",
     "lucide-react": "latest",
+    "mariadb": "^3.5.2",
     "next": "latest",
     "next-auth": "latest",
     "react": "latest",
