@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\GoalController;
 use App\Http\Controllers\Api\V1\MilestoneController;
 use App\Http\Controllers\Api\V1\ProfileController;
@@ -31,6 +32,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::patch('/profile', [ProfileController::class, 'update']);
+        Route::get('dashboard/summary', [DashboardController::class, 'summary']);
         Route::apiResource('goals', GoalController::class);
         Route::get('goals/{goal}/milestones', [MilestoneController::class, 'index']);
         Route::post('goals/{goal}/milestones', [MilestoneController::class, 'store']);

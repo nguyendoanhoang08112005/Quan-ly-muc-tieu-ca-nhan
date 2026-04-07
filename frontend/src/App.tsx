@@ -5,6 +5,7 @@ import Navigation from './components/layout/Navigation';
 import Login from './components/Login';
 import Register from './components/Register';
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import Dashboard from './routes/Dashboard';
 import Goals from './routes/Goals';
 import Sidebar from './components/layout/Sidebar';
 import Home from './routes/Home';
@@ -33,10 +34,19 @@ const AppRoutes: React.FC = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={!user ? <Login /> : <Navigate to="/goals" replace />} />
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" replace />} />
         <Route
           path="/register"
-          element={!user ? <Register /> : <Navigate to="/goals" replace />}
+          element={!user ? <Register /> : <Navigate to="/dashboard" replace />}
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedShell>
+              <Dashboard />
+            </ProtectedShell>
+          }
         />
 
         <Route
@@ -66,10 +76,9 @@ const AppRoutes: React.FC = () => {
           }
         />
 
-        <Route path="/dashboard" element={<Navigate to={user ? '/goals' : '/login'} replace />} />
-        <Route path="/tasks" element={<Navigate to={user ? '/goals' : '/login'} replace />} />
+        <Route path="/tasks" element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
 
-        <Route path="*" element={<Navigate to={user ? '/goals' : '/'} replace />} />
+        <Route path="*" element={<Navigate to={user ? '/dashboard' : '/'} replace />} />
       </Routes>
     </>
   );

@@ -4,6 +4,7 @@ import {
   ArrowRightOnRectangleIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  HomeIcon,
   PlusIcon,
   TrophyIcon,
 } from '@heroicons/react/24/outline';
@@ -15,11 +16,14 @@ const Sidebar = () => {
   const { user, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const menuItems = [{ path: '/goals', label: 'Muc tieu', icon: TrophyIcon }];
+  const menuItems = [
+    { path: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+    { path: '/goals', label: 'Muc tieu', icon: TrophyIcon },
+  ];
 
   const scopeNotes = [
-    'Flow active: auth -> goals -> milestones -> tasks',
-    'UI hien tai uu tien thao tac tao goal, milestone va task',
+    'Flow active: dashboard -> goals -> milestones -> tasks',
+    'Summary, task sap den han va goal dang lam deu lay du lieu that',
   ];
 
   const isActive = (path: string) => location.pathname.startsWith(path);
@@ -35,7 +39,7 @@ const Sidebar = () => {
     >
       <div className="border-b-4 border-black p-6">
         {!isCollapsed ? (
-          <button className="flex items-center space-x-3 text-left" onClick={() => navigate('/goals')}>
+          <button className="flex items-center space-x-3 text-left" onClick={() => navigate('/dashboard')}>
             <div className="flex h-12 w-12 items-center justify-center bg-black text-xl font-black text-white">
               M
             </div>

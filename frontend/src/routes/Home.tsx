@@ -30,10 +30,10 @@ const Home: React.FC = () => {
           <div className="mt-10 flex flex-wrap gap-4">
             {user ? (
               <Link
-                to="/goals"
+                to="/dashboard"
                 className="border-2 border-black bg-black px-8 py-3 text-sm font-bold uppercase tracking-wider text-white hover:bg-gray-800"
               >
-                Vao danh sach muc tieu
+                Vao dashboard
               </Link>
             ) : (
               <>

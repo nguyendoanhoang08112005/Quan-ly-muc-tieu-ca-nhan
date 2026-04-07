@@ -50,7 +50,7 @@ const Register: React.FC = () => {
     setIsLoading(true);
     try {
       await register(values);
-      navigate('/goals');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Đăng ký thất bại');
     } finally {

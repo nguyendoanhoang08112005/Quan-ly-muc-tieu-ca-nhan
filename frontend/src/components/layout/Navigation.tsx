@@ -31,9 +31,6 @@ const Navigation: React.FC = () => {
                 <Link to="/goals" className="text-sm font-bold uppercase text-gray-700 hover:text-black">
                   Muc tieu
                 </Link>
-                <Link to="/tasks" className="text-sm font-bold uppercase text-gray-700 hover:text-black">
-                  Viec can lam
-                </Link>
                 <span className="text-sm text-gray-700">Xin chao, {user.name}</span>
                 <button
                   onClick={handleLogout}
