@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { Route } from "next";
 import type { AppSessionUser } from "@/lib/auth/session";
 import { SignOutButton } from "@/components/layout/sign-out-button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard" as Route, label: "Dashboard" },
@@ -43,7 +45,16 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
         ))}
       </nav>
 
-      <div className="p-4">
+      <div className="space-y-3 p-4">
+        <Link
+          className={cn(
+            buttonVariants({ size: "sm" }),
+            "w-full rounded-2xl text-center"
+          )}
+          href="/goals/new"
+        >
+          Tao goal moi
+        </Link>
         <SignOutButton />
       </div>
     </aside>
