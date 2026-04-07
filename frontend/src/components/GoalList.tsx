@@ -20,6 +20,7 @@ const GoalList = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -38,11 +39,25 @@ const GoalList = () => {
       setError(null);
     } catch (error) {
       console.error('Loi khi tai muc tieu:', error);
-      setError(
-        'Khong tai duoc du lieu muc tieu. Module nay van la phan cot loi, nhung Goal API o backend co the chua san sang trong giai doan hien tai.'
-      );
+      setError('Khong tai duoc du lieu muc tieu. Vui long thu lai.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteGoal = async (goalId: number) => {
+    const isConfirmed = window.confirm('Ban co chac muon xoa muc tieu nay khong?');
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await goalsApi.remove(goalId);
+      setGoals((previousGoals) => previousGoals.filter((goal) => goal.id !== goalId));
+      setActiveMenu(null);
+    } catch (error) {
+      console.error('Loi khi xoa muc tieu:', error);
+      setError('Khong xoa duoc muc tieu. Vui long thu lai.');
     }
   };
 
@@ -51,6 +66,7 @@ const GoalList = () => {
       'not_started': 'Chưa bắt đầu',
       'in_progress': 'Đang thực hiện',
       'completed': 'Hoàn thành',
+      'paused': 'Tạm dừng',
       'cancelled': 'Đã hủy'
     };
     return labels[status] || status;
@@ -61,6 +77,7 @@ const GoalList = () => {
       'not_started': 'bg-gray-100 text-gray-700 border-gray-300',
       'in_progress': 'bg-blue-100 text-blue-700 border-blue-300',
       'completed': 'bg-green-100 text-green-700 border-green-300',
+      'paused': 'bg-amber-100 text-amber-700 border-amber-300',
       'cancelled': 'bg-red-100 text-red-700 border-red-300'
     };
     return colors[status] || 'bg-gray-100 text-gray-700';
@@ -70,7 +87,8 @@ const GoalList = () => {
     const labels: {[key: string]: string} = {
       'low': 'Thấp',
       'medium': 'Trung bình',
-      'high': 'Cao'
+      'high': 'Cao',
+      'critical': 'Rất cao',
     };
     return labels[priority] || priority;
   };
@@ -79,7 +97,8 @@ const GoalList = () => {
     const colors: {[key: string]: string} = {
       'low': 'text-green-600',
       'medium': 'text-yellow-600',
-      'high': 'text-red-600'
+      'high': 'text-red-600',
+      'critical': 'text-black',
     };
     return colors[priority] || 'text-gray-600';
   };
@@ -193,6 +212,7 @@ const GoalList = () => {
                   <option value="not_started">Chưa bắt đầu</option>
                   <option value="in_progress">Đang thực hiện</option>
                   <option value="completed">Hoàn thành</option>
+                  <option value="paused">Tạm dừng</option>
                   <option value="cancelled">Đã hủy</option>
                 </select>
               </div>
@@ -209,6 +229,7 @@ const GoalList = () => {
                   <option value="low">Thấp</option>
                   <option value="medium">Trung bình</option>
                   <option value="high">Cao</option>
+                  <option value="critical">Rất cao</option>
                 </select>
               </div>
             </div>
@@ -267,11 +288,20 @@ const GoalList = () => {
                   
                   {activeMenu === goal.id && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-10 animate-fade-in">
-                      <button className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-gray-700 transition-colors">
+                      <button
+                        onClick={() => {
+                          setEditingGoal(goal);
+                          setActiveMenu(null);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-gray-700 transition-colors"
+                      >
                         <PencilIcon className="w-4 h-4" />
                         <span className="text-sm">Chỉnh sửa</span>
                       </button>
-                      <button className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 text-red-600 transition-colors">
+                      <button
+                        onClick={() => void handleDeleteGoal(goal.id)}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 text-red-600 transition-colors"
+                      >
                         <TrashIcon className="w-4 h-4" />
                         <span className="text-sm">Xóa</span>
                       </button>
@@ -326,12 +356,17 @@ const GoalList = () => {
       </div>
 
       {/* Create Goal Modal */}
-      {showCreateModal && (
+      {(showCreateModal || editingGoal) && (
         <CreateGoal
-          onClose={() => setShowCreateModal(false)}
-          onSuccess={() => {
-            loadGoals();
+          initialGoal={editingGoal}
+          onClose={() => {
             setShowCreateModal(false);
+            setEditingGoal(null);
+          }}
+          onSuccess={() => {
+            void loadGoals();
+            setShowCreateModal(false);
+            setEditingGoal(null);
           }}
         />
       )}

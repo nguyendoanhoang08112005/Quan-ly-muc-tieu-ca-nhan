@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\GoalController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'me']);
+    Route::apiResource('goals', GoalController::class);
 });
 
 Route::prefix('v1')->group(function () {
@@ -27,5 +29,6 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::patch('/profile', [ProfileController::class, 'update']);
+        Route::apiResource('goals', GoalController::class);
     });
 });

@@ -6,21 +6,28 @@ import {
   SparklesIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
+import { Goal } from '../interfaces/Goal';
 import { CreateGoalPayload, goalsApi } from '../lib/api/goalsApi';
 
 interface CreateGoalProps {
+  initialGoal?: Goal | null;
   onClose?: () => void;
   onSuccess?: () => void;
 }
 
 type CreateGoalFormData = CreateGoalPayload;
 
-const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
+const CreateGoal = ({ initialGoal, onClose, onSuccess }: CreateGoalProps) => {
+  const isEditMode = Boolean(initialGoal);
   const [formData, setFormData] = useState<CreateGoalFormData>({
-    title: '',
-    description: '',
-    due_date: '',
-    priority: 'medium',
+    title: initialGoal?.title ?? '',
+    description: initialGoal?.description ?? '',
+    goal_type: initialGoal?.goal_type ?? 'short_term',
+    priority: initialGoal?.priority ?? 'medium',
+    status: initialGoal?.status ?? 'not_started',
+    start_date: initialGoal?.start_date ?? new Date().toISOString().split('T')[0],
+    target_date: initialGoal?.target_date ?? '',
+    note: initialGoal?.note ?? '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
@@ -30,6 +37,21 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
     { value: 'low', label: 'Thấp', color: 'bg-green-100 text-green-700 border-green-300' },
     { value: 'medium', label: 'Trung bình', color: 'bg-yellow-100 text-yellow-700 border-yellow-300' },
     { value: 'high', label: 'Cao', color: 'bg-red-100 text-red-700 border-red-300' },
+    { value: 'critical', label: 'Rất cao', color: 'bg-black text-white border-black' },
+  ];
+
+  const goalTypeOptions = [
+    { value: 'short_term', label: 'Ngắn hạn' },
+    { value: 'mid_term', label: 'Trung hạn' },
+    { value: 'long_term', label: 'Dài hạn' },
+  ];
+
+  const statusOptions = [
+    { value: 'not_started', label: 'Chưa bắt đầu' },
+    { value: 'in_progress', label: 'Đang thực hiện' },
+    { value: 'paused', label: 'Tạm dừng' },
+    { value: 'completed', label: 'Hoàn thành' },
+    { value: 'cancelled', label: 'Đã hủy' },
   ];
 
   const validateForm = () => {
@@ -47,14 +69,17 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
       newErrors.description = 'Mô tả phải có ít nhất 10 ký tự';
     }
     
-    if (!formData.due_date) {
-      newErrors.due_date = 'Vui lòng chọn ngày hết hạn';
+    if (!formData.start_date) {
+      newErrors.start_date = 'Vui lòng chọn ngày bắt đầu';
+    }
+
+    if (!formData.target_date) {
+      newErrors.target_date = 'Vui lòng chọn ngày mục tiêu';
     } else {
-      const selectedDate = new Date(formData.due_date);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (selectedDate < today) {
-        newErrors.due_date = 'Ngày hết hạn phải từ hôm nay trở đi';
+      const selectedDate = new Date(formData.target_date);
+      const startDate = new Date(formData.start_date);
+      if (selectedDate < startDate) {
+        newErrors.target_date = 'Ngày mục tiêu phải từ ngày bắt đầu trở đi';
       }
     }
     
@@ -72,7 +97,11 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
     setIsSubmitting(true);
     
     try {
-      await goalsApi.create(formData);
+      if (initialGoal) {
+        await goalsApi.update(initialGoal.id, formData);
+      } else {
+        await goalsApi.create(formData);
+      }
       
       setShowSuccess(true);
       
@@ -80,8 +109,12 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
         setFormData({
           title: '',
           description: '',
-          due_date: '',
+          goal_type: 'short_term',
           priority: 'medium',
+          status: 'not_started',
+          start_date: new Date().toISOString().split('T')[0],
+          target_date: '',
+          note: '',
         });
         setShowSuccess(false);
         
@@ -91,7 +124,7 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
       
     } catch (error) {
       console.error('Loi khi tao muc tieu:', error);
-      setErrors({ submit: 'Khong tao duoc muc tieu. Kiem tra backend Goal API roi thu lai.' });
+      setErrors({ submit: initialGoal ? 'Khong cap nhat duoc muc tieu.' : 'Khong tao duoc muc tieu.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -114,7 +147,9 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
               <CheckCircleIcon className="w-12 h-12 text-green-600" />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Thành công!</h3>
-            <p className="text-gray-600">Mục tiêu đã được tạo thành công</p>
+            <p className="text-gray-600">
+              {isEditMode ? 'Mục tiêu đã được cập nhật thành công' : 'Mục tiêu đã được tạo thành công'}
+            </p>
           </div>
         </div>
       </div>
@@ -132,8 +167,12 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
                 <SparklesIcon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Tạo mục tiêu mới</h2>
-                <p className="text-blue-100 text-sm">Bắt đầu hành trình của bạn</p>
+                <h2 className="text-2xl font-bold text-white">
+                  {isEditMode ? 'Cập nhật mục tiêu' : 'Tạo mục tiêu mới'}
+                </h2>
+                <p className="text-blue-100 text-sm">
+                  {isEditMode ? 'Chỉnh lại thông tin mục tiêu hiện tại' : 'Bắt đầu hành trình của bạn'}
+                </p>
               </div>
             </div>
             {onClose && (
@@ -209,67 +248,134 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
             </div>
           </div>
 
-          {/* Date and Priority Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Due Date */}
             <div>
-              <label htmlFor="due_date" className="block text-sm font-semibold text-gray-700 mb-2">
-                Ngày hoàn thành <span className="text-red-500">*</span>
+              <label htmlFor="goal_type" className="block text-sm font-semibold text-gray-700 mb-2">
+                Loại mục tiêu
+              </label>
+              <select
+                id="goal_type"
+                value={formData.goal_type}
+                onChange={(e) => handleChange('goal_type', e.target.value as CreateGoalFormData['goal_type'])}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer hover:border-gray-300"
+                disabled={isSubmitting}
+              >
+                {goalTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="status" className="block text-sm font-semibold text-gray-700 mb-2">
+                Trạng thái
+              </label>
+              <select
+                id="status"
+                value={formData.status}
+                onChange={(e) => handleChange('status', e.target.value as CreateGoalFormData['status'])}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer hover:border-gray-300"
+                disabled={isSubmitting}
+              >
+                {statusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Start Date */}
+            <div>
+              <label htmlFor="start_date" className="block text-sm font-semibold text-gray-700 mb-2">
+                Ngày bắt đầu <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                 <input
                   type="date"
-                  id="due_date"
-                  value={formData.due_date}
-                  onChange={(e) => handleChange('due_date', e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
+                  id="start_date"
+                  value={formData.start_date}
+                  onChange={(e) => handleChange('start_date', e.target.value)}
                   className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-2 outline-none transition-all ${
-                    errors.due_date
+                    errors.start_date
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
                       : 'border-gray-200 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-300'
                   }`}
                   disabled={isSubmitting}
                 />
               </div>
-              {errors.due_date && (
+              {errors.start_date && (
                 <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-fade-in">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
-                  {errors.due_date}
+                  {errors.start_date}
                 </p>
               )}
             </div>
 
-            {/* Priority */}
+            {/* Target Date */}
             <div>
-              <label htmlFor="priority" className="block text-sm font-semibold text-gray-700 mb-2">
-                Độ ưu tiên
+              <label htmlFor="target_date" className="block text-sm font-semibold text-gray-700 mb-2">
+                Ngày mục tiêu <span className="text-red-500">*</span>
               </label>
               <div className="relative">
-                <FlagIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                <select
-                  id="priority"
-                  value={formData.priority}
-                  onChange={(e) => handleChange('priority', e.target.value as CreateGoalFormData['priority'])}
-                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer hover:border-gray-300"
+                <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                <input
+                  type="date"
+                  id="target_date"
+                  value={formData.target_date}
+                  onChange={(e) => handleChange('target_date', e.target.value)}
+                  min={formData.start_date || undefined}
+                  className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:ring-2 outline-none transition-all ${
+                    errors.target_date
+                      ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                      : 'border-gray-200 focus:border-blue-500 focus:ring-blue-200 hover:border-gray-300'
+                  }`}
                   disabled={isSubmitting}
-                >
-                  {priorityOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                />
               </div>
+              {errors.target_date && (
+                <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-fade-in">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  {errors.target_date}
+                </p>
+              )}
             </div>
           </div>
 
-          {/* Priority Preview */}
+          <div>
+            <label htmlFor="priority" className="block text-sm font-semibold text-gray-700 mb-2">
+              Độ ưu tiên
+            </label>
+            <div className="relative">
+              <FlagIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              <select
+                id="priority"
+                value={formData.priority}
+                onChange={(e) => handleChange('priority', e.target.value as CreateGoalFormData['priority'])}
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer hover:border-gray-300"
+                disabled={isSubmitting}
+              >
+                {priorityOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
           <div className="bg-gray-50 rounded-xl p-4">
             <p className="text-sm text-gray-600 mb-2">Độ ưu tiên đã chọn:</p>
             <div className="flex items-center gap-2">
@@ -286,6 +392,21 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
                 </span>
               ))}
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="note" className="block text-sm font-semibold text-gray-700 mb-2">
+              Ghi chú chiến lược
+            </label>
+            <textarea
+              id="note"
+              value={formData.note}
+              onChange={(e) => handleChange('note', e.target.value)}
+              placeholder="Ghi thêm điều quan trọng, bối cảnh hoặc ghi chú cá nhân..."
+              rows={3}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all resize-none hover:border-gray-300"
+              disabled={isSubmitting}
+            />
           </div>
 
           {/* Error Message */}
@@ -313,12 +434,12 @@ const CreateGoal = ({ onClose, onSuccess }: CreateGoalProps) => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  <span>Đang tạo...</span>
+                  <span>{isEditMode ? 'Đang cập nhật...' : 'Đang tạo...'}</span>
                 </>
               ) : (
                 <>
                   <SparklesIcon className="w-5 h-5" />
-                  <span>Tạo mục tiêu</span>
+                  <span>{isEditMode ? 'Lưu thay đổi' : 'Tạo mục tiêu'}</span>
                 </>
               )}
             </button>
