@@ -11,12 +11,18 @@ export function getServerAuthSession() {
 export type AppSession = Session;
 export type AppSessionUser = NonNullable<AppSession["user"]>;
 
-export async function requireAuthenticatedUser() {
+export async function requireAuthenticatedSession() {
   const session = await getServerAuthSession();
 
   if (!session?.user?.id) {
     redirect(authRoutes.signIn);
   }
+
+  return session;
+}
+
+export async function requireAuthenticatedUser() {
+  const session = await requireAuthenticatedSession();
 
   return session.user;
 }

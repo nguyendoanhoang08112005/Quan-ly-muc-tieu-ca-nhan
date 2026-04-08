@@ -43,12 +43,14 @@ export const authOptions: NextAuthOptions = {
             name: true,
             email: true,
             password: true,
+            avatarPath: true,
             timezone: true,
-            locale: true
+            locale: true,
+            deletedAt: true
           }
         });
 
-        if (!user) {
+        if (!user || user.deletedAt) {
           return null;
         }
 
@@ -65,6 +67,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id.toString(),
           name: user.name,
           email: user.email,
+          image: user.avatarPath,
           timezone: user.timezone,
           locale: user.locale
         };
@@ -72,11 +75,36 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.sub = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.picture = user.image ?? null;
         token.timezone = user.timezone ?? null;
         token.locale = user.locale ?? null;
+      }
+
+      if (trigger === "update" && session) {
+        if (typeof session.name === "string") {
+          token.name = session.name;
+        }
+
+        if (typeof session.email === "string") {
+          token.email = session.email;
+        }
+
+        if ("image" in session) {
+          token.picture = typeof session.image === "string" ? session.image : null;
+        }
+
+        if (typeof session.timezone === "string") {
+          token.timezone = session.timezone;
+        }
+
+        if (typeof session.locale === "string") {
+          token.locale = session.locale;
+        }
       }
 
       return token;
@@ -84,6 +112,12 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub ?? "";
+        session.user.name =
+          typeof token.name === "string" ? token.name : session.user.name;
+        session.user.email =
+          typeof token.email === "string" ? token.email : session.user.email;
+        session.user.image =
+          typeof token.picture === "string" ? token.picture : null;
         session.user.timezone =
           typeof token.timezone === "string" ? token.timezone : null;
         session.user.locale =

@@ -16,7 +16,8 @@ const items = [
   { href: "/pomodoro" as Route, label: "Pomodoro" },
   { href: "/notifications" as Route, label: "Notifications" },
   { href: "/categories" as Route, label: "Categories" },
-  { href: "/tags" as Route, label: "Tags" }
+  { href: "/tags" as Route, label: "Tags" },
+  { href: "/settings/profile" as Route, label: "Settings" }
 ];
 
 export function AppSidebar({ user }: { user: AppSessionUser }) {
