@@ -15,7 +15,8 @@
     "prisma:studio": "prisma studio",
     "prisma:seed": "node prisma/seed.mjs",
     "legacy:plan": "node prisma/import-legacy.mjs",
-    "legacy:import": "node prisma/import-legacy.mjs"
+    "legacy:import": "node prisma/import-legacy.mjs",
+    "legacy:reconcile": "node prisma/reconcile-import.mjs"
   },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.6.0",

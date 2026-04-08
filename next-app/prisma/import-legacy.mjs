@@ -497,6 +497,9 @@ async function main() {
 
     console.log("");
     console.log("Legacy import completed successfully.");
+    console.log(
+      'Next step: run "npm run legacy:reconcile -- --write" to recalculate derived progress, streaks, and completion timestamps.'
+    );
   } finally {
     await prisma.$disconnect();
     legacyConnection.release();

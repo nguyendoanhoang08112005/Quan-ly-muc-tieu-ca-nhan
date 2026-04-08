@@ -41,6 +41,13 @@ Ghi that vao DB moi:
 npm run legacy:import -- --write
 ```
 
+Sau khi import xong, reconcile lai cac truong derive nhu progress, streak va
+`completedAt`:
+
+```bash
+npm run legacy:reconcile -- --write
+```
+
 Neu target da co du lieu va ban muon merge chu khong yeu cau DB rong:
 
 ```bash
@@ -53,6 +60,12 @@ Import mot nhom bang cu the:
 npm run legacy:import -- --write --tables=users,categories,tags,goals
 ```
 
+Chi reconcile mot nhom scope cu the:
+
+```bash
+npm run legacy:reconcile -- --write --scopes=goals,milestones,habits
+```
+
 ## Nguyen tac an toan
 
 - `dry run` la mac dinh
@@ -60,3 +73,10 @@ npm run legacy:import -- --write --tables=users,categories,tags,goals
 - script tu choi ghi vao target khong rong, tru khi co `--allow-non-empty-target`
 - script giu nguyen `id` cu de khong vo relation
 - bang nao khong ton tai o legacy DB se duoc log va skip
+- `legacy:reconcile` cung mac dinh la `dry run`, chi ghi that khi truyen `--write`
+- reconcile se:
+  - tinh lai `goals.progressPercentage`
+  - tinh lai `milestones.progressPercentage`
+  - tinh lai `projects.progressPercentage`
+  - chuan hoa `completedAt` cho `tasks`, `subtasks`, `milestones`, `goals`
+  - tinh lai `currentStreak`, `bestStreak`, `lastLoggedAt` cho `habits`
