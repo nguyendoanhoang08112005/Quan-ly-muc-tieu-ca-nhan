@@ -1,17 +1,19 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { RegisterForm } from "@/features/auth/components/register-form";
 import { authRoutes } from "@/lib/auth/routes";
-import { getServerAuthSession } from "@/lib/auth/session";
+
+export const metadata: Metadata = {
+  title: "Dang ky",
+  description: "Tao tai khoan moi tren he thong quan ly muc tieu ca nhan.",
+  robots: {
+    index: false,
+    follow: false
+  }
+};
 
 export default async function RegisterPage() {
-  const session = await getServerAuthSession();
-
-  if (session?.user?.id) {
-    redirect(authRoutes.afterSignIn);
-  }
-
   return (
     <AuthShell
       description="Tai khoan moi se duoc luu bang Prisma va hash mat khau bang bcrypt-compatible flow de san sang cho migration du lieu cu."

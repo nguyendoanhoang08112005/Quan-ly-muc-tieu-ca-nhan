@@ -1,9 +1,17 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { AuthShell } from "@/features/auth/components/auth-shell";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { authRoutes } from "@/lib/auth/routes";
-import { getServerAuthSession } from "@/lib/auth/session";
+
+export const metadata: Metadata = {
+  title: "Dang nhap",
+  description: "Dang nhap vao he thong quan ly muc tieu ca nhan.",
+  robots: {
+    index: false,
+    follow: false
+  }
+};
 
 type LoginPageProps = {
   searchParams?: Promise<{
@@ -14,12 +22,6 @@ type LoginPageProps = {
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const session = await getServerAuthSession();
-
-  if (session?.user?.id) {
-    redirect(authRoutes.afterSignIn);
-  }
-
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
 
   const callbackUrl =

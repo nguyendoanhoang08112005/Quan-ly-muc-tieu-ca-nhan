@@ -26,3 +26,11 @@ export async function requireAuthenticatedUserId() {
 
   return BigInt(user.id);
 }
+
+export async function redirectAuthenticatedUser() {
+  const session = await getServerAuthSession();
+
+  if (session?.user?.id) {
+    redirect(authRoutes.afterSignIn);
+  }
+}
