@@ -1,5 +1,6 @@
 const DATE_INPUT_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const DATE_TIME_LOCAL_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+const TIME_INPUT_PATTERN = /^\d{2}:\d{2}$/;
 const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 
 function pad(value: number) {
@@ -12,6 +13,10 @@ export function isDateInput(value: string) {
 
 export function isDateTimeLocalInput(value: string) {
   return DATE_TIME_LOCAL_PATTERN.test(value);
+}
+
+export function isTimeInput(value: string) {
+  return TIME_INPUT_PATTERN.test(value);
 }
 
 export function parseDateInput(value: string) {
@@ -48,6 +53,27 @@ export function parseDateTimeLocalInput(value: string) {
   return new Date(year, month - 1, day, hours, minutes, 0, 0);
 }
 
+export function parseTimeInput(value: string) {
+  if (!isTimeInput(value)) {
+    return null;
+  }
+
+  const [hours, minutes] = value.split(":").map(Number);
+
+  if (
+    Number.isNaN(hours) ||
+    Number.isNaN(minutes) ||
+    hours < 0 ||
+    hours > 23 ||
+    minutes < 0 ||
+    minutes > 59
+  ) {
+    return null;
+  }
+
+  return new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
+}
+
 export function formatDateTimeLocalInput(
   value: Date | string | null | undefined
 ) {
@@ -66,6 +92,20 @@ export function formatDateTimeLocalInput(
     pad(date.getMonth() + 1),
     pad(date.getDate())
   ].join("-") + `T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+export function formatTimeInput(value: Date | string | null | undefined) {
+  if (!value) {
+    return "";
+  }
+
+  const date = typeof value === "string" ? new Date(value) : value;
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return `${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}`;
 }
 
 export function getTodayDateInput() {
