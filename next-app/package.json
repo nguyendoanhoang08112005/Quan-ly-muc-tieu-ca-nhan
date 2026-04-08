@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "prisma:seed": "node prisma/seed.mjs"
   },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.6.0",
