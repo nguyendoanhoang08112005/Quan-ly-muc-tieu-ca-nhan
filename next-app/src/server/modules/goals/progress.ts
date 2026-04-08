@@ -1,6 +1,13 @@
 import "server-only";
 
 import type { Prisma, PrismaClient } from "@prisma/client";
+import {
+  calculateGoalProgressFromMilestones,
+  calculateMilestoneProgressFromTasks,
+  hasProgressChanged,
+  roundProgress,
+  toProgressNumber
+} from "@/server/modules/goals/progress-utils";
 
 type ProgressContext = {
   milestoneId?: bigint | null;
@@ -8,22 +15,6 @@ type ProgressContext = {
   taskId?: bigint | null;
   taskTitle?: string | null;
 };
-
-function toNumber(value: number | { toNumber(): number } | null | undefined) {
-  if (value === null || value === undefined) {
-    return 0;
-  }
-
-  return typeof value === "number" ? value : value.toNumber();
-}
-
-function roundProgress(value: number) {
-  return Math.round(value * 100) / 100;
-}
-
-function hasProgressChanged(oldValue: number, newValue: number) {
-  return Math.abs(oldValue - newValue) >= 0.01;
-}
 
 async function createProgressLog(
   prisma: PrismaClient | Prisma.TransactionClient,
@@ -123,13 +114,9 @@ export async function syncGoalProgress(
     return 0;
   }
 
-  const oldProgress = roundProgress(toNumber(goal.progressPercentage));
-  const newProgress = roundProgress(
-    goal.milestones.length > 0
-      ? goal.milestones.reduce((sum, milestone) => {
-          return sum + toNumber(milestone.progressPercentage);
-        }, 0) / goal.milestones.length
-      : 0
+  const oldProgress = roundProgress(toProgressNumber(goal.progressPercentage));
+  const newProgress = calculateGoalProgressFromMilestones(
+    goal.milestones.map((milestone) => milestone.progressPercentage)
   );
 
   if (!hasProgressChanged(oldProgress, newProgress)) {
@@ -194,13 +181,10 @@ export async function syncMilestoneProgress(
     return null;
   }
 
-  const oldProgress = roundProgress(toNumber(milestone.progressPercentage));
-  const completedTasks = milestone.tasks.filter((task) => {
-    return task.status === "COMPLETED";
-  }).length;
-  const newProgress = roundProgress(
-    milestone.tasks.length > 0 ? (completedTasks / milestone.tasks.length) * 100 : 0
+  const oldProgress = roundProgress(
+    toProgressNumber(milestone.progressPercentage)
   );
+  const newProgress = calculateMilestoneProgressFromTasks(milestone.tasks);
 
   if (hasProgressChanged(oldProgress, newProgress)) {
     await prisma.milestone.update({

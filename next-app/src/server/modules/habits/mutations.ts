@@ -2,7 +2,7 @@ import "server-only";
 
 import type { HabitFrequency, Prisma, PrismaClient } from "@prisma/client";
 import { getPrismaClient } from "@/lib/db/prisma";
-import { formatDateInput, parseDateInput, parseTimeInput } from "@/lib/dates";
+import { parseDateInput, parseTimeInput } from "@/lib/dates";
 import {
   habitFrequencyToPrisma,
   habitStatusToPrisma
@@ -11,66 +11,7 @@ import type {
   HabitFormInput,
   HabitLogFormInput
 } from "@/features/habits/schemas/habit-schemas";
-
-function startOfWeekUtc(date: Date, weekStartsOn: number) {
-  const normalized = new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
-  );
-  const dayOfWeek = normalized.getUTCDay();
-  const offset = (dayOfWeek - weekStartsOn + 7) % 7;
-
-  normalized.setUTCDate(normalized.getUTCDate() - offset);
-
-  return normalized;
-}
-
-function startOfMonthUtc(date: Date) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
-}
-
-function normalizeHabitPeriod(
-  date: Date,
-  frequency: HabitFrequency,
-  weekStartsOn: number
-) {
-  if (frequency === "WEEKLY") {
-    return startOfWeekUtc(date, weekStartsOn);
-  }
-
-  if (frequency === "MONTHLY") {
-    return startOfMonthUtc(date);
-  }
-
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-}
-
-function addHabitPeriod(
-  date: Date,
-  frequency: HabitFrequency,
-  amount: number
-) {
-  const nextDate = new Date(date);
-
-  if (frequency === "WEEKLY") {
-    nextDate.setUTCDate(nextDate.getUTCDate() + amount * 7);
-
-    return nextDate;
-  }
-
-  if (frequency === "MONTHLY") {
-    nextDate.setUTCMonth(nextDate.getUTCMonth() + amount);
-
-    return nextDate;
-  }
-
-  nextDate.setUTCDate(nextDate.getUTCDate() + amount);
-
-  return nextDate;
-}
-
-function periodKey(date: Date) {
-  return formatDateInput(date);
-}
+import { calculateHabitMetrics } from "@/server/modules/habits/streak-utils";
 
 async function resolveHabitGoalId(userId: bigint, goalId: string | undefined) {
   if (!goalId) {
@@ -124,57 +65,11 @@ async function recalculateHabitMetrics(
     return null;
   }
 
-  const weekStartsOn = habit.user.weekStartsOn;
-  const completedPeriods = new Set(
-    habit.logs
-      .filter((log) => log.isCompleted)
-      .map((log) =>
-        periodKey(normalizeHabitPeriod(log.logDate, habit.frequency, weekStartsOn))
-      )
-  );
-  const latestLogDate = habit.logs[0]?.logDate ?? null;
-  const todayPeriod = normalizeHabitPeriod(
-    new Date(),
-    habit.frequency,
-    weekStartsOn
-  );
-
-  let currentStreak = 0;
-  let cursor = todayPeriod;
-
-  while (completedPeriods.has(periodKey(cursor))) {
-    currentStreak += 1;
-    cursor = addHabitPeriod(cursor, habit.frequency, -1);
-  }
-
-  const orderedPeriods = [...completedPeriods]
-    .map((value) => parseDateInput(value))
-    .filter((value): value is Date => value !== null)
-    .sort((left, right) => left.getTime() - right.getTime());
-
-  let bestStreak = 0;
-  let activeRun = 0;
-
-  for (let index = 0; index < orderedPeriods.length; index += 1) {
-    const current = orderedPeriods[index];
-    const previous = orderedPeriods[index - 1];
-
-    if (!previous) {
-      activeRun = 1;
-      bestStreak = Math.max(bestStreak, activeRun);
-      continue;
-    }
-
-    const expected = addHabitPeriod(previous, habit.frequency, 1);
-
-    if (periodKey(expected) === periodKey(current)) {
-      activeRun += 1;
-    } else {
-      activeRun = 1;
-    }
-
-    bestStreak = Math.max(bestStreak, activeRun);
-  }
+  const { currentStreak, bestStreak, lastLoggedAt } = calculateHabitMetrics({
+    frequency: habit.frequency as HabitFrequency,
+    logs: habit.logs,
+    weekStartsOn: habit.user.weekStartsOn
+  });
 
   await prisma.habit.update({
     where: {
@@ -183,14 +78,14 @@ async function recalculateHabitMetrics(
     data: {
       currentStreak,
       bestStreak,
-      lastLoggedAt: latestLogDate
+      lastLoggedAt
     }
   });
 
   return {
     currentStreak,
     bestStreak,
-    lastLoggedAt: latestLogDate
+    lastLoggedAt
   };
 }
 
