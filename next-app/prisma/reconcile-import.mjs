@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { chunkArray } from "./legacy-import-helpers.mjs";
 import {
   areDatesEqual,
@@ -451,7 +452,9 @@ async function main() {
     throw new Error("DATABASE_URL is required. Point it to the Prisma target database.");
   }
 
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({
+    adapter: new PrismaMariaDb(databaseUrl)
+  });
 
   try {
     const activeScopes = getActiveScopes();

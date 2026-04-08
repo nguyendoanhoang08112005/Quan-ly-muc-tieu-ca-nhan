@@ -1,6 +1,7 @@
 import "dotenv/config";
-import mariadb from "mariadb";
+import * as mariadb from "mariadb";
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 const REQUIRED_ENV_NAMES = ["DATABASE_URL", "NEXTAUTH_URL", "NEXTAUTH_SECRET"];
 
@@ -45,7 +46,9 @@ function databaseUrlToMariaDbConfig(databaseUrl) {
 }
 
 async function checkTargetDatabase() {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({
+    adapter: new PrismaMariaDb(process.env["DATABASE_URL"])
+  });
 
   try {
     await prisma.$queryRawUnsafe("SELECT 1");

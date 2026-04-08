@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { hash } from "bcryptjs";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  adapter: new PrismaMariaDb(process.env["DATABASE_URL"])
+});
 
 const DEMO_PASSWORD = "Password123!";
 

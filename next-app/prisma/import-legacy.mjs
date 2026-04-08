@@ -1,6 +1,7 @@
 import "dotenv/config";
-import mariadb from "mariadb";
+import * as mariadb from "mariadb";
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import {
   chunkArray,
   mapLegacyCategoryType,
@@ -419,7 +420,9 @@ async function main() {
     ...databaseUrlToMariaDbConfig(legacyDatabaseUrl)
   });
   const legacyConnection = await legacyPool.getConnection();
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({
+    adapter: new PrismaMariaDb(targetDatabaseUrl)
+  });
 
   try {
     const sourceTableSet = await listSourceTables(legacyConnection);

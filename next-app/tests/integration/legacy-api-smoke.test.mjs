@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import test from "node:test";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "@prisma/client";
 
 const ENABLE_INTEGRATION_TESTS = process.env["ENABLE_INTEGRATION_TESTS"] === "1";
@@ -21,7 +22,12 @@ const INTEGRATION_SKIP_REASON = !ENABLE_INTEGRATION_TESTS
   : missingRuntimeEnvVars.length > 0
     ? `Thieu bien moi truong runtime can thiet: ${missingRuntimeEnvVars.join(", ")}.`
     : undefined;
-const prisma = INTEGRATION_SKIP_REASON ? null : new PrismaClient();
+const prisma =
+  INTEGRATION_SKIP_REASON || !process.env["DATABASE_URL"]
+    ? null
+    : new PrismaClient({
+        adapter: new PrismaMariaDb(process.env["DATABASE_URL"])
+      });
 
 function createJsonHeaders(token) {
   return {
