@@ -17,6 +17,33 @@ function makeTargetKey(type: NoteableType, id: string) {
   return `${type}:${id}`;
 }
 
+function mapNoteListItem(
+  note: {
+    id: bigint;
+    noteableType: keyof typeof noteableTypeFromPrisma;
+    noteableId: bigint;
+    content: string;
+    createdAt: Date;
+    updatedAt: Date;
+  },
+  targetMap: Map<string, NoteTargetOption>
+): NoteListItem {
+  const noteableType = noteableTypeFromPrisma[note.noteableType];
+  const noteableId = note.noteableId.toString();
+  const target = targetMap.get(makeTargetKey(noteableType, noteableId));
+
+  return {
+    id: note.id.toString(),
+    noteableType,
+    noteableId,
+    targetLabel: target?.label ?? `${noteableTypeLabels[noteableType]} #${noteableId}`,
+    targetDescription: target?.description ?? null,
+    content: note.content,
+    createdAt: note.createdAt.toISOString(),
+    updatedAt: note.updatedAt.toISOString()
+  };
+}
+
 export async function listNoteTargetOptionsForUser(userId: bigint) {
   const prisma = getPrismaClient();
   const [goals, milestones, tasks, habits, projects, journalEntries] =
@@ -175,22 +202,39 @@ export async function listNotesForUser(userId: bigint) {
     targetOptions.map((option) => [makeTargetKey(option.type, option.id), option])
   );
 
-  return notes.map<NoteListItem>((note) => {
-    const noteableType = noteableTypeFromPrisma[note.noteableType];
-    const noteableId = note.noteableId.toString();
-    const target = targetMap.get(makeTargetKey(noteableType, noteableId));
+  return notes.map<NoteListItem>((note) => mapNoteListItem(note, targetMap));
+}
 
-    return {
-      id: note.id.toString(),
-      noteableType,
-      noteableId,
-      targetLabel: target?.label ?? `${noteableTypeLabels[noteableType]} #${noteableId}`,
-      targetDescription: target?.description ?? null,
-      content: note.content,
-      createdAt: note.createdAt.toISOString(),
-      updatedAt: note.updatedAt.toISOString()
-    };
-  });
+export async function getNoteDetailForUser(userId: bigint, noteId: bigint) {
+  const prisma = getPrismaClient();
+  const [note, targetOptions] = await Promise.all([
+    prisma.note.findFirst({
+      where: {
+        id: noteId,
+        userId,
+        deletedAt: null
+      },
+      select: {
+        id: true,
+        noteableType: true,
+        noteableId: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    }),
+    listNoteTargetOptionsForUser(userId)
+  ]);
+
+  if (!note) {
+    return null;
+  }
+
+  const targetMap = new Map(
+    targetOptions.map((option) => [makeTargetKey(option.type, option.id), option])
+  );
+
+  return mapNoteListItem(note, targetMap);
 }
 
 export async function getNoteFormValuesForUser(userId: bigint, noteId: bigint) {

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import test from "node:test";
+import { PrismaClient } from "@prisma/client";
 
 const ENABLE_INTEGRATION_TESTS = process.env["ENABLE_INTEGRATION_TESTS"] === "1";
 const SHOULD_SPAWN_SERVER = process.env["INTEGRATION_SPAWN_SERVER"] !== "0";
@@ -20,6 +21,7 @@ const INTEGRATION_SKIP_REASON = !ENABLE_INTEGRATION_TESTS
   : missingRuntimeEnvVars.length > 0
     ? `Thieu bien moi truong runtime can thiet: ${missingRuntimeEnvVars.join(", ")}.`
     : undefined;
+const prisma = INTEGRATION_SKIP_REASON ? null : new PrismaClient();
 
 function createJsonHeaders(token) {
   return {
@@ -136,6 +138,9 @@ test(
     let serverProcess = null;
     let activeToken = null;
     let createdGoalId = null;
+    let createdHabitId = null;
+    let createdNoteId = null;
+    let createdNotificationId = null;
 
     const email = `smoke-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`;
     const password = "Password123!";
@@ -241,6 +246,65 @@ test(
       assert.equal(goalCreate.response.status, 201);
       createdGoalId = `${goalCreate.body.data.id}`;
 
+      const noteCreate = await requestJson("/api/v1/notes", {
+        body: JSON.stringify({
+          content: "Ghi chu smoke test cho goal",
+          noteable_id: createdGoalId,
+          noteable_type: "goal"
+        }),
+        headers: createJsonHeaders(activeToken),
+        method: "POST"
+      });
+
+      assert.equal(noteCreate.response.status, 201);
+      assert.equal(noteCreate.body.data.noteable_type, "goal");
+      createdNoteId = `${noteCreate.body.data.id}`;
+
+      const noteUpdate = await requestJson(`/api/v1/notes/${createdNoteId}`, {
+        body: JSON.stringify({
+          content: "Ghi chu smoke test da cap nhat"
+        }),
+        headers: createJsonHeaders(activeToken),
+        method: "PATCH"
+      });
+
+      assert.equal(noteUpdate.response.status, 200);
+      assert.equal(
+        noteUpdate.body.data.content,
+        "Ghi chu smoke test da cap nhat"
+      );
+
+      const habitCreate = await requestJson("/api/v1/habits", {
+        body: JSON.stringify({
+          goal_id: createdGoalId,
+          frequency: "daily",
+          start_date: "2026-04-08",
+          status: "active",
+          target_count: 1,
+          title: "Habit smoke test",
+          unit: "times"
+        }),
+        headers: createJsonHeaders(activeToken),
+        method: "POST"
+      });
+
+      assert.equal(habitCreate.response.status, 201);
+      assert.equal(habitCreate.body.data.goal.id, Number(createdGoalId));
+      createdHabitId = `${habitCreate.body.data.id}`;
+
+      const habitLog = await requestJson(`/api/v1/habits/${createdHabitId}/logs`, {
+        body: JSON.stringify({
+          completed_count: 1,
+          log_date: "2026-04-08",
+          note: "Hoan thanh habit smoke test"
+        }),
+        headers: createJsonHeaders(activeToken),
+        method: "POST"
+      });
+
+      assert.equal(habitLog.response.status, 200);
+      assert.equal(habitLog.body.data.current_streak, 1);
+
       const milestoneCreate = await requestJson(
         `/api/v1/goals/${createdGoalId}/milestones`,
         {
@@ -293,6 +357,58 @@ test(
       assert.equal(goalDetail.body.data.id, Number(createdGoalId));
       assert.ok(Array.isArray(goalDetail.body.data.milestones));
 
+      if (prisma) {
+        const notification = await prisma.notification.create({
+          data: {
+            body: "Canh bao smoke test",
+            title: "Smoke notification",
+            type: "smoke.test",
+            userId: BigInt(meAfterRegister.body.data.id)
+          },
+          select: {
+            id: true
+          }
+        });
+
+        createdNotificationId = notification.id;
+      }
+
+      const notificationsBeforeRead = await requestJson("/api/v1/notifications", {
+        headers: createJsonHeaders(activeToken)
+      });
+
+      assert.equal(notificationsBeforeRead.response.status, 200);
+      assert.equal(typeof notificationsBeforeRead.body.summary.unread, "number");
+
+      if (createdNotificationId) {
+        const notificationRead = await requestJson(
+          `/api/v1/notifications/${createdNotificationId}/read`,
+          {
+            headers: createJsonHeaders(activeToken),
+            method: "POST"
+          }
+        );
+
+        assert.equal(notificationRead.response.status, 200);
+        assert.equal(notificationRead.body.data.is_read, true);
+      }
+
+      const noteDelete = await requestJson(`/api/v1/notes/${createdNoteId}`, {
+        headers: createJsonHeaders(activeToken),
+        method: "DELETE"
+      });
+
+      assert.equal(noteDelete.response.status, 204);
+      createdNoteId = null;
+
+      const habitDelete = await requestJson(`/api/v1/habits/${createdHabitId}`, {
+        headers: createJsonHeaders(activeToken),
+        method: "DELETE"
+      });
+
+      assert.equal(habitDelete.response.status, 204);
+      createdHabitId = null;
+
       const goalDelete = await requestJson(`/api/v1/goals/${createdGoalId}`, {
         headers: createJsonHeaders(activeToken),
         method: "DELETE"
@@ -317,6 +433,34 @@ test(
       assert.equal(apiV1Logout.response.status, 200);
       activeToken = null;
     } finally {
+      if (prisma && createdNotificationId) {
+        try {
+          await prisma.notification.deleteMany({
+            where: {
+              id: createdNotificationId
+            }
+          });
+        } catch {}
+      }
+
+      if (activeToken && createdNoteId) {
+        try {
+          await requestJson(`/api/v1/notes/${createdNoteId}`, {
+            headers: createJsonHeaders(activeToken),
+            method: "DELETE"
+          });
+        } catch {}
+      }
+
+      if (activeToken && createdHabitId) {
+        try {
+          await requestJson(`/api/v1/habits/${createdHabitId}`, {
+            headers: createJsonHeaders(activeToken),
+            method: "DELETE"
+          });
+        } catch {}
+      }
+
       if (activeToken && createdGoalId) {
         try {
           await requestJson(`/api/v1/goals/${createdGoalId}`, {
@@ -324,6 +468,10 @@ test(
             method: "DELETE"
           });
         } catch {}
+      }
+
+      if (prisma) {
+        await prisma.$disconnect();
       }
 
       await stopServer(serverProcess);

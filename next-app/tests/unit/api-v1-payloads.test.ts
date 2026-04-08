@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  readPartialHabitApiPayload,
+  readPartialHabitLogApiPayload,
+  readPartialNoteApiPayload,
   readPartialGoalApiPayload,
   readPartialProfileApiPayload,
   readPartialTaskApiPayload
@@ -59,5 +62,59 @@ test("readPartialProfileApiPayload ho tro avatar_path", () => {
     avatarPath: "",
     locale: "en",
     timezone: "UTC"
+  });
+});
+
+test("readPartialNoteApiPayload map snake_case cho notes", () => {
+  const payload = readPartialNoteApiPayload({
+    noteable_type: "goal",
+    noteable_id: 42,
+    content: "Ghi chu test"
+  });
+
+  assert.deepEqual(payload, {
+    noteableType: "goal",
+    noteableId: "42",
+    content: "Ghi chu test"
+  });
+});
+
+test("readPartialHabitApiPayload map snake_case cho habits", () => {
+  const payload = readPartialHabitApiPayload({
+    title: "Doc sach",
+    goal_id: 9,
+    frequency: "daily",
+    target_count: 2,
+    unit: "pages",
+    reminder_time: "07:30",
+    status: "active",
+    start_date: "2026-04-08",
+    end_date: "2026-04-30"
+  });
+
+  assert.deepEqual(payload, {
+    title: "Doc sach",
+    goalId: "9",
+    frequency: "daily",
+    targetCount: "2",
+    unit: "pages",
+    reminderTime: "07:30",
+    status: "active",
+    startDate: "2026-04-08",
+    endDate: "2026-04-30"
+  });
+});
+
+test("readPartialHabitLogApiPayload map completed_count va log_date", () => {
+  const payload = readPartialHabitLogApiPayload({
+    log_date: "2026-04-08",
+    completed_count: 3,
+    note: "Hoan thanh"
+  });
+
+  assert.deepEqual(payload, {
+    logDate: "2026-04-08",
+    completedCount: "3",
+    note: "Hoan thanh"
   });
 });

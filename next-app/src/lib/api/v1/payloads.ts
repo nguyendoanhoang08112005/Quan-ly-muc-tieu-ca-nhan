@@ -1,5 +1,10 @@
 import type { GoalFormValues } from "@/features/goals/types";
+import type {
+  HabitFormValues,
+  HabitLogFormValues
+} from "@/features/habits/types";
 import type { MilestoneFormValues } from "@/features/milestones/types";
+import type { NoteFormValues } from "@/features/notes/types";
 import type { ProfileFormValues } from "@/features/profile/types";
 import type { TaskFormValues } from "@/features/tasks/types";
 
@@ -292,6 +297,126 @@ export function readPartialProfileApiPayload(payload: unknown) {
 
   if (avatarPath.found) {
     values.avatarPath = coerceString(avatarPath.value);
+  }
+
+  return values;
+}
+
+export function readPartialNoteApiPayload(payload: unknown) {
+  const body = asObject(payload);
+
+  if (!body) {
+    return {};
+  }
+
+  const values: Partial<NoteFormValues> = {};
+  const noteableType = pickValue(body, ["noteableType", "noteable_type"]);
+  const noteableId = pickValue(body, ["noteableId", "noteable_id"]);
+  const content = pickValue(body, ["content"]);
+
+  if (noteableType.found) {
+    values.noteableType = coerceString(
+      noteableType.value
+    ) as NoteFormValues["noteableType"];
+  }
+
+  if (noteableId.found) {
+    values.noteableId = coerceString(noteableId.value);
+  }
+
+  if (content.found) {
+    values.content = coerceString(content.value);
+  }
+
+  return values;
+}
+
+export function readPartialHabitApiPayload(payload: unknown) {
+  const body = asObject(payload);
+
+  if (!body) {
+    return {};
+  }
+
+  const values: Partial<HabitFormValues> = {};
+  const title = pickValue(body, ["title"]);
+  const description = pickValue(body, ["description"]);
+  const goalId = pickValue(body, ["goalId", "goal_id"]);
+  const frequency = pickValue(body, ["frequency"]);
+  const targetCount = pickValue(body, ["targetCount", "target_count"]);
+  const unit = pickValue(body, ["unit"]);
+  const reminderTime = pickValue(body, ["reminderTime", "reminder_time"]);
+  const status = pickValue(body, ["status"]);
+  const startDate = pickValue(body, ["startDate", "start_date"]);
+  const endDate = pickValue(body, ["endDate", "end_date"]);
+
+  if (title.found) {
+    values.title = coerceString(title.value);
+  }
+
+  if (description.found) {
+    values.description = coerceString(description.value);
+  }
+
+  if (goalId.found) {
+    values.goalId = coerceString(goalId.value);
+  }
+
+  if (frequency.found) {
+    values.frequency = coerceString(
+      frequency.value
+    ) as HabitFormValues["frequency"];
+  }
+
+  if (targetCount.found) {
+    values.targetCount = coerceString(targetCount.value);
+  }
+
+  if (unit.found) {
+    values.unit = coerceString(unit.value);
+  }
+
+  if (reminderTime.found) {
+    values.reminderTime = coerceString(reminderTime.value);
+  }
+
+  if (status.found) {
+    values.status = coerceString(status.value) as HabitFormValues["status"];
+  }
+
+  if (startDate.found) {
+    values.startDate = coerceString(startDate.value);
+  }
+
+  if (endDate.found) {
+    values.endDate = coerceString(endDate.value);
+  }
+
+  return values;
+}
+
+export function readPartialHabitLogApiPayload(payload: unknown) {
+  const body = asObject(payload);
+
+  if (!body) {
+    return {};
+  }
+
+  const values: Partial<HabitLogFormValues> = {};
+  const logDate = pickValue(body, ["logDate", "log_date"]);
+  const completedCount = pickValue(body, ["completedCount", "completed_count"]);
+  const note = pickValue(body, ["note"]);
+
+  if (logDate.found) {
+    values.logDate = coerceString(logDate.value);
+  }
+
+  if (completedCount.found) {
+    values.completedCount = coerceString(completedCount.value);
+  }
+
+  if (note.found) {
+    values.note = coerceString(note.value);
   }
 
   return values;

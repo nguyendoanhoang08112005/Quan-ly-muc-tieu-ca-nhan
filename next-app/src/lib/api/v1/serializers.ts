@@ -5,6 +5,12 @@ import type {
   GoalMilestoneSummary,
   GoalTaskSummary
 } from "@/features/goals/types";
+import type { HabitDetail, HabitListItem } from "@/features/habits/types";
+import type { NoteListItem } from "@/features/notes/types";
+import type {
+  NotificationListItem,
+  NotificationSummary
+} from "@/features/notifications/types";
 import type { ProfileSummary } from "@/features/profile/types";
 import type { TaskListItem } from "@/features/tasks/types";
 
@@ -217,5 +223,88 @@ export function serializeDashboardSummaryResource(
     active_goals: dashboard.activeGoals.map((goal) => {
       return serializeGoalResource(goal, userId);
     })
+  };
+}
+
+export function serializeHabitResource(habit: HabitListItem | HabitDetail) {
+  return {
+    id: toApiId(habit.id),
+    title: habit.title,
+    description: habit.description,
+    frequency: habit.frequency,
+    target_count: habit.targetCount,
+    unit: habit.unit,
+    reminder_time: habit.reminderTime,
+    status: habit.status,
+    start_date: habit.startDate,
+    end_date: habit.endDate,
+    current_streak: habit.currentStreak,
+    best_streak: habit.bestStreak,
+    last_logged_at: habit.lastLoggedAt,
+    goal: habit.goal
+      ? {
+          id: toApiId(habit.goal.id),
+          title: habit.goal.title
+        }
+      : null,
+    today_log: habit.todayLog
+      ? {
+          id: toApiId(habit.todayLog.id),
+          log_date: habit.todayLog.logDate,
+          completed_count: habit.todayLog.completedCount,
+          target_count_snapshot: habit.todayLog.targetCountSnapshot,
+          is_completed: habit.todayLog.isCompleted,
+          note: habit.todayLog.note
+        }
+      : null,
+    recent_logs:
+      "recentLogs" in habit
+        ? habit.recentLogs.map((log) => ({
+            id: toApiId(log.id),
+            log_date: log.logDate,
+            completed_count: log.completedCount,
+            target_count_snapshot: log.targetCountSnapshot,
+            is_completed: log.isCompleted,
+            note: log.note
+          }))
+        : undefined
+  };
+}
+
+export function serializeNoteResource(note: NoteListItem) {
+  return {
+    id: toApiId(note.id),
+    noteable_type: note.noteableType,
+    noteable_id: toApiId(note.noteableId),
+    target_label: note.targetLabel,
+    target_description: note.targetDescription,
+    content: note.content,
+    created_at: note.createdAt,
+    updated_at: note.updatedAt
+  };
+}
+
+export function serializeNotificationResource(notification: NotificationListItem) {
+  return {
+    id: notification.id,
+    type: notification.type,
+    title: notification.title,
+    body: notification.body,
+    related_type: notification.relatedType,
+    related_id: toApiId(notification.relatedId),
+    href: notification.href,
+    is_read: notification.isRead,
+    read_at: notification.readAt,
+    created_at: notification.createdAt
+  };
+}
+
+export function serializeNotificationSummaryResource(
+  summary: NotificationSummary
+) {
+  return {
+    total: summary.total,
+    unread: summary.unread,
+    read: summary.read
   };
 }
