@@ -1,0 +1,14 @@
+export function mapLegacyCategoryType(value: unknown): string;
+export function mapLegacyGoalType(value: unknown): string;
+export function mapLegacyPriority(value: unknown): string;
+export function mapLegacyGoalStatus(value: unknown): string;
+export function mapLegacyWorkStatus(value: unknown): string;
+export function mapLegacyGoalLogType(value: unknown): string;
+export function parseLegacyJson(value: unknown): Record<string, unknown> | unknown[] | null;
+export function toBigIntOrNull(value: unknown): bigint | null;
+export function toBoolean(value: unknown): boolean;
+export function toIntOrNull(value: unknown): number | null;
+export function toDecimalOrNull(value: unknown): number | null;
+export function toDateOrNull(value: unknown): Date | null;
+export function toDateOrNow(value: unknown): Date;
+export function chunkArray<T>(items: T[], size?: number): T[][];
