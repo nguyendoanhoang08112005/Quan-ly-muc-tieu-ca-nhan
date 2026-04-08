@@ -39,7 +39,6 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
             "w-full rounded-2xl text-center !text-white"
           )}
           href="/goals/new"
-          style={{ color: "#ffffff" }}
         >
           Tạo mục tiêu mới
         </Link>

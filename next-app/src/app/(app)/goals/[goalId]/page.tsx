@@ -89,7 +89,6 @@ export default async function GoalDetailPage({
                 "gap-2 !text-white"
               )}
               href={`/goals/${goal.id}/milestones/new` as Route}
-              style={{ color: "#ffffff" }}
             >
               <Plus className="h-4 w-4" />
               Thêm cột mốc
@@ -225,7 +224,6 @@ export default async function GoalDetailPage({
           <Link
             className={cn(buttonVariants({ size: "lg" }), "gap-2 !text-white")}
             href={`/goals/${goal.id}/milestones/new` as Route}
-            style={{ color: "#ffffff" }}
           >
             <Plus className="h-4 w-4" />
             Tạo cột mốc mới
@@ -462,7 +460,6 @@ export default async function GoalDetailPage({
                   "gap-2 !text-white"
                 )}
                 href={`/goals/${goal.id}/milestones/new` as Route}
-                style={{ color: "#ffffff" }}
               >
                 <Plus className="h-4 w-4" />
                 Tạo cột mốc đầu tiên

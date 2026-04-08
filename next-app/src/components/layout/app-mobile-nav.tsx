@@ -26,7 +26,6 @@ export function AppMobileNav({ user }: { user: AppSessionUser }) {
               "rounded-full !text-white"
             )}
             href="/goals/new"
-            style={{ color: "#ffffff" }}
           >
             Tạo mục tiêu
           </Link>

@@ -18,7 +18,6 @@ export default function PublicHomePage() {
             <Link
               className="ui-dark-cta rounded-2xl bg-black px-6 py-3 text-sm font-semibold !text-white"
               href="/login"
-              style={{ WebkitTextFillColor: "#ffffff", color: "#ffffff" }}
             >
               Đăng nhập
             </Link>

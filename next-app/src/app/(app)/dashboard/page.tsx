@@ -80,7 +80,6 @@ export default async function DashboardPage() {
                 "gap-2 rounded-full !text-white"
               )}
               href="/goals/new"
-              style={{ color: "#ffffff" }}
             >
               <Plus className="h-4 w-4" />
               Tạo mục tiêu mới
@@ -327,7 +326,6 @@ export default async function DashboardPage() {
                   "justify-start gap-2 !text-white"
                 )}
                 href="/goals/new"
-                style={{ color: "#ffffff" }}
               >
                 <Plus className="h-4 w-4" />
                 Tạo mục tiêu mới

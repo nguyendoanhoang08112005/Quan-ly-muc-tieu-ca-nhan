@@ -22,7 +22,6 @@ export function EmptyGoalsState() {
             "rounded-full !text-white"
           )}
           href="/goals/new"
-          style={{ color: "#ffffff" }}
         >
           Tạo mục tiêu đầu tiên
         </Link>

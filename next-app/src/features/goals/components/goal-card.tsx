@@ -119,7 +119,6 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
             "gap-2 rounded-full !text-white"
           )}
           href={`/goals/${goal.id}`}
-          style={{ color: "#ffffff" }}
         >
           Xem chi tiết
           <ArrowRight className="h-4 w-4" />

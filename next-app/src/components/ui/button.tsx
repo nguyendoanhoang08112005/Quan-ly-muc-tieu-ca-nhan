@@ -32,27 +32,11 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, style, variant, size, ...props }, ref) => {
-    const resolvedVariant = variant ?? "default";
-    const resolvedStyle =
-      resolvedVariant === "default" || resolvedVariant === "destructive"
-        ? {
-            color: "#ffffff",
-            WebkitTextFillColor: "#ffffff",
-            ...style
-          }
-        : resolvedVariant === "secondary"
-          ? {
-              color: "#1c1917",
-              WebkitTextFillColor: "#1c1917",
-              ...style
-            }
-          : style;
-
     return (
       <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        style={resolvedStyle}
+        style={style}
         {...props}
       />
     );
