@@ -3,10 +3,10 @@ import { getTodayDateInput } from "@/lib/dates";
 
 export const projectStatusLabels: Record<ProjectStatus, string> = {
   planning: "Len ke hoach",
-  active: "Dang chay",
+  active: "Đang chạy",
   paused: "Tam dung",
   completed: "Hoan thanh",
-  cancelled: "Da huy",
+  cancelled: "Đã hủy",
   archived: "Luu tru"
 };
 

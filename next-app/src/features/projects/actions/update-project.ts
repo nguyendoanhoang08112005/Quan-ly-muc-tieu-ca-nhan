@@ -46,7 +46,7 @@ export async function updateProjectAction(
   if (!updatedProjectId) {
     return buildProjectFormErrorState(
       values,
-      "Khong tim thay project hoac goal lien ket khong hop le."
+      "Không tìm thấy project hoặc goal liên kết không hợp lệ."
     );
   }
 

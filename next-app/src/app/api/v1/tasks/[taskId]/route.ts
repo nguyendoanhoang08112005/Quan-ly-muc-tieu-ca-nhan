@@ -49,7 +49,7 @@ export async function GET(
   const task = await getTaskDetailForUser(auth.userId, parsedTaskId);
 
   if (!task) {
-    return jsonNotFoundResponse("Khong tim thay task.");
+    return jsonNotFoundResponse("Không tìm thấy task.");
   }
 
   return NextResponse.json({
@@ -77,7 +77,7 @@ export async function PATCH(
   const goalId = await findTaskGoalIdForUser(auth.userId, parsedTaskId);
 
   if (!goalId) {
-    return jsonNotFoundResponse("Khong tim thay task de cap nhat.");
+    return jsonNotFoundResponse("Không tìm thấy task để cập nhật.");
   }
 
   const existingValues = await getTaskFormValuesForUser(
@@ -87,7 +87,7 @@ export async function PATCH(
   );
 
   if (!existingValues) {
-    return jsonNotFoundResponse("Khong tim thay task de cap nhat.");
+    return jsonNotFoundResponse("Không tìm thấy task để cập nhật.");
   }
 
   const body = await readJsonRequestBody(request);
@@ -113,13 +113,13 @@ export async function PATCH(
   );
 
   if (!updatedTaskId) {
-    return jsonBadRequestResponse("Khong the cap nhat task nay.");
+    return jsonBadRequestResponse("Không thể cập nhật task này.");
   }
 
   const updatedTask = await getTaskDetailForUser(auth.userId, parsedTaskId);
 
   if (!updatedTask) {
-    return jsonNotFoundResponse("Khong the tai lai task sau cap nhat.");
+    return jsonNotFoundResponse("Không thể tải lại task sau cập nhật.");
   }
 
   revalidatePath("/goals");
@@ -130,7 +130,7 @@ export async function PATCH(
   revalidatePath("/pomodoro");
 
   return NextResponse.json({
-    message: "Cap nhat task thanh cong.",
+    message: "Cập nhật task thành công.",
     data: serializeTaskApiResource(updatedTask)
   });
 }
@@ -155,13 +155,13 @@ export async function DELETE(
   const goalId = await findTaskGoalIdForUser(auth.userId, parsedTaskId);
 
   if (!goalId) {
-    return jsonNotFoundResponse("Khong tim thay task de xoa.");
+    return jsonNotFoundResponse("Không tìm thấy task để xóa.");
   }
 
   const deleted = await softDeleteTaskForGoal(auth.userId, goalId, parsedTaskId);
 
   if (!deleted) {
-    return jsonNotFoundResponse("Khong tim thay task de xoa.");
+    return jsonNotFoundResponse("Không tìm thấy task để xóa.");
   }
 
   revalidatePath("/goals");

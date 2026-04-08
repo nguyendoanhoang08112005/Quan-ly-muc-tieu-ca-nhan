@@ -21,10 +21,10 @@ export function RegisterForm() {
           Phase 3
         </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          Tao tai khoan
+          Tạo tài khoản
         </h2>
         <p className="mt-3 text-sm leading-6 text-stone-600">
-          Dang ky bang server action co validate Zod truoc khi ghi vao database.
+          Đăng ký bằng server action có validate Zod trước khi ghi vào database.
         </p>
       </div>
 
@@ -36,7 +36,7 @@ export function RegisterForm() {
 
       <div className="space-y-2">
         <label className="text-sm font-semibold text-stone-800" htmlFor="name">
-          Ho ten
+          Họ tên
         </label>
         <Input
           autoComplete="name"
@@ -72,13 +72,13 @@ export function RegisterForm() {
           className="text-sm font-semibold text-stone-800"
           htmlFor="password"
         >
-          Mat khau
+          Mật khẩu
         </label>
         <Input
           autoComplete="new-password"
           id="password"
           name="password"
-          placeholder="Toi thieu 8 ky tu"
+          placeholder="Tối thiểu 8 ký tự"
           type="password"
         />
         {state.fieldErrors?.password?.[0] ? (
@@ -91,13 +91,13 @@ export function RegisterForm() {
           className="text-sm font-semibold text-stone-800"
           htmlFor="passwordConfirmation"
         >
-          Xac nhan mat khau
+          Xác nhận mật khẩu
         </label>
         <Input
           autoComplete="new-password"
           id="passwordConfirmation"
           name="passwordConfirmation"
-          placeholder="Nhap lai mat khau"
+          placeholder="Nhập lại mật khẩu"
           type="password"
         />
         {state.fieldErrors?.passwordConfirmation?.[0] ? (
@@ -108,16 +108,16 @@ export function RegisterForm() {
       </div>
 
       <Button className="w-full" disabled={isPending} size="lg" type="submit">
-        {isPending ? "Dang tao tai khoan..." : "Tao tai khoan"}
+        {isPending ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
       </Button>
 
       <p className="text-sm text-stone-600">
-        Da co tai khoan?{" "}
+        Đã có tài khoản?{" "}
         <Link
           className="font-semibold text-stone-950 underline decoration-stone-300 underline-offset-4"
           href={authRoutes.signIn}
         >
-          Dang nhap
+          Đăng nhập
         </Link>
       </p>
     </form>

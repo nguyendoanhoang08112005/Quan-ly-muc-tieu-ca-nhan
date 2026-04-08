@@ -65,7 +65,7 @@ export function NoteForm({
           Phase 7
         </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cap nhat note" : "Tao note moi"}
+          {mode === "edit" ? "Cập nhật note" : "Tạo note mới"}
         </h2>
       </div>
 
@@ -78,7 +78,7 @@ export function NoteForm({
       <div className="grid gap-5 md:grid-cols-2">
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Loai doi tuong
+            Loại đối tượng
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -98,7 +98,7 @@ export function NoteForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Doi tuong duoc gan note
+            Đối tượng được gắn note
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -106,7 +106,7 @@ export function NoteForm({
             key={effectiveSelectedType}
             name="noteableId"
           >
-            <option value="">Chon doi tuong</option>
+            <option value="">Chọn đối tượng</option>
             {filteredTargets.map((target) => (
                 <option key={`${target.type}-${target.id}`} value={target.id}>
                   {target.description
@@ -143,11 +143,11 @@ export function NoteForm({
         <Button disabled={isPending} type="submit">
           {mode === "edit"
             ? isPending
-              ? "Dang cap nhat..."
-              : "Cap nhat note"
+              ? "Đang cập nhật..."
+              : "Cập nhật note"
             : isPending
-              ? "Dang tao..."
-              : "Tao note"}
+              ? "Đang tạo..."
+              : "Tạo note"}
         </Button>
         <Link
           className="inline-flex h-10 items-center justify-center rounded-2xl border border-stone-300 px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"

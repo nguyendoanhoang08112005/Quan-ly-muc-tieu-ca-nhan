@@ -43,7 +43,7 @@ export async function updateHabitAction(
   if (!updatedHabitId) {
     return buildHabitFormErrorState(
       values,
-      "Khong tim thay habit hoac goal lien ket khong hop le."
+      "Không tìm thấy habit hoặc goal liên kết không hợp lệ."
     );
   }
 

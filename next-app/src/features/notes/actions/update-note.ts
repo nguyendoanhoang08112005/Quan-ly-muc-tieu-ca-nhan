@@ -43,7 +43,7 @@ export async function updateNoteAction(
   if (!updatedNoteId) {
     return buildNoteFormErrorState(
       values,
-      "Khong tim thay note hoac doi tuong duoc gan note khong hop le."
+      "Không tìm thấy note hoặc đối tượng được gắn note không hợp lệ."
     );
   }
 

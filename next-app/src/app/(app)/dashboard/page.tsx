@@ -28,22 +28,22 @@ export default async function DashboardPage() {
   const dashboard = await getDashboardOverviewForUser(userId);
   const stats = [
     {
-      label: "Goal dang active",
+      label: "Goal đang active",
       value: dashboard.summary.activeGoals,
       icon: Layers3
     },
     {
-      label: "Goal hoan thanh",
+      label: "Goal hoàn thành",
       value: dashboard.summary.completedGoals,
       icon: CheckCircle2
     },
     {
-      label: "Task hom nay",
+      label: "Task hôm nay",
       value: dashboard.summary.tasksToday,
       icon: ClipboardList
     },
     {
-      label: "Task qua han",
+      label: "Task quá hạn",
       value: dashboard.summary.overdueTasks,
       icon: Clock3
     }
@@ -58,11 +58,11 @@ export default async function DashboardPage() {
               Dashboard
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Tong quan ca nhan
+              Tổng quan cá nhân
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Dashboard nay da tong hop du lieu thuc tu goals, tasks, metadata
-              va goal logs. Toan bo data duoc doc o server, khong fetch bang
+              Dashboard này đã tổng hợp dữ liệu thực từ goals, tasks, metadata
+              và goal logs. Toàn bộ data được đọc ở server, không fetch bằng
               client effect.
             </p>
           </div>
@@ -75,14 +75,14 @@ export default async function DashboardPage() {
               )}
               href="/goals"
             >
-              Xem tat ca goals
+              Xem tất cả goals
             </Link>
             <Link
               className={cn(buttonVariants({ size: "lg" }), "gap-2 rounded-full")}
               href="/goals/new"
             >
               <Plus className="h-4 w-4" />
-              Tao goal moi
+              Tạo goal mới
             </Link>
           </div>
         </div>
@@ -117,7 +117,7 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-400">
-                  Goal dang theo duoi
+                  Goal đang theo đuổi
                 </p>
                 <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
                   Active goals
@@ -131,7 +131,7 @@ export default async function DashboardPage() {
                 )}
                 href="/goals"
               >
-                Xem them
+                Xem thêm
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -186,7 +186,7 @@ export default async function DashboardPage() {
                       </div>
                     </div>
                     <p className="mt-4 text-sm text-stone-500">
-                      Han {formatDisplayDate(goal.targetDate)} •{" "}
+                      Hạn {formatDisplayDate(goal.targetDate)} •{" "}
                       {goal.milestonesCount} milestone • {goal.tasksCount} task
                     </p>
                   </Link>
@@ -195,10 +195,10 @@ export default async function DashboardPage() {
             ) : (
               <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
                 <h3 className="text-2xl font-black text-stone-950">
-                  Chua co goal active
+                  Chưa có goal active
                 </h3>
                 <p className="mt-3 text-sm leading-7 text-stone-500">
-                  Tao goal dau tien de dashboard bat dau co du lieu that.
+                  Tạo goal đầu tiên để dashboard bắt đầu có dữ liệu thật.
                 </p>
               </div>
             )}
@@ -240,7 +240,7 @@ export default async function DashboardPage() {
                           {log.title ?? log.goal.title}
                         </h3>
                         <p className="mt-2 text-sm leading-6 text-stone-600">
-                          {log.content ?? "Khong co noi dung bo sung cho su kien nay."}
+                          {log.content ?? "Không có nội dung bổ sung cho sự kiện này."}
                         </p>
                         <p className="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
                           Goal {log.goal.title}
@@ -258,11 +258,11 @@ export default async function DashboardPage() {
             ) : (
               <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
                 <h3 className="text-2xl font-black text-stone-950">
-                  Chua co log nao
+                  Chưa có log nào
                 </h3>
                 <p className="mt-3 text-sm leading-7 text-stone-500">
-                  Timeline se hien ra khi progress, milestone hoac task bat dau
-                  thay doi.
+                  Timeline sẽ hiện ra khi progress, milestone hoặc task bắt đầu
+                  thay đổi.
                 </p>
               </div>
             )}
@@ -272,7 +272,7 @@ export default async function DashboardPage() {
         <div className="space-y-8">
           <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
             <h2 className="text-2xl font-black tracking-tight text-stone-950">
-              Metadata va quick check
+              Metadata và quick check
             </h2>
 
             <div className="mt-6 grid gap-4">
@@ -292,7 +292,7 @@ export default async function DashboardPage() {
                 <div className="flex items-center gap-3">
                   <Tags className="h-5 w-5 text-stone-500" />
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                    Tags dang dung
+                    Tags đang dùng
                   </p>
                 </div>
                 <div className="mt-3 text-3xl font-black text-stone-950">
@@ -302,19 +302,19 @@ export default async function DashboardPage() {
 
               <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Deadline gan nhat
+                  Deadline gần nhất
                 </p>
                 <div className="mt-3 text-lg font-black text-stone-950">
                   {dashboard.metadata.nearestDeadlineGoal
                     ? dashboard.metadata.nearestDeadlineGoal.title
-                    : "Chua co goal"}
+                    : "Chưa có goal"}
                 </div>
                 <p className="mt-2 text-sm text-stone-500">
                   {dashboard.metadata.nearestDeadlineGoal
                     ? formatDisplayDate(
                         dashboard.metadata.nearestDeadlineGoal.targetDate
                       )
-                    : "Ban co the tao goal moi de bat dau lap deadline."}
+                    : "Bạn có thể tạo goal mới để bắt đầu lập deadline."}
                 </p>
               </div>
             </div>
@@ -325,7 +325,7 @@ export default async function DashboardPage() {
                 href="/goals/new"
               >
                 <Plus className="h-4 w-4" />
-                Tao goal moi
+                Tạo goal mới
               </Link>
               <Link
                 className={cn(
@@ -334,7 +334,7 @@ export default async function DashboardPage() {
                 )}
                 href="/categories"
               >
-                Quan ly categories
+                Quản lý categories
               </Link>
               <Link
                 className={cn(
@@ -343,7 +343,7 @@ export default async function DashboardPage() {
                 )}
                 href="/tags"
               >
-                Quan ly tags
+                Quản lý tags
               </Link>
             </div>
           </section>
@@ -352,10 +352,10 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-400">
-                  Task sap den han
+                  Task sắp đến hạn
                 </p>
                 <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-                  7 ngay toi
+                  7 ngày tới
                 </h2>
               </div>
 
@@ -366,7 +366,7 @@ export default async function DashboardPage() {
                 )}
                 href="/tasks"
               >
-                Mo tasks
+                Mở tasks
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -418,10 +418,10 @@ export default async function DashboardPage() {
             ) : (
               <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
                 <h3 className="text-2xl font-black text-stone-950">
-                  Chua co task sap den han
+                  Chưa có task sắp đến hạn
                 </h3>
                 <p className="mt-3 text-sm leading-7 text-stone-500">
-                  Khi task co `dueAt`, dashboard se tu dong dua vao khu vuc nay.
+                  Khi task có `dueAt`, dashboard sẽ tự động đưa vào khu vực này.
                 </p>
               </div>
             )}

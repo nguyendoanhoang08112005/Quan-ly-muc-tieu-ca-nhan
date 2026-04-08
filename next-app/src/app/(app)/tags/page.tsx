@@ -24,7 +24,7 @@ export default async function TagsPage() {
               Tags
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Gan nhan cho goals
+              Gắn nhãn cho goals
             </h1>
           </div>
           <div className="rounded-full bg-stone-100 px-4 py-2 text-sm font-semibold text-stone-700">
@@ -52,7 +52,7 @@ export default async function TagsPage() {
                       {tag.name}
                     </h2>
                     <p className="mt-2 text-sm text-stone-500">
-                      {tag.goalsCount} goal dang gan tag nay
+                      {tag.goalsCount} goal đang gắn tag này
                     </p>
                   </div>
 
@@ -61,7 +61,7 @@ export default async function TagsPage() {
                       className={cn(buttonVariants({ variant: "secondary" }))}
                       href={`/tags/${tag.id}/edit` as Route}
                     >
-                      Sua
+                      Sửa
                     </Link>
                     <DeleteTagForm tagId={tag.id} />
                   </div>
@@ -71,7 +71,7 @@ export default async function TagsPage() {
           </div>
         ) : (
           <div className="mt-8 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center text-sm text-stone-500">
-            Chua co tag nao.
+            Chưa có tag nào.
           </div>
         )}
       </section>

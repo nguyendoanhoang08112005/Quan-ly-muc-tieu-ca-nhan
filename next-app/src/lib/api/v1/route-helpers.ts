@@ -55,7 +55,7 @@ export function jsonUnauthorizedResponse() {
   );
 }
 
-export function jsonNotFoundResponse(message = "Khong tim thay du lieu.") {
+export function jsonNotFoundResponse(message = "Không tìm thấy dữ liệu.") {
   return NextResponse.json(
     {
       message

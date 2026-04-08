@@ -44,8 +44,8 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
               Pomodoro sessions
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Pomodoro da co persistence, active session va completion flow gan
-              voi task that trong he thong.
+              Pomodoro đã có persistence, active session và completion flow gắn
+              với task thật trong hệ thống.
             </p>
           </div>
 
@@ -53,7 +53,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
             className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
             href={"/tasks" as Route}
           >
-            Mo tasks
+            Mở tasks
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -61,7 +61,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
         <div className="mt-8 grid gap-4 md:grid-cols-4">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tong sessions
+              Tổng sessions
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {overview.summary.totalSessions}
@@ -69,7 +69,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
           </div>
           <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Dang chay
+              Đang chạy
             </div>
             <div className="mt-2 text-4xl font-black">
               {overview.summary.activeSessions}
@@ -77,7 +77,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Hoan thanh
+              Hoàn thành
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {overview.summary.completedSessions}
@@ -85,7 +85,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Hom nay
+              Hôm nay
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {overview.summary.todaySessions}
@@ -101,7 +101,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
               Active session
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              {overview.activeSession ? "Dang focus" : "Bat dau session moi"}
+              {overview.activeSession ? "Đang focus" : "Bắt đầu session mới"}
             </h2>
           </div>
 
@@ -114,7 +114,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
 
               <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Task dang focus
+                  Task đang focus
                 </p>
                 <h3 className="mt-3 text-2xl font-black text-stone-950">
                   {overview.activeSession.taskTitle}
@@ -123,10 +123,10 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
                   {overview.activeSession.goalTitle}
                 </p>
                 <p className="mt-4 text-sm text-stone-600">
-                  Bat dau luc {formatDisplayDateTime(overview.activeSession.startedAt)}
+                  Bắt đầu lúc {formatDisplayDateTime(overview.activeSession.startedAt)}
                 </p>
                 <p className="mt-2 text-sm text-stone-600">
-                  Muc tieu {formatPomodoroMinutes(overview.activeSession.durationMinutes)}
+                  Mục tiêu {formatPomodoroMinutes(overview.activeSession.durationMinutes)}
                 </p>
               </div>
 
@@ -150,7 +150,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Lich su
+              Lịch sử
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
               Recent sessions
@@ -178,10 +178,10 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
                           )}
                         >
                           {session.isActive
-                            ? "Dang chay"
+                            ? "Đang chạy"
                             : session.completed
-                              ? "Hoan thanh"
-                              : "Bi dung"}
+                              ? "Hoàn thành"
+                              : "Bị dừng"}
                         </span>
                         <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-700">
                           {formatPomodoroMinutes(session.durationMinutes)}
@@ -196,13 +196,13 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
                       </p>
                       <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-stone-500">
                         <span className="rounded-full bg-white px-3 py-1">
-                          Bat dau {formatDisplayDateTime(session.startedAt)}
+                          Bắt đầu {formatDisplayDateTime(session.startedAt)}
                         </span>
                         <span className="rounded-full bg-white px-3 py-1">
-                          Ket thuc {formatDisplayDateTime(session.endedAt)}
+                          Kết thúc {formatDisplayDateTime(session.endedAt)}
                         </span>
                         <span className="rounded-full bg-white px-3 py-1">
-                          Thuc te {formatPomodoroMinutes(session.actualDurationMinutes)}
+                          Thực tế {formatPomodoroMinutes(session.actualDurationMinutes)}
                         </span>
                       </div>
                       {session.notes ? (
@@ -223,7 +223,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
                         className={cn(buttonVariants({ variant: "secondary" }))}
                         href={`/pomodoro?taskId=${session.taskId}` as Route}
                       >
-                        Lap lai
+                        Lặp lại
                       </Link>
                     </div>
                   </div>
@@ -236,10 +236,10 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
                 <TimerReset className="h-8 w-8 text-stone-500" />
               </div>
               <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-                Chua co pomodoro session nao
+                Chưa có pomodoro session nào
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-                Chon mot task o ben trai de bat dau session focus dau tien.
+                Chọn một task ở bên trái để bắt đầu session focus đầu tiên.
               </p>
             </div>
           )}

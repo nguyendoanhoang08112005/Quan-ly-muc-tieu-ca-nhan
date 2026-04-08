@@ -24,7 +24,7 @@ export async function PATCH(request: Request) {
   const currentProfile = await getProfileSummaryForUser(auth.userId);
 
   if (!currentProfile) {
-    return jsonNotFoundResponse("Khong tim thay profile de cap nhat.");
+    return jsonNotFoundResponse("Không tìm thấy profile để cập nhật.");
   }
 
   const body = await readJsonRequestBody(request);
@@ -49,7 +49,7 @@ export async function PATCH(request: Request) {
   const result = await updateProfileForUser(auth.userId, parsed.data);
 
   if (result.status === "not_found") {
-    return jsonNotFoundResponse("Khong tim thay profile de cap nhat.");
+    return jsonNotFoundResponse("Không tìm thấy profile để cập nhật.");
   }
 
   if (result.status === "email_taken") {
@@ -69,14 +69,14 @@ export async function PATCH(request: Request) {
   const updatedProfile = await getProfileSummaryForUser(auth.userId);
 
   if (!updatedProfile) {
-    return jsonNotFoundResponse("Khong the tai lai profile sau cap nhat.");
+    return jsonNotFoundResponse("Không thể tải lại profile sau cập nhật.");
   }
 
   revalidatePath("/settings/profile");
   revalidatePath("/dashboard");
 
   return NextResponse.json({
-    message: "Cap nhat profile thanh cong.",
+    message: "Cập nhật profile thành công.",
     user: serializeUserResource(updatedProfile)
   });
 }

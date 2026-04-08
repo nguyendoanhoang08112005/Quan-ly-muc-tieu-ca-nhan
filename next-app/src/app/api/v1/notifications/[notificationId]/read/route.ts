@@ -35,7 +35,7 @@ export async function POST(request: Request, context: RouteContext) {
   );
 
   if (!updated) {
-    return jsonNotFoundResponse("Khong tim thay notification chua doc.");
+    return jsonNotFoundResponse("Không tìm thấy notification chưa đọc.");
   }
 
   const [notifications, summary] = await Promise.all([
@@ -45,14 +45,14 @@ export async function POST(request: Request, context: RouteContext) {
   const notification = notifications.find((item) => item.id === notificationId);
 
   if (!notification) {
-    return jsonNotFoundResponse("Khong the tai lai notification sau cap nhat.");
+    return jsonNotFoundResponse("Không thể tải lại notification sau cập nhật.");
   }
 
   revalidatePath("/notifications");
   revalidatePath("/dashboard");
 
   return NextResponse.json({
-    message: "Da danh dau notification la da doc.",
+    message: "Đã đánh dấu notification là đã đọc.",
     data: serializeNotificationResource(notification),
     summary: serializeNotificationSummaryResource(summary)
   });

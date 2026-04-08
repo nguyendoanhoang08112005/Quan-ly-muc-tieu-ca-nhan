@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   revalidatePath("/dashboard");
 
   return NextResponse.json({
-    message: "Da danh dau tat ca notification la da doc.",
+    message: "Đã đánh dấu tất cả notification là đã đọc.",
     summary: serializeNotificationSummaryResource(summary)
   });
 }

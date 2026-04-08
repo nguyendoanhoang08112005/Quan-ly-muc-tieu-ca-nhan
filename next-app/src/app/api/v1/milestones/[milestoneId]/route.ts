@@ -49,7 +49,7 @@ export async function GET(
   const milestone = await getMilestoneDetailForUser(auth.userId, parsedMilestoneId);
 
   if (!milestone) {
-    return jsonNotFoundResponse("Khong tim thay milestone.");
+    return jsonNotFoundResponse("Không tìm thấy milestone.");
   }
 
   return NextResponse.json({
@@ -81,7 +81,7 @@ export async function PATCH(
   const goalId = await findMilestoneGoalIdForUser(auth.userId, parsedMilestoneId);
 
   if (!goalId) {
-    return jsonNotFoundResponse("Khong tim thay milestone de cap nhat.");
+    return jsonNotFoundResponse("Không tìm thấy milestone để cập nhật.");
   }
 
   const existingValues = await getMilestoneFormValuesForUser(
@@ -91,7 +91,7 @@ export async function PATCH(
   );
 
   if (!existingValues) {
-    return jsonNotFoundResponse("Khong tim thay milestone de cap nhat.");
+    return jsonNotFoundResponse("Không tìm thấy milestone để cập nhật.");
   }
 
   const body = await readJsonRequestBody(request);
@@ -117,7 +117,7 @@ export async function PATCH(
   );
 
   if (!updatedMilestoneId) {
-    return jsonBadRequestResponse("Khong the cap nhat milestone nay.");
+    return jsonBadRequestResponse("Không thể cập nhật milestone này.");
   }
 
   const updatedMilestone = await getMilestoneDetailForUser(
@@ -126,7 +126,7 @@ export async function PATCH(
   );
 
   if (!updatedMilestone) {
-    return jsonNotFoundResponse("Khong the tai lai milestone sau cap nhat.");
+    return jsonNotFoundResponse("Không thể tải lại milestone sau cập nhật.");
   }
 
   revalidatePath("/goals");
@@ -135,7 +135,7 @@ export async function PATCH(
   revalidatePath("/tasks");
 
   return NextResponse.json({
-    message: "Cap nhat milestone thanh cong.",
+    message: "Cập nhật milestone thành công.",
     data: serializeMilestoneApiResource(
       updatedMilestone.milestone,
       auth.userId,
@@ -164,7 +164,7 @@ export async function DELETE(
   const goalId = await findMilestoneGoalIdForUser(auth.userId, parsedMilestoneId);
 
   if (!goalId) {
-    return jsonNotFoundResponse("Khong tim thay milestone de xoa.");
+    return jsonNotFoundResponse("Không tìm thấy milestone để xóa.");
   }
 
   const deleted = await softDeleteMilestoneForGoal(
@@ -174,7 +174,7 @@ export async function DELETE(
   );
 
   if (!deleted) {
-    return jsonNotFoundResponse("Khong tim thay milestone de xoa.");
+    return jsonNotFoundResponse("Không tìm thấy milestone để xóa.");
   }
 
   revalidatePath("/goals");

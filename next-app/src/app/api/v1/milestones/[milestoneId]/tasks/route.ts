@@ -43,7 +43,7 @@ export async function POST(
   const goalId = await findMilestoneGoalIdForUser(auth.userId, parsedMilestoneId);
 
   if (!goalId) {
-    return jsonNotFoundResponse("Khong tim thay milestone de tao task.");
+    return jsonNotFoundResponse("Không tìm thấy milestone để tạo task.");
   }
 
   const body = await readJsonRequestBody(request);
@@ -69,19 +69,19 @@ export async function POST(
   );
 
   if (!taskId) {
-    return jsonBadRequestResponse("Khong the tao task cho milestone nay.");
+    return jsonBadRequestResponse("Không thể tạo task cho milestone này.");
   }
 
   const parsedTaskId = parseRouteBigIntId(taskId);
 
   if (!parsedTaskId) {
-    return jsonBadRequestResponse("Khong the doc id task vua tao.");
+    return jsonBadRequestResponse("Không thể đọc id task vừa tạo.");
   }
 
   const task = await getTaskDetailForUser(auth.userId, parsedTaskId);
 
   if (!task) {
-    return jsonNotFoundResponse("Khong the tai lai task vua tao.");
+    return jsonNotFoundResponse("Không thể tải lại task vừa tạo.");
   }
 
   revalidatePath("/goals");
@@ -93,7 +93,7 @@ export async function POST(
 
   return NextResponse.json(
     {
-      message: "Tao task thanh cong.",
+      message: "Tạo task thành công.",
       data: serializeTaskApiResource(task)
     },
     {

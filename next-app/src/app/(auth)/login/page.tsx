@@ -5,8 +5,8 @@ import { LoginForm } from "@/features/auth/components/login-form";
 import { authRoutes } from "@/lib/auth/routes";
 
 export const metadata: Metadata = {
-  title: "Dang nhap",
-  description: "Dang nhap vao he thong quan ly muc tieu ca nhan.",
+  title: "Đăng nhập",
+  description: "Đăng nhập vào hệ thống quản lý mục tiêu cá nhân.",
   robots: {
     index: false,
     follow: false
@@ -36,20 +36,20 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <AuthShell
-      description="Dang nhap de truy cap dashboard va bat dau migrate tung module nghiep vu tren app moi."
+      description="Đăng nhập để truy cập dashboard và bắt đầu migrate từng module nghiệp vụ trên app mới."
       eyebrow="Authentication"
       footer={
         <p>
-          Chua co tai khoan?{" "}
+          Chưa có tài khoản?{" "}
           <Link
             className="font-semibold text-stone-950 underline decoration-stone-300 underline-offset-4"
             href={authRoutes.register}
           >
-            Tao tai khoan
+            Tạo tài khoản
           </Link>
         </p>
       }
-      title="Dang nhap vao he thong moi"
+      title="Đăng nhập vào hệ thống mới"
     >
       <LoginForm
         callbackUrl={callbackUrl}

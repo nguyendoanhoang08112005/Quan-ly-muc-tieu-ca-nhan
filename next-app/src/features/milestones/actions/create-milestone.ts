@@ -45,7 +45,7 @@ export async function createMilestoneAction(
   );
 
   if (!createdMilestoneId) {
-    return buildMilestoneFormErrorState(values, "Khong tao duoc milestone.");
+    return buildMilestoneFormErrorState(values, "Không tạo được milestone.");
   }
 
   revalidatePath("/dashboard");

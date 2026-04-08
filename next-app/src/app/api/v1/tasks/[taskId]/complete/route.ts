@@ -37,19 +37,19 @@ export async function PATCH(
   const goalId = await findTaskGoalIdForUser(auth.userId, parsedTaskId);
 
   if (!goalId) {
-    return jsonNotFoundResponse("Khong tim thay task de hoan thanh.");
+    return jsonNotFoundResponse("Không tìm thấy task để hoàn thành.");
   }
 
   const completed = await completeTaskForGoal(auth.userId, goalId, parsedTaskId);
 
   if (!completed) {
-    return jsonNotFoundResponse("Khong tim thay task de hoan thanh.");
+    return jsonNotFoundResponse("Không tìm thấy task để hoàn thành.");
   }
 
   const task = await getTaskDetailForUser(auth.userId, parsedTaskId);
 
   if (!task) {
-    return jsonNotFoundResponse("Khong the tai lai task sau khi complete.");
+    return jsonNotFoundResponse("Không thể tải lại task sau khi complete.");
   }
 
   revalidatePath("/goals");

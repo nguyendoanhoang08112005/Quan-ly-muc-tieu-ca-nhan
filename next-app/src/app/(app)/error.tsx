@@ -19,7 +19,7 @@ export default function AppGroupError({ error, reset }: ErrorProps) {
           Khu vuc dang nhap gap su co
         </h1>
         <p className="mt-4 text-sm leading-7 text-stone-600">
-          {error.message || "Da xay ra loi khong xac dinh trong khu vuc app."}
+          {error.message || "Đã xảy ra lỗi không xác định trong khu vực app."}
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">

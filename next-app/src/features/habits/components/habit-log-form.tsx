@@ -79,7 +79,7 @@ export function HabitLogForm({
       </label>
 
       <Button disabled={isPending} type="submit">
-        {isPending ? "Dang luu log..." : "Luu habit log"}
+        {isPending ? "Đang lưu log..." : "Lưu habit log"}
       </Button>
     </form>
   );

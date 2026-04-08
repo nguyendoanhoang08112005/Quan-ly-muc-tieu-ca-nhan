@@ -52,11 +52,11 @@ export function MilestoneForm({
           Phase 5
         </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cap nhat milestone" : "Tao milestone moi"}
+          {mode === "edit" ? "Cập nhật milestone" : "Tạo milestone mới"}
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
           Milestone duoc validate bang Zod truoc khi ghi vao database va se tu
-          dong cap nhat progress goal.
+          đồng cập nhật progress goal.
         </p>
       </div>
 
@@ -179,11 +179,11 @@ export function MilestoneForm({
         <Button disabled={isPending} size="lg" type="submit">
           {mode === "edit"
             ? isPending
-              ? "Dang cap nhat..."
-              : "Cap nhat milestone"
+              ? "Đang cập nhật..."
+              : "Cập nhật milestone"
             : isPending
-              ? "Dang tao..."
-              : "Tao milestone"}
+              ? "Đang tạo..."
+              : "Tạo milestone"}
         </Button>
         <Link
           className="inline-flex h-11 items-center justify-center rounded-2xl border border-stone-300 px-5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"

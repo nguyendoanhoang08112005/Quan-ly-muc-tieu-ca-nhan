@@ -26,12 +26,12 @@ export default async function TasksPage() {
               Phase 5
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Tasks da co project va subtasks
+              Tasks đã có project và subtasks
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Tasks khong con chi hien trong goal detail. Page nay doc du lieu
-              that tu Prisma, cho phep gan project, va quan ly subtasks ngay
-              tren tung task card.
+              Tasks không còn chỉ hiện trong goal detail. Page này đọc dữ liệu
+              thật từ Prisma, cho phép gắn project, và quản lý subtasks ngay
+              trên từng task card.
             </p>
           </div>
 
@@ -39,7 +39,7 @@ export default async function TasksPage() {
             className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
             href={"/goals" as Route}
           >
-            Ve goals
+            Về goals
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -47,7 +47,7 @@ export default async function TasksPage() {
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Tong task
+              Tổng task
             </div>
             <div className="mt-2 text-4xl font-black">{tasks.length}</div>
           </div>
@@ -61,7 +61,7 @@ export default async function TasksPage() {
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Hoan thanh
+              Hoàn thành
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {completedTasks.length}
@@ -125,11 +125,11 @@ export default async function TasksPage() {
                       </span>
                     ) : null}
                     <span className="rounded-full bg-stone-100 px-3 py-1">
-                      Han {formatDisplayDateTime(task.dueAt)}
+                      Hạn {formatDisplayDateTime(task.dueAt)}
                     </span>
                     {task.estimatedMinutes ? (
                       <span className="rounded-full bg-stone-100 px-3 py-1">
-                        Uoc tinh {task.estimatedMinutes} phut
+                        Ước tính {task.estimatedMinutes} phút
                       </span>
                     ) : null}
                     <span className="rounded-full bg-stone-100 px-3 py-1">
@@ -169,7 +169,7 @@ export default async function TasksPage() {
                   className={cn(buttonVariants({ variant: "secondary" }))}
                   href={`/goals/${task.goalId}/tasks/${task.id}/edit` as Route}
                 >
-                  Sua task
+                  Sửa task
                 </Link>
                 <Link
                   className={cn(buttonVariants({ variant: "secondary" }))}
@@ -198,11 +198,11 @@ export default async function TasksPage() {
             <CheckCircle2 className="h-8 w-8 text-stone-500" />
           </div>
           <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-            Chua co task nao
+            Chưa có task nào
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-            Hay tao task moi ben trong mot milestone de bat dau theo doi cong
-            viec tu he Next.js.
+            Hãy tạo task mới bên trong một milestone để bắt đầu theo dõi công
+            việc từ hệ Next.js.
           </p>
         </section>
       )}

@@ -134,7 +134,7 @@ export function diffDateInputs(startDate: string, targetDate: string) {
 
 export function formatDisplayDate(value: Date | string | null | undefined) {
   if (!value) {
-    return "Chua co ngay";
+    return "Chưa có ngày";
   }
 
   const date =
@@ -145,7 +145,7 @@ export function formatDisplayDate(value: Date | string | null | undefined) {
       : value;
 
   if (!date || Number.isNaN(date.getTime())) {
-    return "Chua co ngay";
+    return "Chưa có ngày";
   }
 
   return new Intl.DateTimeFormat("vi-VN", {
@@ -158,13 +158,13 @@ export function formatDisplayDate(value: Date | string | null | undefined) {
 
 export function formatDisplayDateTime(value: Date | string | null | undefined) {
   if (!value) {
-    return "Chua co han";
+    return "Chưa có hạn";
   }
 
   const date = typeof value === "string" ? new Date(value) : value;
 
   if (Number.isNaN(date.getTime())) {
-    return "Chua co han";
+    return "Chưa có hạn";
   }
 
   return new Intl.DateTimeFormat("vi-VN", {

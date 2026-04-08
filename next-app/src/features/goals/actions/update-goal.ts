@@ -24,7 +24,7 @@ export async function updateGoalAction(
   const parsedGoalId = goalIdSchema.safeParse(goalId);
 
   if (!parsedGoalId.success) {
-    return buildGoalFormErrorState(values, "Khong tim thay goal de cap nhat.");
+    return buildGoalFormErrorState(values, "Không tìm thấy goal để cập nhật.");
   }
 
   const parsedValues = goalFormSchema.safeParse(values);
@@ -32,7 +32,7 @@ export async function updateGoalAction(
   if (!parsedValues.success) {
     return buildGoalFormErrorState(
       values,
-      "Du lieu goal chua hop le.",
+      "Dữ liệu goal chưa hợp lệ.",
       parsedValues.error.flatten().fieldErrors
     );
   }
@@ -44,7 +44,7 @@ export async function updateGoalAction(
   );
 
   if (!updatedGoalId) {
-    return buildGoalFormErrorState(values, "Goal khong ton tai hoac da bi xoa.");
+    return buildGoalFormErrorState(values, "Goal không tồn tại hoặc đã bị xóa.");
   }
 
   revalidatePath("/dashboard");

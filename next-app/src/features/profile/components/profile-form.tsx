@@ -74,7 +74,7 @@ export function ProfileForm({
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
           Form nay chay bang Server Action + Zod, sau khi luu xong se dong bo
-          lai NextAuth session de sidebar va cac route private cap nhat ngay.
+          lại NextAuth session để sidebar và các route private cập nhật ngay.
         </p>
       </div>
 
@@ -177,7 +177,7 @@ export function ProfileForm({
 
       <div className="flex flex-wrap items-center gap-3">
         <Button disabled={isPending} size="lg" type="submit">
-          {isPending ? "Dang luu..." : "Luu profile"}
+          {isPending ? "Đang lưu..." : "Lưu profile"}
         </Button>
         <Link
           className="inline-flex h-11 items-center justify-center rounded-2xl border border-stone-300 px-5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"

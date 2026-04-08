@@ -124,7 +124,7 @@ export default async function HabitDetailPage({
               </div>
               <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Log gan nhat
+                  Log gần nhất
                 </div>
                 <div className="mt-2 text-sm font-black text-stone-950">
                   {formatDisplayDateTime(habit.lastLoggedAt)}
@@ -136,13 +136,13 @@ export default async function HabitDetailPage({
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4 text-sm text-stone-600">
-            Bat dau: {formatDisplayDate(habit.startDate)}
+            Bắt đầu: {formatDisplayDate(habit.startDate)}
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4 text-sm text-stone-600">
-            Ket thuc: {formatDisplayDate(habit.endDate)}
+            Kết thúc: {formatDisplayDate(habit.endDate)}
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4 text-sm text-stone-600">
-            Gio nhac: {habit.reminderTime || "Chua dat"}
+            Giờ nhắc: {habit.reminderTime || "Chưa đặt"}
           </div>
         </div>
       </section>
@@ -154,7 +154,7 @@ export default async function HabitDetailPage({
               Habit log
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Ghi log theo ngay
+              Ghi log theo ngày
             </h2>
           </div>
 
@@ -177,7 +177,7 @@ export default async function HabitDetailPage({
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Lich su
+              Lịch sử
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
               Recent habit logs
@@ -205,15 +205,15 @@ export default async function HabitDetailPage({
                               : "bg-amber-100 text-amber-700"
                           )}
                         >
-                          {log.isCompleted ? "Dat muc tieu" : "Chua dat"}
+                          {log.isCompleted ? "Đạt mục tiêu" : "Chưa đạt"}
                         </span>
                       </div>
 
                       <p className="mt-3 text-sm font-semibold text-stone-950">
-                        {log.completedCount}/{log.targetCountSnapshot} lan
+                        {log.completedCount}/{log.targetCountSnapshot} lần
                       </p>
                       <p className="mt-2 text-sm leading-6 text-stone-600">
-                        {log.note ?? "Khong co ghi chu cho ngay nay."}
+                        {log.note ?? "Không có ghi chú cho ngày này."}
                       </p>
                     </div>
                   </div>
@@ -223,10 +223,10 @@ export default async function HabitDetailPage({
           ) : (
             <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
               <h3 className="text-2xl font-black text-stone-950">
-                Chua co log nao
+                Chưa có log nào
               </h3>
               <p className="mt-3 text-sm leading-7 text-stone-500">
-                Hay ghi log ngay dau tien de bat dau tinh streak.
+                Hãy ghi log ngày đầu tiên để bắt đầu tính streak.
               </p>
             </div>
           )}

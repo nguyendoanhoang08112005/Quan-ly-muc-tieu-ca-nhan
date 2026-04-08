@@ -54,7 +54,7 @@ export function HabitForm({
           Phase 7
         </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cap nhat habit" : "Tao habit moi"}
+          {mode === "edit" ? "Cập nhật habit" : "Tạo habit mới"}
         </h2>
       </div>
 
@@ -97,7 +97,7 @@ export function HabitForm({
             defaultValue={state.values.goalId}
             name="goalId"
           >
-            <option value="">Khong lien ket goal</option>
+            <option value="">Không liên kết goal</option>
             {goalOptions.map((goal) => (
               <option key={goal.id} value={goal.id}>
                 {goal.title}
@@ -208,11 +208,11 @@ export function HabitForm({
         <Button disabled={isPending} type="submit">
           {mode === "edit"
             ? isPending
-              ? "Dang cap nhat..."
-              : "Cap nhat habit"
+              ? "Đang cập nhật..."
+              : "Cập nhật habit"
             : isPending
-              ? "Dang tao..."
-              : "Tao habit"}
+              ? "Đang tạo..."
+              : "Tạo habit"}
         </Button>
         <Link
           className="inline-flex h-10 items-center justify-center rounded-2xl border border-stone-300 px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"

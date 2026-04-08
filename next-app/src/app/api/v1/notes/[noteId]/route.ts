@@ -45,7 +45,7 @@ export async function GET(request: Request, context: RouteContext) {
   const note = await getNoteDetailForUser(auth.userId, parsedNoteId);
 
   if (!note) {
-    return jsonNotFoundResponse("Khong tim thay note.");
+    return jsonNotFoundResponse("Không tìm thấy note.");
   }
 
   return NextResponse.json({
@@ -70,7 +70,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   const existingValues = await getNoteFormValuesForUser(auth.userId, parsedNoteId);
 
   if (!existingValues) {
-    return jsonNotFoundResponse("Khong tim thay note.");
+    return jsonNotFoundResponse("Không tìm thấy note.");
   }
 
   const body = await readJsonRequestBody(request);
@@ -91,20 +91,20 @@ export async function PATCH(request: Request, context: RouteContext) {
   const updatedNoteId = await updateNoteForUser(auth.userId, parsedNoteId, parsed.data);
 
   if (!updatedNoteId) {
-    return jsonBadRequestResponse("Khong the cap nhat note voi doi tuong hien tai.");
+    return jsonBadRequestResponse("Không thể cập nhật note với đối tượng hiện tại.");
   }
 
   const note = await getNoteDetailForUser(auth.userId, parsedNoteId);
 
   if (!note) {
-    return jsonNotFoundResponse("Khong the tai lai note sau cap nhat.");
+    return jsonNotFoundResponse("Không thể tải lại note sau cập nhật.");
   }
 
   revalidatePath("/notes");
   revalidatePath(`/notes/${updatedNoteId}/edit`);
 
   return NextResponse.json({
-    message: "Cap nhat ghi chu thanh cong.",
+    message: "Cập nhật ghi chú thành công.",
     data: serializeNoteResource(note)
   });
 }
@@ -126,7 +126,7 @@ export async function DELETE(request: Request, context: RouteContext) {
   const deleted = await softDeleteNoteForUser(auth.userId, parsedNoteId);
 
   if (!deleted) {
-    return jsonNotFoundResponse("Khong tim thay note.");
+    return jsonNotFoundResponse("Không tìm thấy note.");
   }
 
   revalidatePath("/notes");

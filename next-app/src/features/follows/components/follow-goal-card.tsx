@@ -108,7 +108,7 @@ export function FollowGoalCard({
         <div className="text-stone-500">
           {goal.followedAt
             ? `Theo doi tu ${formatDisplayDateTime(goal.followedAt)}`
-            : "Goal cong khai"}
+            : "Goal công khai"}
         </div>
       </div>
 

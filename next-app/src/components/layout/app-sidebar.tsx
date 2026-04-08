@@ -28,7 +28,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
           M
         </div>
         <h2 className="mt-4 text-lg font-black uppercase tracking-tight text-black">
-          Muc tieu ca nhan
+          Mục tiêu cá nhân
         </h2>
         <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
           NextAuth credentials session
@@ -37,7 +37,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
 
       <div className="border-b border-stone-200 px-4 py-5">
         <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-500">
-          Dang nhap boi
+          Đăng nhập bởi
         </p>
         <p className="mt-3 text-sm font-semibold text-stone-900">{user.name}</p>
         <p className="mt-1 text-sm text-stone-500">{user.email}</p>
@@ -63,7 +63,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
           )}
           href="/goals/new"
         >
-          Tao goal moi
+          Tạo goal mới
         </Link>
         <SignOutButton />
       </div>

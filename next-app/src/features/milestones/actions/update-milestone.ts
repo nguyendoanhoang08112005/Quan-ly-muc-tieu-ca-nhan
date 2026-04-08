@@ -29,7 +29,7 @@ export async function updateMilestoneAction(
   if (!parsedGoalId.success || !parsedMilestoneId.success) {
     return buildMilestoneFormErrorState(
       values,
-      "Khong tim thay milestone de cap nhat."
+      "Không tìm thấy milestone để cập nhật."
     );
   }
 

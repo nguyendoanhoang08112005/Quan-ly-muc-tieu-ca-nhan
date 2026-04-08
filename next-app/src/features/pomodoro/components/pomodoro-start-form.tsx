@@ -80,7 +80,7 @@ export function PomodoroStartForm({
       </label>
 
       <Button disabled={isPending} type="submit">
-        {isPending ? "Dang bat dau..." : "Bat dau pomodoro"}
+        {isPending ? "Đang bắt đầu..." : "Bắt đầu pomodoro"}
       </Button>
     </form>
   );

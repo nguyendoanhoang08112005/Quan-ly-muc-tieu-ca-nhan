@@ -45,7 +45,7 @@ export async function GET(request: Request, context: RouteContext) {
   const habit = await getHabitDetailForUser(auth.userId, parsedHabitId);
 
   if (!habit) {
-    return jsonNotFoundResponse("Khong tim thay habit.");
+    return jsonNotFoundResponse("Không tìm thấy habit.");
   }
 
   return NextResponse.json({
@@ -70,7 +70,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   const existingValues = await getHabitFormValuesForUser(auth.userId, parsedHabitId);
 
   if (!existingValues) {
-    return jsonNotFoundResponse("Khong tim thay habit.");
+    return jsonNotFoundResponse("Không tìm thấy habit.");
   }
 
   const body = await readJsonRequestBody(request);
@@ -95,20 +95,20 @@ export async function PATCH(request: Request, context: RouteContext) {
   );
 
   if (!updatedHabitId) {
-    return jsonBadRequestResponse("Khong the cap nhat habit voi goal hien tai.");
+    return jsonBadRequestResponse("Không thể cập nhật habit với goal hiện tại.");
   }
 
   const habit = await getHabitDetailForUser(auth.userId, parsedHabitId);
 
   if (!habit) {
-    return jsonNotFoundResponse("Khong the tai lai habit sau cap nhat.");
+    return jsonNotFoundResponse("Không thể tải lại habit sau cập nhật.");
   }
 
   revalidatePath("/habits");
   revalidatePath(`/habits/${updatedHabitId}`);
 
   return NextResponse.json({
-    message: "Cap nhat habit thanh cong.",
+    message: "Cập nhật habit thành công.",
     data: serializeHabitResource(habit)
   });
 }
@@ -130,7 +130,7 @@ export async function DELETE(request: Request, context: RouteContext) {
   const deleted = await softDeleteHabitForUser(auth.userId, parsedHabitId);
 
   if (!deleted) {
-    return jsonNotFoundResponse("Khong tim thay habit.");
+    return jsonNotFoundResponse("Không tìm thấy habit.");
   }
 
   revalidatePath("/habits");

@@ -26,11 +26,11 @@ export default async function ProjectsPage() {
               Phase 9
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Projects da duoc giu lai
+              Projects đã được giữ lại
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Project gio la module doc lap, nhung van gan voi goal va task de
-              khong bi troi thanh legacy domain vo chu.
+              Project giờ là module độc lập, nhưng vẫn gắn với goal và task để
+              không bị trôi thành legacy domain vô chủ.
             </p>
           </div>
 
@@ -39,14 +39,14 @@ export default async function ProjectsPage() {
             href="/projects/new"
           >
             <Plus className="h-4 w-4" />
-            Tao project moi
+            Tạo project mới
           </Link>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tong projects
+              Tổng projects
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {projects.length}
@@ -54,13 +54,13 @@ export default async function ProjectsPage() {
           </div>
           <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Dang chay
+              Đang chạy
             </div>
             <div className="mt-2 text-4xl font-black">{activeProjects.length}</div>
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Co task
+              Có task
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {projects.filter((project) => project.tasksCount > 0).length}
@@ -103,10 +103,10 @@ export default async function ProjectsPage() {
 
                   <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-stone-500">
                     <span className="rounded-full bg-stone-100 px-3 py-1">
-                      Bat dau {formatDisplayDate(project.startDate)}
+                      Bắt đầu {formatDisplayDate(project.startDate)}
                     </span>
                     <span className="rounded-full bg-stone-100 px-3 py-1">
-                      Ket thuc {formatDisplayDate(project.endDate)}
+                      Kết thúc {formatDisplayDate(project.endDate)}
                     </span>
                     <span className="rounded-full bg-stone-100 px-3 py-1">
                       {project.completedTasksCount}/{project.tasksCount} task
@@ -135,7 +135,7 @@ export default async function ProjectsPage() {
                   className={cn(buttonVariants({ variant: "secondary" }))}
                   href={`/projects/${project.id}/edit` as Route}
                 >
-                  Sua project
+                  Sửa project
                 </Link>
                 <DeleteProjectForm projectId={project.id} />
               </div>
@@ -145,11 +145,11 @@ export default async function ProjectsPage() {
       ) : (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
           <h2 className="text-2xl font-black text-stone-950">
-            Chua co project nao
+            Chưa có project nào
           </h2>
           <p className="mt-3 text-sm leading-7 text-stone-500">
-            Tao project de gom task theo mot nhom cong viec co y nghia hon thay vi
-            de legacy domain nay tiep tuc bi bo dang do.
+            Tạo project để gom task theo một nhóm công việc có ý nghĩa hơn thay
+            vì để legacy domain này tiếp tục bị bỏ dang dở.
           </p>
         </section>
       )}

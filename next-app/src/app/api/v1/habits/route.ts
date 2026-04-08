@@ -60,13 +60,13 @@ export async function POST(request: Request) {
   const parsedHabitId = parseRouteBigIntId(habitId);
 
   if (!parsedHabitId) {
-    return jsonBadRequestResponse("Khong the doc id habit vua tao.");
+    return jsonBadRequestResponse("Không thể đọc id habit vừa tạo.");
   }
 
   const habit = await getHabitDetailForUser(auth.userId, parsedHabitId);
 
   if (!habit) {
-    return jsonNotFoundResponse("Khong the tai lai habit vua tao.");
+    return jsonNotFoundResponse("Không thể tải lại habit vừa tạo.");
   }
 
   revalidatePath("/habits");
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json(
     {
-      message: "Tao habit thanh cong.",
+      message: "Tạo habit thành công.",
       data: serializeHabitResource(habit)
     },
     {

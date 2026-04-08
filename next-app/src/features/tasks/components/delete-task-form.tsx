@@ -16,7 +16,7 @@ export function DeleteTaskForm({
       {projectId ? <input name="projectId" type="hidden" value={projectId} /> : null}
       <input name="taskId" type="hidden" value={taskId} />
       <Button type="submit" variant="destructive">
-        Xoa task
+        Xóa task
       </Button>
     </form>
   );

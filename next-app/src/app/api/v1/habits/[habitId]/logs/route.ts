@@ -54,13 +54,13 @@ export async function POST(request: Request, context: RouteContext) {
   );
 
   if (!updatedHabitId) {
-    return jsonNotFoundResponse("Khong tim thay habit.");
+    return jsonNotFoundResponse("Không tìm thấy habit.");
   }
 
   const habit = await getHabitDetailForUser(auth.userId, parsedHabitId);
 
   if (!habit) {
-    return jsonNotFoundResponse("Khong the tai lai habit sau khi log.");
+    return jsonNotFoundResponse("Không thể tải lại habit sau khi log.");
   }
 
   revalidatePath("/habits");
@@ -68,7 +68,7 @@ export async function POST(request: Request, context: RouteContext) {
   revalidatePath("/dashboard");
 
   return NextResponse.json({
-    message: "Cap nhat habit log thanh cong.",
+    message: "Cập nhật habit log thành công.",
     data: serializeHabitResource(habit)
   });
 }

@@ -65,12 +65,12 @@ export async function POST(request: Request) {
   const profile = await getProfileSummaryForUser(user.id);
 
   if (!profile) {
-    return jsonBadRequestResponse("Khong the tai profile sau dang ky.");
+    return jsonBadRequestResponse("Không thể tải profile sau đăng ký.");
   }
 
   return NextResponse.json(
     {
-      message: "Dang ky thanh cong.",
+      message: "Đăng ký thành công.",
       token,
       user: serializeUserResource(profile)
     },

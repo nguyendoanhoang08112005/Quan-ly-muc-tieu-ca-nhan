@@ -8,40 +8,40 @@ import type {
 import { addDaysToDateInput, getTodayDateInput } from "@/lib/dates";
 
 export const goalTypeLabels: Record<GoalType, string> = {
-  short_term: "Ngan han",
-  mid_term: "Trung han",
-  long_term: "Dai han"
+  short_term: "Ngắn hạn",
+  mid_term: "Trung hạn",
+  long_term: "Dài hạn"
 };
 
 export const goalPriorityLabels: Record<GoalPriority, string> = {
-  low: "Thap",
-  medium: "Trung binh",
+  low: "Thấp",
+  medium: "Trung bình",
   high: "Cao",
-  critical: "Rat cao"
+  critical: "Rất cao"
 };
 
 export const goalStatusLabels: Record<GoalStatus, string> = {
-  not_started: "Chua bat dau",
-  in_progress: "Dang thuc hien",
-  completed: "Hoan thanh",
-  paused: "Tam dung",
-  cancelled: "Da huy"
+  not_started: "Chưa bắt đầu",
+  in_progress: "Đang thực hiện",
+  completed: "Hoàn thành",
+  paused: "Tạm dừng",
+  cancelled: "Đã hủy"
 };
 
 export const workStatusLabels: Record<WorkStatus, string> = {
-  not_started: "Chua bat dau",
-  in_progress: "Dang thuc hien",
-  completed: "Hoan thanh",
-  paused: "Tam dung"
+  not_started: "Chưa bắt đầu",
+  in_progress: "Đang thực hiện",
+  completed: "Hoàn thành",
+  paused: "Tạm dừng"
 };
 
 export const goalLogTypeLabels: Record<string, string> = {
-  progress_update: "Cap nhat tien do",
-  status_change: "Doi trang thai",
-  note: "Ghi chu",
-  risk: "Rui ro",
-  completion: "Hoan thanh",
-  ai_suggestion: "Goi y AI"
+  progress_update: "Cập nhật tiến độ",
+  status_change: "Đổi trạng thái",
+  note: "Ghi chú",
+  risk: "Rủi ro",
+  completion: "Hoàn thành",
+  ai_suggestion: "Gợi ý AI"
 };
 
 export const workStatusClassNames: Record<WorkStatus, string> = {

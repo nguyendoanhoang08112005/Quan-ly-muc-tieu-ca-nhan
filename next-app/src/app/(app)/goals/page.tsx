@@ -24,11 +24,11 @@ export default async function GoalsPage() {
               Phase 4
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Goal list da chay bang Server Component
+              Goal list đã chạy bằng Server Component
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Trang nay doc thang tu Prisma o server, khong con fetch bang
-              `useEffect`. Mutation create/edit/delete duoc dua qua Server
+              Trang này đọc thẳng từ Prisma ở server, không còn fetch bằng
+              `useEffect`. Mutation create/edit/delete được đưa qua Server
               Actions.
             </p>
           </div>
@@ -38,14 +38,14 @@ export default async function GoalsPage() {
             href="/goals/new"
           >
             <Plus className="h-4 w-4" />
-            Tao goal moi
+            Tạo goal mới
           </Link>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tong goal
+              Tổng goal
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {goals.length}
@@ -53,7 +53,7 @@ export default async function GoalsPage() {
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Dang thuc hien
+              Đang thực hiện
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {inProgressGoals.length}
@@ -61,15 +61,15 @@ export default async function GoalsPage() {
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Gan nhat
+              Gần nhất
             </div>
             <div className="mt-2 text-xl font-black text-stone-950">
               {nearestDeadline
                 ? formatDisplayDate(nearestDeadline.targetDate)
-                : "Chua co"}
+                : "Chưa có"}
             </div>
             <p className="mt-2 text-sm text-stone-500">
-              {completedGoals.length} goal da hoan thanh
+              {completedGoals.length} goal đã hoàn thành
             </p>
           </div>
         </div>

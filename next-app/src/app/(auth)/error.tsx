@@ -19,7 +19,7 @@ export default function AuthError({ error, reset }: ErrorProps) {
           Khu vuc dang nhap gap su co
         </h1>
         <p className="mt-4 text-sm leading-7 text-stone-600">
-          {error.message || "Khong the tai man hinh dang nhap o thoi diem nay."}
+          {error.message || "Không thể tải màn hình đăng nhập ở thời điểm này."}
         </p>
 
         <div className="mt-6 flex flex-wrap gap-3">

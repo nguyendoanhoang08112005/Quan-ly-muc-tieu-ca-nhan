@@ -57,13 +57,13 @@ export async function POST(request: Request) {
   const parsedGoalId = parseRouteBigIntId(goalId);
 
   if (!parsedGoalId) {
-    return jsonBadRequestResponse("Khong the doc id goal vua tao.");
+    return jsonBadRequestResponse("Không thể đọc id goal vừa tạo.");
   }
 
   const goal = await getGoalDetailForUser(auth.userId, parsedGoalId);
 
   if (!goal) {
-    return jsonNotFoundResponse("Khong the tai lai goal vua tao.");
+    return jsonNotFoundResponse("Không thể tải lại goal vừa tạo.");
   }
 
   revalidatePath("/goals");
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json(
     {
-      message: "Tao muc tieu thanh cong.",
+      message: "Tạo mục tiêu thành công.",
       data: serializeGoalResource(goal, auth.userId)
     },
     {

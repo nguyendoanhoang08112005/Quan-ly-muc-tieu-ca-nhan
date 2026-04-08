@@ -7,16 +7,16 @@ import type {
 import { getTodayDateInput } from "@/lib/dates";
 
 export const habitFrequencyLabels: Record<HabitFrequency, string> = {
-  daily: "Hang ngay",
-  weekly: "Hang tuan",
-  monthly: "Hang thang"
+  daily: "Hằng ngày",
+  weekly: "Hằng tuần",
+  monthly: "Hằng tháng"
 };
 
 export const habitStatusLabels: Record<HabitStatus, string> = {
-  active: "Dang theo doi",
-  paused: "Tam dung",
-  completed: "Hoan thanh",
-  archived: "Luu tru"
+  active: "Đang theo dõi",
+  paused: "Tạm dừng",
+  completed: "Hoàn thành",
+  archived: "Lưu trữ"
 };
 
 export const habitStatusClassNames: Record<HabitStatus, string> = {
@@ -59,7 +59,7 @@ export function buildDefaultHabitFormValues(): HabitFormValues {
     goalId: "",
     frequency: "daily",
     targetCount: "1",
-    unit: "lan",
+    unit: "lần",
     reminderTime: "",
     status: "active",
     startDate: getTodayDateInput(),

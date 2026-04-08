@@ -21,15 +21,15 @@ export default async function ProfileSettingsPage() {
   const facts = [
     {
       icon: User2,
-      label: "Tai khoan",
+      label: "Tài khoản",
       value: profile.name
     },
     {
       icon: Mail,
-      label: "Email xac minh",
+      label: "Email xác minh",
       value: profile.emailVerifiedAt
         ? formatDisplayDateTime(profile.emailVerifiedAt)
-        : "Chua xac minh"
+        : "Chưa xác minh"
     },
     {
       icon: Globe2,
@@ -38,7 +38,7 @@ export default async function ProfileSettingsPage() {
     },
     {
       icon: BadgeCheck,
-      label: "Cap nhat lan cuoi",
+      label: "Cập nhật lần cuối",
       value: formatDisplayDateTime(profile.updatedAt)
     }
   ];
@@ -63,12 +63,12 @@ export default async function ProfileSettingsPage() {
             Settings
           </p>
           <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-            Profile va session
+            Profile và session
           </h1>
           <p className="mt-4 text-sm leading-7 text-stone-600">
-            Day la phan migrate profile tu Laravel sang Next.js. Sau khi luu,
-            session JWT se duoc cap nhat lai de ten, email va locale moi hien
-            thi dung ngay tren app shell.
+            Đây là phần migrate profile từ Laravel sang Next.js. Sau khi lưu,
+            session JWT sẽ được cập nhật lại để tên, email và locale mới hiển
+            thị đúng ngay trên app shell.
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default async function ProfileSettingsPage() {
 
         <div className="rounded-[2rem] border border-dashed border-stone-300 bg-stone-50 p-8">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-400">
-            Thong tin bo sung
+            Thông tin bổ sung
           </p>
           <dl className="mt-5 space-y-4 text-sm text-stone-600">
             <div className="flex items-start justify-between gap-4">
@@ -111,7 +111,7 @@ export default async function ProfileSettingsPage() {
               </dd>
             </div>
             <div className="flex items-start justify-between gap-4">
-              <dt className="font-semibold text-stone-700">Ngay tao</dt>
+              <dt className="font-semibold text-stone-700">Ngày tạo</dt>
               <dd>{formatDisplayDateTime(profile.createdAt)}</dd>
             </div>
             <div className="flex items-start justify-between gap-4">
@@ -121,7 +121,7 @@ export default async function ProfileSettingsPage() {
             <div className="flex items-start justify-between gap-4">
               <dt className="font-semibold text-stone-700">Avatar path</dt>
               <dd className="max-w-[16rem] break-all text-right">
-                {profile.avatarPath ?? "Chua cai dat"}
+                {profile.avatarPath ?? "Chưa cài đặt"}
               </dd>
             </div>
           </dl>

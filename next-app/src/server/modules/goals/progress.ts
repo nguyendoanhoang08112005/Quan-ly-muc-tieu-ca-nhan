@@ -49,11 +49,11 @@ async function createProgressLog(
   }
 
   const taskContext = taskTitle ? ` sau khi task "${taskTitle}" thay doi` : "";
-  let title = "Cap nhat tien do goal";
+  let title = "Cập nhật tiến độ goal";
   let content = `Tien do goal "${goalTitle}" thay doi tu ${oldProgress.toFixed(2)}% len ${newProgress.toFixed(2)}%.`;
 
   if (scope === "milestone" && milestoneTitle) {
-    title = "Cap nhat tien do milestone";
+    title = "Cập nhật tiến độ milestone";
     content = `Tien do milestone "${milestoneTitle}" trong goal "${goalTitle}" thay doi tu ${oldProgress.toFixed(2)}% len ${newProgress.toFixed(2)}%${taskContext}.`;
   } else if (milestoneTitle) {
     const taskPhrase = taskTitle ? ` boi task "${taskTitle}"` : "";

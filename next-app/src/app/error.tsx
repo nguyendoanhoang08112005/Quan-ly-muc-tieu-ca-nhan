@@ -16,7 +16,7 @@ export default function GlobalError({ error, reset }: ErrorProps) {
           App moi gap su co khi render
         </h1>
         <p className="mt-4 text-sm leading-6 text-stone-600">
-          {error.message || "Da xay ra loi khong xac dinh."}
+          {error.message || "Đã xảy ra lỗi không xác định."}
         </p>
         <button
           className="mt-6 rounded-2xl bg-stone-950 px-4 py-2.5 text-sm font-semibold text-white"
@@ -29,4 +29,3 @@ export default function GlobalError({ error, reset }: ErrorProps) {
     </div>
   );
 }
-

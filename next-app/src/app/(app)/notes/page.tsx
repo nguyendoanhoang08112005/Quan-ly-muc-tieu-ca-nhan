@@ -28,7 +28,7 @@ export default async function NotesPage() {
               Notes polymorphic
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Notes co the duoc gan vao goal, milestone, task, habit, project va
+              Notes có thể được gắn vào goal, milestone, task, habit, project và
               journal entry.
             </p>
           </div>
@@ -38,7 +38,7 @@ export default async function NotesPage() {
             href="/notes/new"
           >
             <Plus className="h-4 w-4" />
-            Tao note moi
+            Tạo note mới
           </Link>
         </div>
       </section>
@@ -66,7 +66,7 @@ export default async function NotesPage() {
                   </p>
 
                   <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-                    Tao luc {formatDisplayDateTime(note.createdAt)}
+                    Tạo lúc {formatDisplayDateTime(note.createdAt)}
                     {note.targetDescription ? ` | ${note.targetDescription}` : ""}
                   </p>
                 </div>
@@ -76,7 +76,7 @@ export default async function NotesPage() {
                     className={cn(buttonVariants({ variant: "secondary" }))}
                     href={`/notes/${note.id}/edit` as Route}
                   >
-                    Sua
+                    Sửa
                   </Link>
                   <DeleteNoteForm noteId={note.id} />
                 </div>
@@ -87,11 +87,11 @@ export default async function NotesPage() {
       ) : (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
           <h2 className="text-2xl font-black text-stone-950">
-            Chua co note nao
+            Chưa có note nào
           </h2>
           <p className="mt-3 text-sm leading-7 text-stone-500">
-            Tao note dau tien de luu insight, ghi chu hoac context cho tung doi
-            tuong trong he thong.
+            Tạo note đầu tiên để lưu insight, ghi chú hoặc context cho từng đối
+            tượng trong hệ thống.
           </p>
         </section>
       )}

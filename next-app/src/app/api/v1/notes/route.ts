@@ -60,13 +60,13 @@ export async function POST(request: Request) {
   const parsedNoteId = parseRouteBigIntId(noteId);
 
   if (!parsedNoteId) {
-    return jsonBadRequestResponse("Khong the doc id note vua tao.");
+    return jsonBadRequestResponse("Không thể đọc id note vừa tạo.");
   }
 
   const note = await getNoteDetailForUser(auth.userId, parsedNoteId);
 
   if (!note) {
-    return jsonNotFoundResponse("Khong the tai lai note vua tao.");
+    return jsonNotFoundResponse("Không thể tải lại note vừa tạo.");
   }
 
   revalidatePath("/notes");
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json(
     {
-      message: "Tao ghi chu thanh cong.",
+      message: "Tạo ghi chú thành công.",
       data: serializeNoteResource(note)
     },
     {

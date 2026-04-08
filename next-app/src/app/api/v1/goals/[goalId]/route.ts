@@ -45,7 +45,7 @@ export async function GET(
   const goal = await getGoalDetailForUser(auth.userId, parsedGoalId);
 
   if (!goal) {
-    return jsonNotFoundResponse("Khong tim thay goal.");
+    return jsonNotFoundResponse("Không tìm thấy goal.");
   }
 
   return NextResponse.json({
@@ -73,7 +73,7 @@ export async function PATCH(
   const existingValues = await getGoalFormValuesForUser(auth.userId, parsedGoalId);
 
   if (!existingValues) {
-    return jsonNotFoundResponse("Khong tim thay goal de cap nhat.");
+    return jsonNotFoundResponse("Không tìm thấy goal để cập nhật.");
   }
 
   const body = await readJsonRequestBody(request);
@@ -94,13 +94,13 @@ export async function PATCH(
   const updatedGoalId = await updateGoalForUser(auth.userId, parsedGoalId, parsed.data);
 
   if (!updatedGoalId) {
-    return jsonBadRequestResponse("Khong the cap nhat goal voi metadata hien tai.");
+    return jsonBadRequestResponse("Không thể cập nhật goal với metadata hiện tại.");
   }
 
   const updatedGoal = await getGoalDetailForUser(auth.userId, parsedGoalId);
 
   if (!updatedGoal) {
-    return jsonNotFoundResponse("Khong the tai lai goal sau cap nhat.");
+    return jsonNotFoundResponse("Không thể tải lại goal sau cập nhật.");
   }
 
   revalidatePath("/goals");
@@ -110,7 +110,7 @@ export async function PATCH(
   revalidatePath("/follows");
 
   return NextResponse.json({
-    message: "Cap nhat muc tieu thanh cong.",
+    message: "Cập nhật mục tiêu thành công.",
     data: serializeGoalResource(updatedGoal, auth.userId)
   });
 }
@@ -135,7 +135,7 @@ export async function DELETE(
   const deleted = await softDeleteGoalForUser(auth.userId, parsedGoalId);
 
   if (!deleted) {
-    return jsonNotFoundResponse("Khong tim thay goal de xoa.");
+    return jsonNotFoundResponse("Không tìm thấy goal để xóa.");
   }
 
   revalidatePath("/goals");

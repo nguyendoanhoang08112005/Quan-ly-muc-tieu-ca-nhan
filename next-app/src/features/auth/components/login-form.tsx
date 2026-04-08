@@ -27,7 +27,7 @@ export function LoginForm({
     event.preventDefault();
 
     if (!email.trim() || !password) {
-      setError("Ban can nhap day du email va mat khau.");
+      setError("Bạn cần nhập đầy đủ email và mật khẩu.");
       return;
     }
 
@@ -44,12 +44,12 @@ export function LoginForm({
     setIsPending(false);
 
     if (!result) {
-      setError("Khong the dang nhap luc nay. Vui long thu lai.");
+      setError("Không thể đăng nhập lúc này. Vui lòng thử lại.");
       return;
     }
 
     if (result.error) {
-      setError("Email hoac mat khau khong dung.");
+      setError("Email hoặc mật khẩu không đúng.");
       return;
     }
 
@@ -62,15 +62,15 @@ export function LoginForm({
         <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
           Phase 3
         </p>
-        <h2 className="mt-3 text-3xl font-black text-stone-950">Dang nhap</h2>
+        <h2 className="mt-3 text-3xl font-black text-stone-950">Đăng nhập</h2>
         <p className="mt-3 text-sm leading-6 text-stone-600">
-          Dang nhap bang Credentials provider cua NextAuth tren nen Prisma.
+          Đăng nhập bằng Credentials provider của NextAuth trên nền Prisma.
         </p>
       </div>
 
       {showRegisteredMessage ? (
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
-          Tai khoan da duoc tao. Ban co the dang nhap ngay bay gio.
+          Tài khoản đã được tạo. Bạn có thể đăng nhập ngay bây giờ.
         </div>
       ) : null}
 
@@ -100,30 +100,30 @@ export function LoginForm({
           className="text-sm font-semibold text-stone-800"
           htmlFor="password"
         >
-          Mat khau
+          Mật khẩu
         </label>
         <Input
           autoComplete="current-password"
           id="password"
           name="password"
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Nhap mat khau"
+          placeholder="Nhập mật khẩu"
           type="password"
           value={password}
         />
       </div>
 
       <Button className="w-full" disabled={isPending} size="lg" type="submit">
-        {isPending ? "Dang dang nhap..." : "Dang nhap"}
+        {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
       </Button>
 
       <p className="text-sm text-stone-600">
-        Chua co tai khoan?{" "}
+        Chưa có tài khoản?{" "}
         <Link
           className="font-semibold text-stone-950 underline decoration-stone-300 underline-offset-4"
           href={authRoutes.register}
         >
-          Tao tai khoan
+          Tạo tài khoản
         </Link>
       </p>
     </form>

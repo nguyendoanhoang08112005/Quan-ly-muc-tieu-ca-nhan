@@ -56,7 +56,7 @@ export default async function CategoriesPage() {
                       {category.name}
                     </h2>
                     <p className="mt-2 text-sm text-stone-500">
-                      {category.goalsCount} goal dang su dung
+                      {category.goalsCount} goal đang sử dụng
                     </p>
                   </div>
 
@@ -65,7 +65,7 @@ export default async function CategoriesPage() {
                       className={cn(buttonVariants({ variant: "secondary" }))}
                       href={`/categories/${category.id}/edit` as Route}
                     >
-                      Sua
+                      Sửa
                     </Link>
                     <DeleteCategoryForm categoryId={category.id} />
                   </div>
@@ -75,7 +75,7 @@ export default async function CategoriesPage() {
           </div>
         ) : (
           <div className="mt-8 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center text-sm text-stone-500">
-            Chua co category nao.
+            Chưa có category nào.
           </div>
         )}
       </section>

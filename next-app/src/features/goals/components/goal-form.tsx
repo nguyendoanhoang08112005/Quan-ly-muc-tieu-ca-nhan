@@ -49,11 +49,11 @@ export function GoalForm({
   const submitLabel =
     mode === "edit"
       ? isPending
-        ? "Dang cap nhat..."
-        : "Cap nhat goal"
+        ? "Đang cập nhật..."
+        : "Cập nhật goal"
       : isPending
-        ? "Dang tao goal..."
-        : "Tao goal";
+        ? "Đang tạo goal..."
+        : "Tạo goal";
 
   return (
     <form action={formAction} className="space-y-6">
@@ -64,7 +64,7 @@ export function GoalForm({
           Phase 4
         </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cap nhat muc tieu" : "Tao muc tieu moi"}
+          {mode === "edit" ? "Cập nhật mục tiêu" : "Tạo mục tiêu mới"}
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
           Form nay chay bang Server Actions + Zod. Page van la Server Component,
@@ -143,7 +143,7 @@ export function GoalForm({
             defaultValue={state.values.categoryId}
             name="categoryId"
           >
-            <option value="">Khong gan category</option>
+            <option value="">Không gắn category</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -287,7 +287,7 @@ export function GoalForm({
               ))
             ) : (
               <div className="text-sm text-stone-500">
-                Chua co tag nao. Ban co the tao o trang Tags.
+                Chưa có tag nào. Bạn có thể tạo ở trang Tags.
               </div>
             )}
           </div>
@@ -327,8 +327,8 @@ export function GoalForm({
               Cong khai goal nay
             </span>
             <span className="mt-1 block text-sm leading-6 text-stone-600">
-              Goal cong khai se xuat hien trong khu vuc Follow de nguoi dung
-              khac co the theo doi tien do cua ban.
+              Goal công khai sẽ xuất hiện trong khu vực Follow để người dùng
+              khác có thể theo dõi tiến độ của bạn.
             </span>
           </span>
         </label>

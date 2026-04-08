@@ -22,7 +22,7 @@ export function SignOutButton() {
       onClick={handleSignOut}
       variant="secondary"
     >
-      {isPending ? "Dang dang xuat..." : "Dang xuat"}
+      {isPending ? "Đang đăng xuất..." : "Đăng xuất"}
     </Button>
   );
 }

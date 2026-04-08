@@ -27,11 +27,11 @@ export default async function HabitsPage() {
               Phase 7
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Habits va daily logs
+              Habits và daily logs
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Module nay dua habit tracker len he moi voi log theo ngay, streak
-              va lien ket goal neu can.
+              Module này đưa habit tracker lên hệ mới với log theo ngày, streak
+              và liên kết goal nếu cần.
             </p>
           </div>
 
@@ -40,14 +40,14 @@ export default async function HabitsPage() {
             href="/habits/new"
           >
             <Plus className="h-4 w-4" />
-            Tao habit moi
+            Tạo habit mới
           </Link>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tong habits
+              Tổng habits
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {habits.length}
@@ -55,7 +55,7 @@ export default async function HabitsPage() {
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Dang active
+              Đang active
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {activeHabits.length}
@@ -63,7 +63,7 @@ export default async function HabitsPage() {
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Da dat muc tieu hom nay
+              Đã đạt mục tiêu hôm nay
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {completedToday}
@@ -119,34 +119,34 @@ export default async function HabitsPage() {
 
               <div className="mt-5 grid gap-3 text-sm text-stone-600 sm:grid-cols-2">
                 <div>
-                  Muc tieu: {habit.targetCount} {habit.unit} / chu ky
+                  Mục tiêu: {habit.targetCount} {habit.unit} / chu kỳ
                 </div>
                 <div>
                   Best streak: {habit.bestStreak}
                 </div>
                 <div>
-                  Nhac: {habit.reminderTime || "Chua dat"}
+                  Nhắc: {habit.reminderTime || "Chưa đặt"}
                 </div>
                 <div>
-                  Log gan nhat: {formatDisplayDateTime(habit.lastLoggedAt)}
+                  Log gần nhất: {formatDisplayDateTime(habit.lastLoggedAt)}
                 </div>
                 <div>
-                  Bat dau: {formatDisplayDate(habit.startDate)}
+                  Bắt đầu: {formatDisplayDate(habit.startDate)}
                 </div>
                 <div>
-                  Ket thuc: {formatDisplayDate(habit.endDate)}
+                  Kết thúc: {formatDisplayDate(habit.endDate)}
                 </div>
               </div>
 
               {habit.todayLog ? (
                 <div className="mt-5 rounded-[1.5rem] border border-stone-200 bg-stone-50 px-4 py-4 text-sm text-stone-600">
-                  Hom nay: {habit.todayLog.completedCount}/
+                  Hôm nay: {habit.todayLog.completedCount}/
                   {habit.todayLog.targetCountSnapshot} {habit.unit}
-                  {habit.todayLog.isCompleted ? " | Da dat muc tieu" : " | Chua dat muc tieu"}
+                  {habit.todayLog.isCompleted ? " | Đã đạt mục tiêu" : " | Chưa đạt mục tiêu"}
                 </div>
               ) : (
                 <div className="mt-5 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-4 py-4 text-sm text-stone-500">
-                  Hom nay chua co habit log.
+                  Hôm nay chưa có habit log.
                 </div>
               )}
 
@@ -158,7 +158,7 @@ export default async function HabitsPage() {
                   className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full")}
                   href={`/habits/${habit.id}` as Route}
                 >
-                  Xem chi tiet
+                  Xem chi tiết
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -168,10 +168,10 @@ export default async function HabitsPage() {
       ) : (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
           <h2 className="text-2xl font-black text-stone-950">
-            Chua co habit nao tren he moi
+            Chưa có habit nào trên hệ mới
           </h2>
           <p className="mt-3 text-sm leading-7 text-stone-500">
-            Tao habit dau tien de bat dau theo doi streak va log theo ngay.
+            Tạo habit đầu tiên để bắt đầu theo dõi streak và log theo ngày.
           </p>
         </section>
       )}

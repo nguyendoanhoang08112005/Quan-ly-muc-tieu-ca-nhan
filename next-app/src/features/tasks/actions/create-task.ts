@@ -46,7 +46,7 @@ export async function createTaskAction(
   );
 
   if (!createdTaskId) {
-    return buildTaskFormErrorState(values, "Khong tao duoc task.");
+    return buildTaskFormErrorState(values, "Không tạo được task.");
   }
 
   revalidatePath("/dashboard");

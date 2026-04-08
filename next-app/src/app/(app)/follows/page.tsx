@@ -24,8 +24,8 @@ export default async function FollowsPage() {
               Follow public goals
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Module follow da co privacy ro rang: chi goal cong khai moi xuat
-              hien o day, va ban co the follow/unfollow bang Server Actions.
+              Module follow đã có privacy rõ ràng: chỉ goal công khai mới xuất
+              hiện ở đây, và bạn có thể follow/unfollow bằng Server Actions.
             </p>
           </div>
         </div>
@@ -33,7 +33,7 @@ export default async function FollowsPage() {
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Dang theo doi
+              Đang theo dõi
             </div>
             <div className="mt-2 text-4xl font-black">
               {overview.followedGoals.length}
@@ -41,7 +41,7 @@ export default async function FollowsPage() {
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Kham pha
+              Khám phá
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {overview.discoverGoals.length}
@@ -49,7 +49,7 @@ export default async function FollowsPage() {
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Goal cong khai cua ban
+              Goal công khai của bạn
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {publicGoals.length}
@@ -61,10 +61,10 @@ export default async function FollowsPage() {
       <section className="space-y-6">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-            Goals cong khai cua ban
+            Goals công khai của bạn
           </p>
           <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-            Cac goal dang mo cho nguoi khac theo doi
+            Các goal đang mở cho người khác theo dõi
           </h2>
         </div>
 
@@ -77,11 +77,11 @@ export default async function FollowsPage() {
         ) : (
           <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
             <h3 className="text-2xl font-black text-stone-950">
-              Ban chua cong khai goal nao
+              Bạn chưa công khai goal nào
             </h3>
             <p className="mt-3 text-sm leading-7 text-stone-500">
-              Hay bat checkbox cong khai trong form goal neu ban muon goal xuat
-              hien trong khu vuc follow.
+              Hãy bật checkbox công khai trong form goal nếu bạn muốn goal xuất
+              hiện trong khu vực follow.
             </p>
           </div>
         )}
@@ -90,10 +90,10 @@ export default async function FollowsPage() {
       <section className="space-y-6">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-            Dang theo doi
+            Đang theo dõi
           </p>
           <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-            Public goals ma ban da follow
+            Public goals mà bạn đã follow
           </h2>
         </div>
 
@@ -106,10 +106,10 @@ export default async function FollowsPage() {
         ) : (
           <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
             <h3 className="text-2xl font-black text-stone-950">
-              Ban chua follow goal nao
+              Bạn chưa follow goal nào
             </h3>
             <p className="mt-3 text-sm leading-7 text-stone-500">
-              Kham pha danh sach cong khai ben duoi de bat dau theo doi.
+              Khám phá danh sách công khai bên dưới để bắt đầu theo dõi.
             </p>
           </div>
         )}
@@ -118,10 +118,10 @@ export default async function FollowsPage() {
       <section className="space-y-6">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-            Kham pha cong khai
+            Khám phá công khai
           </p>
           <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-            Goals co the follow ngay
+            Goals có thể follow ngay
           </h2>
         </div>
 
@@ -134,11 +134,11 @@ export default async function FollowsPage() {
         ) : (
           <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
             <h3 className="text-2xl font-black text-stone-950">
-              Chua co public goal moi de kham pha
+              Chưa có public goal mới để khám phá
             </h3>
             <p className="mt-3 text-sm leading-7 text-stone-500">
-              Khi nguoi dung khac cong khai them goal, danh sach nay se tu dong
-              cap nhat.
+              Khi người dùng khác công khai thêm goal, danh sách này sẽ tự động
+              cập nhật.
             </p>
           </div>
         )}

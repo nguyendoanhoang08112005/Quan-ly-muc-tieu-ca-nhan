@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   const profile = await getProfileSummaryForUser(auth.userId);
 
   if (!profile) {
-    return jsonNotFoundResponse("Khong tim thay user hien tai.");
+    return jsonNotFoundResponse("Không tìm thấy user hiện tại.");
   }
 
   return NextResponse.json({

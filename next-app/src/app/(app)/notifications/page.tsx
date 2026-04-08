@@ -35,8 +35,8 @@ export default async function NotificationsPage() {
               Notification center
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Notification center tap trung vao unread state, recent events va
-              dieu huong nhanh toi entity lien quan.
+              Notification center tập trung vào unread state, recent events và
+              điều hướng nhanh tới entity liên quan.
             </p>
           </div>
 
@@ -46,7 +46,7 @@ export default async function NotificationsPage() {
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tong notifications
+              Tổng notifications
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {summary.total}
@@ -54,13 +54,13 @@ export default async function NotificationsPage() {
           </div>
           <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Chua doc
+              Chưa đọc
             </div>
             <div className="mt-2 text-4xl font-black">{summary.unread}</div>
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Da doc
+              Đã đọc
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {summary.read}
@@ -100,7 +100,7 @@ export default async function NotificationsPage() {
                           : "bg-amber-100 text-amber-700"
                       )}
                     >
-                      {notification.isRead ? "Da doc" : "Chua doc"}
+                      {notification.isRead ? "Đã đọc" : "Chưa đọc"}
                     </span>
                   </div>
 
@@ -108,10 +108,10 @@ export default async function NotificationsPage() {
                     {notification.title}
                   </h2>
                   <p className="mt-3 text-sm leading-6 text-stone-600">
-                    {notification.body ?? "Khong co mo ta bo sung."}
+                    {notification.body ?? "Không có mô tả bổ sung."}
                   </p>
                   <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-                    Tao luc {formatDisplayDateTime(notification.createdAt)}
+                    Tạo lúc {formatDisplayDateTime(notification.createdAt)}
                   </p>
                 </div>
 
@@ -121,7 +121,7 @@ export default async function NotificationsPage() {
                       className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
                       href={notification.href as Route}
                     >
-                      Mo lien ket
+                      Mở liên kết
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   ) : null}
@@ -140,11 +140,11 @@ export default async function NotificationsPage() {
             <Bell className="h-8 w-8 text-stone-500" />
           </div>
           <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-            Chua co notification nao
+            Chưa có notification nào
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-            Notification moi se xuat hien o day khi he thong bat dau ghi nhan
-            cac su kien nhu pomodoro session hoan thanh.
+            Notification mới sẽ xuất hiện ở đây khi hệ thống bắt đầu ghi nhận
+            các sự kiện như pomodoro session hoàn thành.
           </p>
         </section>
       )}

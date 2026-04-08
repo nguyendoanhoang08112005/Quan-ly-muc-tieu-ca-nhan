@@ -15,6 +15,6 @@ export async function POST(request: Request) {
   await revokeApiTokenForUser(auth.userId);
 
   return NextResponse.json({
-    message: "Dang xuat thanh cong."
+    message: "Đăng xuất thành công."
   });
 }

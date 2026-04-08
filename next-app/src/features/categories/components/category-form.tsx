@@ -48,7 +48,7 @@ export function CategoryForm({
           Phase 6
         </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cap nhat category" : "Tao category moi"}
+          {mode === "edit" ? "Cập nhật category" : "Tạo category mới"}
         </h2>
       </div>
 
@@ -107,11 +107,11 @@ export function CategoryForm({
         <Button disabled={isPending} type="submit">
           {mode === "edit"
             ? isPending
-              ? "Dang cap nhat..."
-              : "Cap nhat category"
+              ? "Đang cập nhật..."
+              : "Cập nhật category"
             : isPending
-              ? "Dang tao..."
-              : "Tao category"}
+              ? "Đang tạo..."
+              : "Tạo category"}
         </Button>
         <Link
           className="inline-flex h-10 items-center justify-center rounded-2xl border border-stone-300 px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"

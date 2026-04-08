@@ -5,8 +5,8 @@ import { RegisterForm } from "@/features/auth/components/register-form";
 import { authRoutes } from "@/lib/auth/routes";
 
 export const metadata: Metadata = {
-  title: "Dang ky",
-  description: "Tao tai khoan moi tren he thong quan ly muc tieu ca nhan.",
+  title: "Đăng ký",
+  description: "Tạo tài khoản mới trên hệ thống quản lý mục tiêu cá nhân.",
   robots: {
     index: false,
     follow: false
@@ -16,20 +16,20 @@ export const metadata: Metadata = {
 export default async function RegisterPage() {
   return (
     <AuthShell
-      description="Tai khoan moi se duoc luu bang Prisma va hash mat khau bang bcrypt-compatible flow de san sang cho migration du lieu cu."
+      description="Tài khoản mới sẽ được lưu bằng Prisma và hash mật khẩu bằng bcrypt-compatible flow để sẵn sàng cho migration dữ liệu cũ."
       eyebrow="Registration"
       footer={
         <p>
-          Da co tai khoan?{" "}
+          Đã có tài khoản?{" "}
           <Link
             className="font-semibold text-stone-950 underline decoration-stone-300 underline-offset-4"
             href={authRoutes.signIn}
           >
-            Dang nhap
+            Đăng nhập
           </Link>
         </p>
       }
-      title="Tao tai khoan moi"
+      title="Tạo tài khoản mới"
     >
       <RegisterForm />
     </AuthShell>

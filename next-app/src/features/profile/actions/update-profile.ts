@@ -31,7 +31,7 @@ export async function updateProfileAction(
   if (result.status === "not_found") {
     return buildProfileFormErrorState(
       values,
-      "Khong tim thay tai khoan de cap nhat."
+      "Không tìm thấy tài khoản để cập nhật."
     );
   }
 
@@ -45,7 +45,7 @@ export async function updateProfileAction(
 
   return {
     status: "success",
-    message: "Cap nhat profile thanh cong.",
+    message: "Cập nhật profile thành công.",
     sessionUpdate: {
       email: result.user.email,
       image: result.user.avatarPath,
