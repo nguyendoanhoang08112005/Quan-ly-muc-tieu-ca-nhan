@@ -145,6 +145,12 @@ export default async function TasksPage() {
                 >
                   Sua task
                 </Link>
+                <Link
+                  className={cn(buttonVariants({ variant: "secondary" }))}
+                  href={`/pomodoro?taskId=${task.id}` as Route}
+                >
+                  Pomodoro
+                </Link>
                 <CompleteTaskForm
                   disabled={task.status === "completed"}
                   goalId={task.goalId}

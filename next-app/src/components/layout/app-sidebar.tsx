@@ -11,6 +11,8 @@ const items = [
   { href: "/tasks" as Route, label: "Tasks" },
   { href: "/habits" as Route, label: "Habits" },
   { href: "/notes" as Route, label: "Notes" },
+  { href: "/pomodoro" as Route, label: "Pomodoro" },
+  { href: "/notifications" as Route, label: "Notifications" },
   { href: "/categories" as Route, label: "Categories" },
   { href: "/tags" as Route, label: "Tags" }
 ];
