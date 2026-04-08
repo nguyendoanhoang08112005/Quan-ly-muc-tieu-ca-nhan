@@ -75,8 +75,12 @@ export default async function DashboardPage() {
               Xem tất cả mục tiêu
             </Link>
             <Link
-              className={cn(buttonVariants({ size: "lg" }), "gap-2 rounded-full")}
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "gap-2 rounded-full !text-white"
+              )}
               href="/goals/new"
+              style={{ color: "#ffffff" }}
             >
               <Plus className="h-4 w-4" />
               Tạo mục tiêu mới
@@ -318,8 +322,12 @@ export default async function DashboardPage() {
 
             <div className="mt-6 grid gap-3">
               <Link
-                className={cn(buttonVariants({ size: "lg" }), "justify-start gap-2")}
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "justify-start gap-2 !text-white"
+                )}
                 href="/goals/new"
+                style={{ color: "#ffffff" }}
               >
                 <Plus className="h-4 w-4" />
                 Tạo mục tiêu mới

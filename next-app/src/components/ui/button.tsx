@@ -7,11 +7,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-stone-950 text-white hover:bg-stone-800",
+        default: "ui-dark-cta bg-stone-950 !text-white hover:bg-stone-800",
         secondary:
-          "border border-stone-300 bg-white text-stone-950 hover:bg-stone-100",
+          "ui-light-cta border border-stone-300 bg-white !text-stone-950 hover:bg-stone-100",
         ghost: "text-stone-700 hover:bg-stone-100 hover:text-stone-950",
-        destructive: "bg-rose-600 text-white hover:bg-rose-700"
+        destructive: "ui-dark-cta bg-rose-600 !text-white hover:bg-rose-700"
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -31,11 +31,28 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {}
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, style, variant, size, ...props }, ref) => {
+    const resolvedVariant = variant ?? "default";
+    const resolvedStyle =
+      resolvedVariant === "default" || resolvedVariant === "destructive"
+        ? {
+            color: "#ffffff",
+            WebkitTextFillColor: "#ffffff",
+            ...style
+          }
+        : resolvedVariant === "secondary"
+          ? {
+              color: "#1c1917",
+              WebkitTextFillColor: "#1c1917",
+              ...style
+            }
+          : style;
+
     return (
       <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        style={resolvedStyle}
         {...props}
       />
     );

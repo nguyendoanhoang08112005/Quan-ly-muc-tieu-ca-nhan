@@ -33,8 +33,12 @@ export default async function HabitsPage() {
           </div>
 
           <Link
-            className={cn(buttonVariants({ size: "lg" }), "gap-2 rounded-full")}
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "gap-2 rounded-full !text-white"
+            )}
             href="/habits/new"
+            style={{ color: "#ffffff" }}
           >
             <Plus className="h-4 w-4" />
             Tạo thói quen mới
@@ -152,8 +156,12 @@ export default async function HabitsPage() {
                   Mô-đun thói quen
                 </span>
                 <Link
-                  className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full")}
+                  className={cn(
+                    buttonVariants({ size: "sm" }),
+                    "gap-2 rounded-full !text-white"
+                  )}
                   href={`/habits/${habit.id}` as Route}
+                  style={{ color: "#ffffff" }}
                 >
                   Xem chi tiết
                   <ArrowRight className="h-4 w-4" />

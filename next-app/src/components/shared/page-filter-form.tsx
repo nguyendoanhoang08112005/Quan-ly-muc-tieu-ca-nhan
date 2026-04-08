@@ -67,7 +67,10 @@ export function PageFilterForm({
 
         <div className="flex flex-wrap items-end gap-3 lg:justify-end">
           <button
-            className={cn(buttonVariants({ size: "lg" }), "rounded-full")}
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "rounded-full !text-white"
+            )}
             type="submit"
           >
             Áp dụng

@@ -57,8 +57,12 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
           </div>
 
           <Link
-            className={cn(buttonVariants({ size: "lg" }), "gap-2 rounded-full")}
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "gap-2 rounded-full !text-white"
+            )}
             href="/notes/new"
+            style={{ color: "#ffffff" }}
           >
             <Plus className="h-4 w-4" />
             Tạo ghi chú mới

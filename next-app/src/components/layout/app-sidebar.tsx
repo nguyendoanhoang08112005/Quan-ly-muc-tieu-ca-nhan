@@ -15,17 +15,17 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
         <h2 className="mt-4 text-lg font-black uppercase tracking-tight text-black">
           Mục tiêu cá nhân
         </h2>
-        <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+        <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-stone-700">
           Phiên xác thực hiện tại
         </p>
       </div>
 
       <div className="border-b border-stone-200 px-4 py-5">
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-500">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-stone-700">
           Đăng nhập bởi
         </p>
         <p className="mt-3 text-sm font-semibold text-stone-900">{user.name}</p>
-        <p className="mt-1 text-sm text-stone-500">{user.email}</p>
+        <p className="mt-1 text-sm text-stone-600">{user.email}</p>
       </div>
 
       <nav className="space-y-2 p-4">
@@ -36,9 +36,10 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
         <Link
           className={cn(
             buttonVariants({ size: "sm" }),
-            "w-full rounded-2xl text-center"
+            "w-full rounded-2xl text-center !text-white"
           )}
           href="/goals/new"
+          style={{ color: "#ffffff" }}
         >
           Tạo mục tiêu mới
         </Link>

@@ -21,8 +21,12 @@ export function AppMobileNav({ user }: { user: AppSessionUser }) {
           </div>
 
           <Link
-            className={cn(buttonVariants({ size: "sm" }), "rounded-full")}
+            className={cn(
+              buttonVariants({ size: "sm" }),
+              "rounded-full !text-white"
+            )}
             href="/goals/new"
+            style={{ color: "#ffffff" }}
           >
             Tạo mục tiêu
           </Link>

@@ -114,8 +114,12 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
           Mô-đun mục tiêu
         </span>
         <Link
-          className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full")}
+          className={cn(
+            buttonVariants({ size: "sm" }),
+            "gap-2 rounded-full !text-white"
+          )}
           href={`/goals/${goal.id}`}
+          style={{ color: "#ffffff" }}
         >
           Xem chi tiết
           <ArrowRight className="h-4 w-4" />

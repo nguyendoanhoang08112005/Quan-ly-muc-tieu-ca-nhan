@@ -17,8 +17,12 @@ export function EmptyGoalsState() {
       </p>
       <div className="mt-8">
         <Link
-          className={cn(buttonVariants({ size: "lg" }), "rounded-full")}
+          className={cn(
+            buttonVariants({ size: "lg" }),
+            "rounded-full !text-white"
+          )}
           href="/goals/new"
+          style={{ color: "#ffffff" }}
         >
           Tạo mục tiêu đầu tiên
         </Link>

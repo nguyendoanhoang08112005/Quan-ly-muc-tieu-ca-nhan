@@ -36,9 +36,36 @@ body {
     sans-serif;
 }
 
-a {
-  color: inherit;
+:where(a) {
   text-decoration: none;
+}
+
+.ui-dark-cta,
+.ui-dark-cta:link,
+.ui-dark-cta:visited {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.ui-light-cta,
+.ui-light-cta:link,
+.ui-light-cta:visited {
+  color: #1c1917 !important;
+  -webkit-text-fill-color: #1c1917;
+}
+
+.ui-dark-cta svg,
+.ui-dark-cta span,
+.ui-dark-cta strong,
+.ui-dark-cta small {
+  color: inherit !important;
+}
+
+.ui-light-cta svg,
+.ui-light-cta span,
+.ui-light-cta strong,
+.ui-light-cta small {
+  color: inherit !important;
 }
 
 button,
@@ -47,4 +74,3 @@ textarea,
 select {
   font: inherit;
 }
-
