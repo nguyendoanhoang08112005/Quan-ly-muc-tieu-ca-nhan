@@ -14,6 +14,9 @@ export function AppMobileNav({ user }: { user: AppSessionUser }) {
             <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-500">
               Mục tiêu cá nhân
             </p>
+            <p className="mt-1 text-xs text-stone-500">
+              Hãy bắt đầu với Mục tiêu, Công việc và Thói quen.
+            </p>
             <p className="mt-2 text-sm font-semibold text-stone-900">
               {user.name}
             </p>
@@ -31,9 +34,7 @@ export function AppMobileNav({ user }: { user: AppSessionUser }) {
           </Link>
         </div>
 
-        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-          <AppNavigationLinks variant="mobile" />
-        </div>
+        <AppNavigationLinks variant="mobile" />
 
         <SignOutButton className="w-full" size="sm" />
       </div>

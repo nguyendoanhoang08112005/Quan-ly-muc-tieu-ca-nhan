@@ -16,7 +16,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
           Mục tiêu cá nhân
         </h2>
         <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-stone-700">
-          Phiên xác thực hiện tại
+          Đi theo 3 mục chính trước
         </p>
       </div>
 
@@ -28,7 +28,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
         <p className="mt-1 text-sm text-stone-600">{user.email}</p>
       </div>
 
-      <nav className="space-y-2 p-4">
+      <nav className="p-4">
         <AppNavigationLinks />
       </nav>
 
