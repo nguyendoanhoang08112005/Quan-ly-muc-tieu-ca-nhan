@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { notFound } from "next/navigation";
-import { ArrowLeft, PencilLine } from "lucide-react";
+import { ArrowLeft, PencilLine, Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { DeleteProjectForm } from "@/features/projects/components/delete-project-form";
 import {
@@ -16,6 +16,7 @@ import { goalPriorityLabels, workStatusClassNames, workStatusLabels } from "@/fe
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDate, formatDisplayDateTime } from "@/lib/dates";
 import { cn } from "@/lib/utils";
+import { listMilestoneQuickCreateOptionsForGoal } from "@/server/modules/milestones/queries";
 import { getProjectDetailForUser } from "@/server/modules/projects/queries";
 
 type ProjectDetailPageProps = {
@@ -40,6 +41,13 @@ export default async function ProjectDetailPage({
   if (!project) {
     notFound();
   }
+
+  const quickCreateMilestones = project.goal
+    ? await listMilestoneQuickCreateOptionsForGoal(
+        userId,
+        BigInt(project.goal.id)
+      )
+    : [];
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -132,6 +140,46 @@ export default async function ProjectDetailPage({
             </div>
           </div>
         </div>
+
+        {quickCreateMilestones.length > 0 ? (
+          <div className="mt-6 rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
+                  Tạo nhanh công việc
+                </p>
+                <h2 className="mt-2 text-xl font-black text-stone-950">
+                  Chọn cột mốc để thêm việc cho dự án này
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-stone-600">
+                  Dự án đang gắn với mục tiêu {project.goal?.title}, nên bạn có
+                  thể tạo việc mới trực tiếp trong các cột mốc liên quan.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-3">
+              {quickCreateMilestones.map((milestone) => (
+                <Link
+                  className={cn(
+                    buttonVariants({ variant: "secondary" }),
+                    "h-auto min-h-11 gap-2 rounded-full px-4 py-3 text-left"
+                  )}
+                  href={`/goals/${milestone.goal.id}/milestones/${milestone.id}/tasks/new` as Route}
+                  key={milestone.id}
+                >
+                  <Plus className="h-4 w-4 shrink-0" />
+                  <span>
+                    Cột mốc {milestone.sequenceNo}: {milestone.title}
+                    <span className="block text-xs font-medium text-stone-500">
+                      {milestone.tasksCount} công việc hiện có
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <section className="space-y-6">
@@ -189,7 +237,9 @@ export default async function ProjectDetailPage({
                         </span>
                       ) : null}
                       <span className="rounded-full bg-stone-100 px-3 py-1">
-                        Hạn {formatDisplayDateTime(task.dueAt)}
+                        {task.dueAt
+                          ? `Hạn ${formatDisplayDateTime(task.dueAt)}`
+                          : "Chưa đặt hạn"}
                       </span>
                     </div>
                   </div>
@@ -240,9 +290,26 @@ export default async function ProjectDetailPage({
               Dự án này chưa có công việc nào
             </h3>
             <p className="mt-3 text-sm leading-7 text-stone-500">
-              Hãy chỉnh sửa công việc hiện có để gắn vào dự án, hoặc tạo công
-              việc mới trong cột mốc và chọn dự án ngay trong biểu mẫu công việc.
+              Hãy tạo công việc mới trong cột mốc liên quan rồi gắn dự án này
+              ngay trong biểu mẫu công việc.
             </p>
+            {quickCreateMilestones.length > 0 ? (
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                {quickCreateMilestones.map((milestone) => (
+                  <Link
+                    className={cn(
+                      buttonVariants({ variant: "secondary" }),
+                      "gap-2 rounded-full"
+                    )}
+                    href={`/goals/${milestone.goal.id}/milestones/${milestone.id}/tasks/new` as Route}
+                    key={milestone.id}
+                  >
+                    <Plus className="h-4 w-4" />
+                    Cột mốc {milestone.sequenceNo}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
           </div>
         )}
       </section>

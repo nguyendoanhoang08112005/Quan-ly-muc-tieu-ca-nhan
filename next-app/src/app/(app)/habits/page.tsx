@@ -125,7 +125,7 @@ export default async function HabitsPage() {
                   Nhắc: {habit.reminderTime || "Chưa đặt"}
                 </div>
                 <div>
-                  Log gần nhất: {formatDisplayDateTime(habit.lastLoggedAt)}
+                  Log gần nhất: {formatDisplayDateTime(habit.lastLoggedAt, "Chưa ghi nhận")}
                 </div>
                 <div>
                   Bắt đầu: {formatDisplayDate(habit.startDate)}

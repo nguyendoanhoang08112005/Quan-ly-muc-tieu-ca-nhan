@@ -2,19 +2,45 @@ import Link from "next/link";
 import type { Route } from "next";
 import { Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { DeleteNoteForm } from "@/features/notes/components/delete-note-form";
 import {
   buildNoteExcerpt,
   noteableTypeLabels
 } from "@/features/notes/note-helpers";
+import { noteableTypeValues } from "@/features/notes/types";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDateTime } from "@/lib/dates";
+import { getSingleSearchParam, matchesSearchTerm } from "@/lib/search-params";
 import { cn } from "@/lib/utils";
 import { listNotesForUser } from "@/server/modules/notes/queries";
 
-export default async function NotesPage() {
+type NotesPageProps = {
+  searchParams?: Promise<{
+    q?: string | string[];
+    type?: string | string[];
+  }>;
+};
+
+export default async function NotesPage({ searchParams }: NotesPageProps) {
   const userId = await requireAuthenticatedUserId();
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const notes = await listNotesForUser(userId);
+  const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
+  const typeFilter = getSingleSearchParam(resolvedSearchParams?.type) || "all";
+  const filteredNotes = notes.filter((note) => {
+    const matchesType = typeFilter === "all" || note.noteableType === typeFilter;
+
+    return (
+      matchesType &&
+      matchesSearchTerm(query, [
+        note.content,
+        note.targetLabel,
+        note.targetDescription,
+        noteableTypeLabels[note.noteableType]
+      ])
+    );
+  });
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -40,9 +66,30 @@ export default async function NotesPage() {
         </div>
       </section>
 
-      {notes.length > 0 ? (
+      <PageFilterForm
+        filters={[
+          {
+            label: "Loại ghi chú",
+            name: "type",
+            options: [
+              { label: "Tất cả đối tượng", value: "all" },
+              ...noteableTypeValues.map((value) => ({
+                label: noteableTypeLabels[value],
+                value
+              }))
+            ],
+            value: typeFilter
+          }
+        ]}
+        resetHref="/notes"
+        resultLabel={`Đang hiển thị ${filteredNotes.length}/${notes.length} ghi chú.`}
+        searchPlaceholder="Tìm theo nội dung, tên đối tượng hoặc ngữ cảnh"
+        searchValue={query}
+      />
+
+      {filteredNotes.length > 0 ? (
         <section className="grid gap-6">
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
             <article
               className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm"
               key={note.id}
@@ -80,6 +127,15 @@ export default async function NotesPage() {
               </div>
             </article>
           ))}
+        </section>
+      ) : notes.length > 0 ? (
+        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
+          <h2 className="text-2xl font-black text-stone-950">
+            Không tìm thấy ghi chú phù hợp
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-stone-500">
+            Hãy thử đổi từ khóa hoặc chuyển về tất cả đối tượng.
+          </p>
         </section>
       ) : (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">

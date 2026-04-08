@@ -1,13 +1,16 @@
 import { deleteCategoryAction } from "@/features/categories/actions/delete-category";
-import { Button } from "@/components/ui/button";
+import { ConfirmSubmitButton } from "@/components/shared/confirm-submit-button";
 
 export function DeleteCategoryForm({ categoryId }: { categoryId: string }) {
   return (
     <form action={deleteCategoryAction}>
       <input name="categoryId" type="hidden" value={categoryId} />
-      <Button type="submit" variant="destructive">
-        Xóa danh mục
-      </Button>
+      <ConfirmSubmitButton
+        confirmMessage="Bạn có chắc muốn xóa danh mục này không? Các mục tiêu đang dùng danh mục sẽ cần gán lại."
+        idleLabel="Xóa danh mục"
+        pendingLabel="Đang xóa danh mục..."
+        variant="destructive"
+      />
     </form>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { DeleteProjectForm } from "@/features/projects/components/delete-project-form";
 import {
   projectStatusClassNames,
@@ -9,13 +10,36 @@ import {
 } from "@/features/projects/project-helpers";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDate } from "@/lib/dates";
+import { getSingleSearchParam, matchesSearchTerm } from "@/lib/search-params";
 import { cn } from "@/lib/utils";
 import { listProjectsForUser } from "@/server/modules/projects/queries";
 
-export default async function ProjectsPage() {
+type ProjectsPageProps = {
+  searchParams?: Promise<{
+    q?: string | string[];
+    status?: string | string[];
+  }>;
+};
+
+export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
   const userId = await requireAuthenticatedUserId();
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const projects = await listProjectsForUser(userId);
-  const activeProjects = projects.filter((project) => project.status === "active");
+  const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
+  const statusFilter = getSingleSearchParam(resolvedSearchParams?.status) || "all";
+  const filteredProjects = projects.filter((project) => {
+    const matchesStatus = statusFilter === "all" || project.status === statusFilter;
+
+    return (
+      matchesStatus &&
+      matchesSearchTerm(query, [
+        project.name,
+        project.description,
+        project.goal?.title
+      ])
+    );
+  });
+  const activeProjects = filteredProjects.filter((project) => project.status === "active");
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -46,7 +70,7 @@ export default async function ProjectsPage() {
               Tổng dự án
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
-              {projects.length}
+              {filteredProjects.length}
             </div>
           </div>
           <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
@@ -60,15 +84,36 @@ export default async function ProjectsPage() {
               Có công việc
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
-              {projects.filter((project) => project.tasksCount > 0).length}
+              {filteredProjects.filter((project) => project.tasksCount > 0).length}
             </div>
           </div>
         </div>
       </section>
 
-      {projects.length > 0 ? (
+      <PageFilterForm
+        filters={[
+          {
+            label: "Trạng thái",
+            name: "status",
+            options: [
+              { label: "Tất cả trạng thái", value: "all" },
+              ...Object.entries(projectStatusLabels).map(([value, label]) => ({
+                label,
+                value
+              }))
+            ],
+            value: statusFilter
+          }
+        ]}
+        resetHref="/projects"
+        resultLabel={`Đang hiển thị ${filteredProjects.length}/${projects.length} dự án.`}
+        searchPlaceholder="Tìm theo tên dự án, mô tả hoặc mục tiêu liên kết"
+        searchValue={query}
+      />
+
+      {filteredProjects.length > 0 ? (
         <section className="grid gap-6">
-          {projects.map((project) => (
+          {filteredProjects.map((project) => (
             <article
               className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm"
               key={project.id}
@@ -138,6 +183,15 @@ export default async function ProjectsPage() {
               </div>
             </article>
           ))}
+        </section>
+      ) : projects.length > 0 ? (
+        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
+          <h2 className="text-2xl font-black text-stone-950">
+            Không tìm thấy dự án phù hợp
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-stone-500">
+            Hãy xóa bớt bộ lọc hoặc đổi từ khóa để xem nhiều dự án hơn.
+          </p>
         </section>
       ) : (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">

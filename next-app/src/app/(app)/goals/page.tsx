@@ -1,19 +1,58 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { EmptyGoalsState } from "@/features/goals/components/empty-goals-state";
 import { GoalCard } from "@/features/goals/components/goal-card";
+import { goalStatusLabels } from "@/features/goals/goal-helpers";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDate } from "@/lib/dates";
+import { getSingleSearchParam, matchesSearchTerm } from "@/lib/search-params";
 import { cn } from "@/lib/utils";
 import { listGoalsForUser } from "@/server/modules/goals/queries";
 
-export default async function GoalsPage() {
+type GoalsPageProps = {
+  searchParams?: Promise<{
+    q?: string | string[];
+    status?: string | string[];
+  }>;
+};
+
+export default async function GoalsPage({ searchParams }: GoalsPageProps) {
   const userId = await requireAuthenticatedUserId();
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const goals = await listGoalsForUser(userId);
-  const completedGoals = goals.filter((goal) => goal.status === "completed");
-  const inProgressGoals = goals.filter((goal) => goal.status === "in_progress");
-  const nearestDeadline = goals.find((goal) => goal.targetDate);
+  const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
+  const statusFilter = getSingleSearchParam(resolvedSearchParams?.status) || "all";
+  const filteredGoals = goals.filter((goal) => {
+    const matchesStatus = statusFilter === "all" || goal.status === statusFilter;
+
+    return (
+      matchesStatus &&
+      matchesSearchTerm(query, [
+        goal.title,
+        goal.description,
+        goal.category?.name,
+        ...goal.tags.map((tag) => tag.name)
+      ])
+    );
+  });
+  const completedGoals = filteredGoals.filter((goal) => goal.status === "completed");
+  const inProgressGoals = filteredGoals.filter((goal) => goal.status === "in_progress");
+  const nearestDeadline = filteredGoals
+    .flatMap((goal) => {
+      if (!goal.targetDate) {
+        return [];
+      }
+
+      return [
+        {
+          deadline: new Date(goal.targetDate).getTime(),
+          goal
+        }
+      ];
+    })
+    .sort((left, right) => left.deadline - right.deadline)[0]?.goal;
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -45,7 +84,7 @@ export default async function GoalsPage() {
               Tổng mục tiêu
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
-              {goals.length}
+              {filteredGoals.length}
             </div>
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
@@ -72,11 +111,41 @@ export default async function GoalsPage() {
         </div>
       </section>
 
-      {goals.length > 0 ? (
+      <PageFilterForm
+        filters={[
+          {
+            label: "Trạng thái",
+            name: "status",
+            options: [
+              { label: "Tất cả trạng thái", value: "all" },
+              ...Object.entries(goalStatusLabels).map(([value, label]) => ({
+                label,
+                value
+              }))
+            ],
+            value: statusFilter
+          }
+        ]}
+        resetHref="/goals"
+        resultLabel={`Đang hiển thị ${filteredGoals.length}/${goals.length} mục tiêu.`}
+        searchPlaceholder="Tìm theo tên mục tiêu, mô tả, danh mục hoặc thẻ"
+        searchValue={query}
+      />
+
+      {filteredGoals.length > 0 ? (
         <section className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-          {goals.map((goal) => (
+          {filteredGoals.map((goal) => (
             <GoalCard goal={goal} key={goal.id} />
           ))}
+        </section>
+      ) : goals.length > 0 ? (
+        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
+          <h2 className="text-2xl font-black text-stone-950">
+            Không tìm thấy mục tiêu phù hợp
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-stone-500">
+            Hãy điều chỉnh bộ lọc để quay lại danh sách mục tiêu rộng hơn.
+          </p>
         </section>
       ) : (
         <EmptyGoalsState />

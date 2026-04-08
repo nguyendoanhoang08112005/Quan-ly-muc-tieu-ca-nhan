@@ -1,24 +1,9 @@
 import Link from "next/link";
-import type { Route } from "next";
 import type { AppSessionUser } from "@/lib/auth/session";
+import { AppNavigationLinks } from "@/components/layout/app-navigation-links";
 import { SignOutButton } from "@/components/layout/sign-out-button";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const items = [
-  { href: "/dashboard" as Route, label: "Bảng điều khiển" },
-  { href: "/goals" as Route, label: "Mục tiêu" },
-  { href: "/follows" as Route, label: "Theo dõi" },
-  { href: "/tasks" as Route, label: "Công việc" },
-  { href: "/projects" as Route, label: "Dự án" },
-  { href: "/habits" as Route, label: "Thói quen" },
-  { href: "/notes" as Route, label: "Ghi chú" },
-  { href: "/pomodoro" as Route, label: "Pomodoro" },
-  { href: "/notifications" as Route, label: "Thông báo" },
-  { href: "/categories" as Route, label: "Danh mục" },
-  { href: "/tags" as Route, label: "Thẻ" },
-  { href: "/settings/profile" as Route, label: "Cài đặt" }
-];
 
 export function AppSidebar({ user }: { user: AppSessionUser }) {
   return (
@@ -44,15 +29,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
       </div>
 
       <nav className="space-y-2 p-4">
-        {items.map((item) => (
-          <Link
-            key={item.href}
-            className="block rounded-2xl px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
-            href={item.href}
-          >
-            {item.label}
-          </Link>
-        ))}
+        <AppNavigationLinks />
       </nav>
 
       <div className="space-y-3 p-4">

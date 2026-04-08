@@ -255,3 +255,110 @@ export async function getMilestoneDetailForUser(
     milestone: mapMilestoneSummary(milestone)
   };
 }
+
+function mapMilestoneQuickCreateOption(milestone: {
+  id: bigint;
+  title: string;
+  sequenceNo: number;
+  targetDate: Date | null;
+  goal: {
+    id: bigint;
+    title: string;
+  };
+  _count: {
+    tasks: number;
+  };
+}) {
+  return {
+    id: milestone.id.toString(),
+    title: milestone.title,
+    sequenceNo: milestone.sequenceNo,
+    targetDate: formatDateInput(milestone.targetDate),
+    tasksCount: milestone._count.tasks,
+    goal: {
+      id: milestone.goal.id.toString(),
+      title: milestone.goal.title
+    }
+  };
+}
+
+export async function listMilestoneQuickCreateOptionsForUser(
+  userId: bigint,
+  take = 6
+) {
+  const prisma = getPrismaClient();
+  const milestones = await prisma.milestone.findMany({
+    where: {
+      userId,
+      deletedAt: null,
+      goal: {
+        deletedAt: null
+      }
+    },
+    orderBy: [{ targetDate: "asc" }, { sequenceNo: "asc" }, { createdAt: "desc" }],
+    take,
+    select: {
+      id: true,
+      title: true,
+      sequenceNo: true,
+      targetDate: true,
+      goal: {
+        select: {
+          id: true,
+          title: true
+        }
+      },
+      _count: {
+        select: {
+          tasks: {
+            where: {
+              deletedAt: null
+            }
+          }
+        }
+      }
+    }
+  });
+
+  return milestones.map(mapMilestoneQuickCreateOption);
+}
+
+export async function listMilestoneQuickCreateOptionsForGoal(
+  userId: bigint,
+  goalId: bigint,
+  take = 4
+) {
+  const prisma = getPrismaClient();
+  const milestones = await prisma.milestone.findMany({
+    where: {
+      userId,
+      goalId,
+      deletedAt: null
+    },
+    orderBy: [{ sequenceNo: "asc" }, { targetDate: "asc" }, { createdAt: "desc" }],
+    take,
+    select: {
+      id: true,
+      title: true,
+      sequenceNo: true,
+      targetDate: true,
+      goal: {
+        select: {
+          id: true,
+          title: true
+        }
+      },
+      _count: {
+        select: {
+          tasks: {
+            where: {
+              deletedAt: null
+            }
+          }
+        }
+      }
+    }
+  });
+
+  return milestones.map(mapMilestoneQuickCreateOption);
+}

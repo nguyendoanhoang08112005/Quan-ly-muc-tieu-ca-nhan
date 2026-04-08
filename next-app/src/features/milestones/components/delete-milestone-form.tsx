@@ -1,5 +1,5 @@
 import { deleteMilestoneAction } from "@/features/milestones/actions/delete-milestone";
-import { Button } from "@/components/ui/button";
+import { ConfirmSubmitButton } from "@/components/shared/confirm-submit-button";
 
 export function DeleteMilestoneForm({
   goalId,
@@ -12,9 +12,12 @@ export function DeleteMilestoneForm({
     <form action={deleteMilestoneAction}>
       <input name="goalId" type="hidden" value={goalId} />
       <input name="milestoneId" type="hidden" value={milestoneId} />
-      <Button type="submit" variant="destructive">
-        Xóa cột mốc
-      </Button>
+      <ConfirmSubmitButton
+        confirmMessage="Bạn có chắc muốn xóa cột mốc này không? Các công việc nằm trong cột mốc sẽ bị ảnh hưởng."
+        idleLabel="Xóa cột mốc"
+        pendingLabel="Đang xóa cột mốc..."
+        variant="destructive"
+      />
     </form>
   );
 }

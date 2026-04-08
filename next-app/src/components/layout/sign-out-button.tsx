@@ -2,10 +2,15 @@
 
 import { useState } from "react";
 import { signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import { authRoutes } from "@/lib/auth/routes";
+import { cn } from "@/lib/utils";
 
-export function SignOutButton() {
+export function SignOutButton({
+  className,
+  size = "default",
+  variant = "secondary"
+}: Pick<ButtonProps, "className" | "size" | "variant">) {
   const [isPending, setIsPending] = useState(false);
 
   async function handleSignOut() {
@@ -17,10 +22,11 @@ export function SignOutButton() {
 
   return (
     <Button
-      className="w-full"
+      className={cn("w-full", className)}
       disabled={isPending}
       onClick={handleSignOut}
-      variant="secondary"
+      size={size}
+      variant={variant}
     >
       {isPending ? "Đang đăng xuất..." : "Đăng xuất"}
     </Button>

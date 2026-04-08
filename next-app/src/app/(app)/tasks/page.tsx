@@ -1,21 +1,57 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { goalPriorityLabels, workStatusClassNames, workStatusLabels } from "@/features/goals/goal-helpers";
 import { CompleteTaskForm } from "@/features/tasks/components/complete-task-form";
 import { DeleteTaskForm } from "@/features/tasks/components/delete-task-form";
 import { TaskSubtasksPanel } from "@/features/subtasks/components/task-subtasks-panel";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDateTime } from "@/lib/dates";
+import { getSingleSearchParam, matchesSearchTerm } from "@/lib/search-params";
 import { cn } from "@/lib/utils";
 import { listTasksForUser } from "@/server/modules/tasks/queries";
+import { listMilestoneQuickCreateOptionsForUser } from "@/server/modules/milestones/queries";
 
-export default async function TasksPage() {
+type TasksPageProps = {
+  searchParams?: Promise<{
+    focus?: string | string[];
+    q?: string | string[];
+    status?: string | string[];
+  }>;
+};
+
+export default async function TasksPage({ searchParams }: TasksPageProps) {
   const userId = await requireAuthenticatedUserId();
-  const tasks = await listTasksForUser(userId);
-  const focusTasks = tasks.filter((task) => task.isFocus);
-  const completedTasks = tasks.filter((task) => task.status === "completed");
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const [tasks, quickCreateMilestones] = await Promise.all([
+    listTasksForUser(userId),
+    listMilestoneQuickCreateOptionsForUser(userId)
+  ]);
+  const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
+  const statusFilter = getSingleSearchParam(resolvedSearchParams?.status) || "all";
+  const focusFilter = getSingleSearchParam(resolvedSearchParams?.focus) || "all";
+  const filteredTasks = tasks.filter((task) => {
+    const matchesStatus = statusFilter === "all" || task.status === statusFilter;
+    const matchesFocus =
+      focusFilter === "all" ||
+      (focusFilter === "focus" ? task.isFocus : !task.isFocus);
+
+    return (
+      matchesStatus &&
+      matchesFocus &&
+      matchesSearchTerm(query, [
+        task.title,
+        task.description,
+        task.goalTitle,
+        task.milestoneTitle,
+        task.project?.name
+      ])
+    );
+  });
+  const focusTasks = filteredTasks.filter((task) => task.isFocus);
+  const completedTasks = filteredTasks.filter((task) => task.status === "completed");
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -26,9 +62,9 @@ export default async function TasksPage() {
               Công việc
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Công việc không còn chỉ hiện trong chi tiết mục tiêu. Trang này
-              đọc dữ liệu thật từ Prisma, cho phép gắn dự án và quản lý công
-              việc con ngay trên từng thẻ công việc.
+              Đây là nơi bạn rà soát, lọc và điều phối công việc theo mức độ
+              ưu tiên. Khi cần tạo mới, bạn có thể đi thẳng vào cột mốc phù hợp
+              ngay từ màn này thay vì quay vòng sang trang khác.
             </p>
           </div>
 
@@ -46,7 +82,7 @@ export default async function TasksPage() {
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
               Tổng công việc
             </div>
-            <div className="mt-2 text-4xl font-black">{tasks.length}</div>
+            <div className="mt-2 text-4xl font-black">{filteredTasks.length}</div>
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
@@ -67,9 +103,80 @@ export default async function TasksPage() {
         </div>
       </section>
 
-      {tasks.length > 0 ? (
+      <PageFilterForm
+        filters={[
+          {
+            label: "Trạng thái",
+            name: "status",
+            options: [
+              { label: "Tất cả trạng thái", value: "all" },
+              { label: "Chưa bắt đầu", value: "not_started" },
+              { label: "Đang thực hiện", value: "in_progress" },
+              { label: "Hoàn thành", value: "completed" },
+              { label: "Tạm dừng", value: "paused" }
+            ],
+            value: statusFilter
+          },
+          {
+            label: "Ưu tiên hiển thị",
+            name: "focus",
+            options: [
+              { label: "Tất cả công việc", value: "all" },
+              { label: "Chỉ việc tập trung", value: "focus" },
+              { label: "Không phải việc tập trung", value: "non_focus" }
+            ],
+            value: focusFilter
+          }
+        ]}
+        resetHref="/tasks"
+        resultLabel={`Đang hiển thị ${filteredTasks.length}/${tasks.length} công việc.`}
+        searchPlaceholder="Tìm theo tên, mục tiêu, cột mốc hoặc dự án"
+        searchValue={query}
+      />
+
+      {quickCreateMilestones.length > 0 ? (
+        <section className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
+                Tạo nhanh
+              </p>
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-stone-950">
+                Chọn cột mốc để tạo công việc ngay
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-stone-600">
+                Các cột mốc dưới đây được đưa lên để bạn thêm việc mà không
+                phải quay lại nhiều màn hình.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            {quickCreateMilestones.map((milestone) => (
+              <Link
+                className={cn(
+                  buttonVariants({ variant: "secondary" }),
+                  "h-auto min-h-11 gap-2 rounded-full px-4 py-3 text-left"
+                )}
+                href={`/goals/${milestone.goal.id}/milestones/${milestone.id}/tasks/new` as Route}
+                key={milestone.id}
+              >
+                <Plus className="h-4 w-4 shrink-0" />
+                <span>
+                  Cột mốc {milestone.sequenceNo}: {milestone.title}
+                  <span className="block text-xs font-medium text-stone-500">
+                    {milestone.goal.title} • {milestone.tasksCount} công việc hiện có
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {filteredTasks.length > 0 ? (
         <section className="grid gap-6">
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <article
               className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm"
               key={task.id}
@@ -122,7 +229,9 @@ export default async function TasksPage() {
                       </span>
                     ) : null}
                     <span className="rounded-full bg-stone-100 px-3 py-1">
-                      Hạn {formatDisplayDateTime(task.dueAt)}
+                      {task.dueAt
+                        ? `Hạn ${formatDisplayDateTime(task.dueAt)}`
+                        : "Chưa đặt hạn"}
                     </span>
                     {task.estimatedMinutes ? (
                       <span className="rounded-full bg-stone-100 px-3 py-1">
@@ -189,6 +298,15 @@ export default async function TasksPage() {
             </article>
           ))}
         </section>
+      ) : tasks.length > 0 ? (
+        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-16 text-center shadow-sm">
+          <h2 className="text-3xl font-black tracking-tight text-stone-950">
+            Không có công việc khớp bộ lọc
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
+            Hãy nới lỏng từ khóa hoặc trạng thái để quay lại danh sách rộng hơn.
+          </p>
+        </section>
       ) : (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-16 text-center shadow-sm">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-stone-100">
@@ -198,8 +316,8 @@ export default async function TasksPage() {
             Chưa có công việc nào
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-            Hãy tạo công việc mới bên trong một cột mốc để bắt đầu theo dõi
-            công việc từ hệ Next.js.
+            Hãy tạo công việc mới trong một cột mốc để bắt đầu theo dõi công
+            việc trên hệ Next.js.
           </p>
         </section>
       )}

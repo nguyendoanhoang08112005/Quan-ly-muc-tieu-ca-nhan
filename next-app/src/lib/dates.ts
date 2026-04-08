@@ -132,9 +132,12 @@ export function diffDateInputs(startDate: string, targetDate: string) {
   return Math.round((target.getTime() - start.getTime()) / DAY_IN_MILLISECONDS);
 }
 
-export function formatDisplayDate(value: Date | string | null | undefined) {
+export function formatDisplayDate(
+  value: Date | string | null | undefined,
+  fallback = "Chưa có ngày"
+) {
   if (!value) {
-    return "Chưa có ngày";
+    return fallback;
   }
 
   const date =
@@ -145,7 +148,7 @@ export function formatDisplayDate(value: Date | string | null | undefined) {
       : value;
 
   if (!date || Number.isNaN(date.getTime())) {
-    return "Chưa có ngày";
+    return fallback;
   }
 
   return new Intl.DateTimeFormat("vi-VN", {
@@ -156,15 +159,18 @@ export function formatDisplayDate(value: Date | string | null | undefined) {
   }).format(date);
 }
 
-export function formatDisplayDateTime(value: Date | string | null | undefined) {
+export function formatDisplayDateTime(
+  value: Date | string | null | undefined,
+  fallback = "Chưa có hạn"
+) {
   if (!value) {
-    return "Chưa có hạn";
+    return fallback;
   }
 
   const date = typeof value === "string" ? new Date(value) : value;
 
   if (Number.isNaN(date.getTime())) {
-    return "Chưa có hạn";
+    return fallback;
   }
 
   return new Intl.DateTimeFormat("vi-VN", {

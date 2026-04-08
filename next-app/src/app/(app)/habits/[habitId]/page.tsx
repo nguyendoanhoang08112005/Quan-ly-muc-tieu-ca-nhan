@@ -127,7 +127,7 @@ export default async function HabitDetailPage({
                   Log gần nhất
                 </div>
                 <div className="mt-2 text-sm font-black text-stone-950">
-                  {formatDisplayDateTime(habit.lastLoggedAt)}
+                  {formatDisplayDateTime(habit.lastLoggedAt, "Chưa ghi nhận")}
                 </div>
               </div>
             </div>

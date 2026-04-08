@@ -379,7 +379,9 @@ export default async function GoalDetailPage({
                                 </span>
                               ) : null}
                               <span className="rounded-full bg-white px-3 py-1">
-                                Hạn {formatDisplayDateTime(task.dueAt)}
+                                {task.dueAt
+                                  ? `Hạn ${formatDisplayDateTime(task.dueAt)}`
+                                  : "Chưa đặt hạn"}
                               </span>
                               {task.estimatedMinutes ? (
                                 <span className="rounded-full bg-white px-3 py-1">
