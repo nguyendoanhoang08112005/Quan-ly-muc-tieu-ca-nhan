@@ -4,21 +4,21 @@ import { noteableTypeValues } from "@/features/notes/types";
 export const noteIdSchema = z
   .string()
   .trim()
-  .regex(/^\d+$/, "Note id khong hop le.");
+  .regex(/^\d+$/, "Mã ghi chú không hợp lệ.");
 
 export const noteFormSchema = z.object({
   noteableType: z.enum(noteableTypeValues, {
-    message: "Loai doi tuong ghi chu khong hop le."
+    message: "Loại đối tượng ghi chú không hợp lệ."
   }),
   noteableId: z
     .string()
     .trim()
-    .regex(/^\d+$/, "Doi tuong ghi chu khong hop le."),
+    .regex(/^\d+$/, "Đối tượng ghi chú không hợp lệ."),
   content: z
     .string()
     .trim()
-    .min(3, "Noi dung ghi chu phai co it nhat 3 ky tu.")
-    .max(20000, "Noi dung ghi chu qua dai.")
+    .min(3, "Nội dung ghi chú phải có ít nhất 3 ký tự.")
+    .max(20000, "Nội dung ghi chú quá dài.")
 });
 
 export type NoteFormInput = z.infer<typeof noteFormSchema>;

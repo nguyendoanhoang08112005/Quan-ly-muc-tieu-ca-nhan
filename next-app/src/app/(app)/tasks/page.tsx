@@ -22,16 +22,13 @@ export default async function TasksPage() {
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Phase 5
-            </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Tasks đã có project và subtasks
+              Công việc
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Tasks không còn chỉ hiện trong goal detail. Page này đọc dữ liệu
-              thật từ Prisma, cho phép gắn project, và quản lý subtasks ngay
-              trên từng task card.
+              Công việc không còn chỉ hiện trong chi tiết mục tiêu. Trang này
+              đọc dữ liệu thật từ Prisma, cho phép gắn dự án và quản lý công
+              việc con ngay trên từng thẻ công việc.
             </p>
           </div>
 
@@ -39,7 +36,7 @@ export default async function TasksPage() {
             className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
             href={"/goals" as Route}
           >
-            Về goals
+            Về mục tiêu
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -47,13 +44,13 @@ export default async function TasksPage() {
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Tổng task
+              Tổng công việc
             </div>
             <div className="mt-2 text-4xl font-black">{tasks.length}</div>
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Focus
+              Đang tập trung
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {focusTasks.length}
@@ -82,7 +79,7 @@ export default async function TasksPage() {
                   <div className="flex flex-wrap gap-2">
                     {task.isFocus ? (
                       <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                        Focus
+                        Tập trung
                       </span>
                     ) : null}
                     <span
@@ -106,11 +103,11 @@ export default async function TasksPage() {
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-stone-500">
                     <span className="rounded-full bg-stone-100 px-3 py-1">
-                      Goal: {task.goalTitle}
+                      Mục tiêu: {task.goalTitle}
                     </span>
                     {task.milestoneTitle ? (
                       <span className="rounded-full bg-stone-100 px-3 py-1">
-                        Milestone {task.milestoneSequenceNo}: {task.milestoneTitle}
+                        Cột mốc {task.milestoneSequenceNo}: {task.milestoneTitle}
                       </span>
                     ) : null}
                     {task.project ? (
@@ -121,7 +118,7 @@ export default async function TasksPage() {
                             backgroundColor: task.project.color ?? undefined
                           }}
                         />
-                        Project: {task.project.name}
+                        Dự án: {task.project.name}
                       </span>
                     ) : null}
                     <span className="rounded-full bg-stone-100 px-3 py-1">
@@ -133,14 +130,14 @@ export default async function TasksPage() {
                       </span>
                     ) : null}
                     <span className="rounded-full bg-stone-100 px-3 py-1">
-                      Subtasks {task.completedSubtasksCount}/{task.subtasksCount}
+                      Công việc con {task.completedSubtasksCount}/{task.subtasksCount}
                     </span>
                   </div>
                 </div>
 
                 <div className="rounded-[1.5rem] bg-stone-50 px-4 py-4 text-right">
                   <div className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-                    Progress
+                    Tiến độ
                   </div>
                   <div className="mt-2 text-3xl font-black text-stone-950">
                     {Math.round(task.progress)}%
@@ -155,21 +152,21 @@ export default async function TasksPage() {
                   className={cn(buttonVariants({ variant: "secondary" }))}
                   href={`/goals/${task.goalId}` as Route}
                 >
-                  Xem goal
+                  Xem mục tiêu
                 </Link>
                 {task.project ? (
                   <Link
                     className={cn(buttonVariants({ variant: "secondary" }))}
                     href={`/projects/${task.project.id}` as Route}
                   >
-                    Xem project
+                    Xem dự án
                   </Link>
                 ) : null}
                 <Link
                   className={cn(buttonVariants({ variant: "secondary" }))}
                   href={`/goals/${task.goalId}/tasks/${task.id}/edit` as Route}
                 >
-                  Sửa task
+                  Sửa công việc
                 </Link>
                 <Link
                   className={cn(buttonVariants({ variant: "secondary" }))}
@@ -198,11 +195,11 @@ export default async function TasksPage() {
             <CheckCircle2 className="h-8 w-8 text-stone-500" />
           </div>
           <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-            Chưa có task nào
+            Chưa có công việc nào
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-            Hãy tạo task mới bên trong một milestone để bắt đầu theo dõi công
-            việc từ hệ Next.js.
+            Hãy tạo công việc mới bên trong một cột mốc để bắt đầu theo dõi
+            công việc từ hệ Next.js.
           </p>
         </section>
       )}

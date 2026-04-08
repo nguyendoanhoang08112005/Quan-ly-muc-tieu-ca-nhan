@@ -6,7 +6,7 @@ export function DeleteNoteForm({ noteId }: { noteId: string }) {
     <form action={deleteNoteAction}>
       <input name="noteId" type="hidden" value={noteId} />
       <Button type="submit" variant="destructive">
-        Xoa
+        Xóa ghi chú
       </Button>
     </form>
   );

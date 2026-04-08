@@ -6,7 +6,7 @@ export function FollowGoalForm({ goalId }: { goalId: string }) {
     <form action={followGoalAction}>
       <input name="goalId" type="hidden" value={goalId} />
       <Button size="sm" type="submit">
-        Follow goal
+        Theo dõi mục tiêu
       </Button>
     </form>
   );

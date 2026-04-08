@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 export default async function RegisterPage() {
   return (
     <AuthShell
-      description="Tài khoản mới sẽ được lưu bằng Prisma và hash mật khẩu bằng bcrypt-compatible flow để sẵn sàng cho migration dữ liệu cũ."
-      eyebrow="Registration"
+      description="Tài khoản mới sẽ được lưu bằng Prisma và băm mật khẩu tương thích bcrypt để sẵn sàng cho dữ liệu cũ."
+      eyebrow="Đăng ký"
       footer={
         <p>
           Đã có tài khoản?{" "}

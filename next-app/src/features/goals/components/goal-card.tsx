@@ -29,7 +29,7 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
 
         <div className="rounded-2xl bg-amber-50 px-3 py-2 text-right">
           <div className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">
-            Progress
+            Tiến độ
           </div>
           <div className="text-2xl font-black text-amber-900">
             {Math.round(goal.progress)}%
@@ -57,7 +57,7 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
           {goalPriorityLabels[goal.priority]}
         </span>
         <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">
-          {goal.isPublic ? "Cong khai" : "Rieng tu"}
+          {goal.isPublic ? "Công khai" : "Riêng tư"}
         </span>
       </div>
 
@@ -90,7 +90,7 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
           ))}
           {goal.tags.length > 3 ? (
             <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-500">
-              +{goal.tags.length - 3} tag
+              +{goal.tags.length - 3} thẻ
             </span>
           ) : null}
         </div>
@@ -99,25 +99,25 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
       <div className="mt-5 grid gap-3 text-sm text-stone-600 sm:grid-cols-2">
         <div className="flex items-center gap-2">
           <CalendarDays className="h-4 w-4" />
-          <span>Han muc tieu: {formatDisplayDate(goal.targetDate)}</span>
+          <span>Hạn mục tiêu: {formatDisplayDate(goal.targetDate)}</span>
         </div>
         <div className="flex items-center gap-2">
           <Flag className="h-4 w-4" />
           <span>
-            {goal.milestonesCount} milestone • {goal.tasksCount} task
+            {goal.milestonesCount} cột mốc • {goal.tasksCount} công việc
           </span>
         </div>
       </div>
 
       <div className="mt-6 flex items-center justify-between border-t border-stone-200 pt-5">
         <span className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-          Goal module
+          Mô-đun mục tiêu
         </span>
         <Link
           className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full")}
           href={`/goals/${goal.id}`}
         >
-          Xem chi tiet
+          Xem chi tiết
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>

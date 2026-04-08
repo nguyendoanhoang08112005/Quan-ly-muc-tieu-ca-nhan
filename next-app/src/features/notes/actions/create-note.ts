@@ -23,7 +23,7 @@ export async function createNoteAction(
   if (!parsed.success) {
     return buildNoteFormErrorState(
       values,
-      "Du lieu note chua hop le.",
+      "Dữ liệu ghi chú chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -33,7 +33,7 @@ export async function createNoteAction(
   if (!noteId) {
     return buildNoteFormErrorState(
       values,
-      "Doi tuong duoc gan note khong hop le."
+      "Đối tượng được gắn ghi chú không hợp lệ."
     );
   }
 

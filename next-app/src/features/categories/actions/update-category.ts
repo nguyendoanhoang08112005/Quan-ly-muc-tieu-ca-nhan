@@ -27,7 +27,7 @@ export async function updateCategoryAction(
   if (!parsedCategoryId.success) {
     return buildCategoryFormErrorState(
       values,
-      "Không tìm thấy category để cập nhật."
+      "Không tìm thấy danh mục để cập nhật."
     );
   }
 
@@ -36,7 +36,7 @@ export async function updateCategoryAction(
   if (!parsedValues.success) {
     return buildCategoryFormErrorState(
       values,
-      "Dữ liệu category chưa hợp lệ.",
+      "Dữ liệu danh mục chưa hợp lệ.",
       parsedValues.error.flatten().fieldErrors
     );
   }
@@ -50,7 +50,7 @@ export async function updateCategoryAction(
   if (!updatedCategoryId) {
     return buildCategoryFormErrorState(
       values,
-      "Category không tồn tại hoặc đã bị xóa."
+      "Danh mục không tồn tại hoặc đã bị xóa."
     );
   }
 

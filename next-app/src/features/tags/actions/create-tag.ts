@@ -23,7 +23,7 @@ export async function createTagAction(
   if (!parsed.success) {
     return buildTagFormErrorState(
       values,
-      "Du lieu tag chua hop le.",
+      "Dữ liệu thẻ chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }

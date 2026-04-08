@@ -56,7 +56,7 @@ export default async function HabitDetailPage({
             href={"/habits" as Route}
           >
             <ArrowLeft className="h-4 w-4" />
-            Quay lai habits
+            Quay lại thói quen
           </Link>
 
           <div className="flex flex-wrap gap-3">
@@ -65,7 +65,7 @@ export default async function HabitDetailPage({
               href={`/habits/${habit.id}/edit` as Route}
             >
               <PencilLine className="h-4 w-4" />
-              Chinh sua
+              Chỉnh sửa
             </Link>
             <DeleteHabitForm habitId={habit.id} />
           </div>
@@ -74,7 +74,7 @@ export default async function HabitDetailPage({
         <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
             <div className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-stone-500">
-              Habit detail
+              Chi tiết thói quen
             </div>
             <h1 className="mt-4 text-4xl font-black tracking-tight text-stone-950">
               {habit.title}
@@ -96,7 +96,7 @@ export default async function HabitDetailPage({
                 {habitFrequencyLabels[habit.frequency]}
               </span>
               <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                {habit.targetCount} {habit.unit} / chu ky
+                {habit.targetCount} {habit.unit} / chu kỳ
               </span>
               {habit.goal ? (
                 <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
@@ -109,14 +109,14 @@ export default async function HabitDetailPage({
           <div className="grid gap-4 sm:grid-cols-3 lg:w-[460px] lg:grid-cols-1">
             <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
               <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-                Current streak
+                Chuỗi hiện tại
               </div>
               <div className="mt-2 text-4xl font-black">{habit.currentStreak}</div>
             </div>
             <div className="grid gap-4 sm:col-span-2 sm:grid-cols-2 lg:grid-cols-2">
               <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Best streak
+                  Chuỗi tốt nhất
                 </div>
                 <div className="mt-2 text-3xl font-black text-stone-950">
                   {habit.bestStreak}
@@ -151,10 +151,10 @@ export default async function HabitDetailPage({
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Habit log
+              Nhật ký thói quen
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Ghi log theo ngày
+              Nhật ký theo ngày
             </h2>
           </div>
 
@@ -180,7 +180,7 @@ export default async function HabitDetailPage({
               Lịch sử
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Recent habit logs
+              Nhật ký gần đây
             </h2>
           </div>
 
@@ -223,10 +223,10 @@ export default async function HabitDetailPage({
           ) : (
             <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
               <h3 className="text-2xl font-black text-stone-950">
-                Chưa có log nào
+                Chưa có nhật ký nào
               </h3>
               <p className="mt-3 text-sm leading-7 text-stone-500">
-                Hãy ghi log ngày đầu tiên để bắt đầu tính streak.
+                Hãy ghi nhật ký ngày đầu tiên để bắt đầu tính chuỗi liên tiếp.
               </p>
             </div>
           )}

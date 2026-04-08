@@ -6,18 +6,18 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const items = [
-  { href: "/dashboard" as Route, label: "Dashboard" },
-  { href: "/goals" as Route, label: "Goals" },
-  { href: "/follows" as Route, label: "Follows" },
-  { href: "/tasks" as Route, label: "Tasks" },
-  { href: "/projects" as Route, label: "Projects" },
-  { href: "/habits" as Route, label: "Habits" },
-  { href: "/notes" as Route, label: "Notes" },
+  { href: "/dashboard" as Route, label: "Bảng điều khiển" },
+  { href: "/goals" as Route, label: "Mục tiêu" },
+  { href: "/follows" as Route, label: "Theo dõi" },
+  { href: "/tasks" as Route, label: "Công việc" },
+  { href: "/projects" as Route, label: "Dự án" },
+  { href: "/habits" as Route, label: "Thói quen" },
+  { href: "/notes" as Route, label: "Ghi chú" },
   { href: "/pomodoro" as Route, label: "Pomodoro" },
-  { href: "/notifications" as Route, label: "Notifications" },
-  { href: "/categories" as Route, label: "Categories" },
-  { href: "/tags" as Route, label: "Tags" },
-  { href: "/settings/profile" as Route, label: "Settings" }
+  { href: "/notifications" as Route, label: "Thông báo" },
+  { href: "/categories" as Route, label: "Danh mục" },
+  { href: "/tags" as Route, label: "Thẻ" },
+  { href: "/settings/profile" as Route, label: "Cài đặt" }
 ];
 
 export function AppSidebar({ user }: { user: AppSessionUser }) {
@@ -31,7 +31,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
           Mục tiêu cá nhân
         </h2>
         <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
-          NextAuth credentials session
+          Phiên xác thực hiện tại
         </p>
       </div>
 
@@ -63,7 +63,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
           )}
           href="/goals/new"
         >
-          Tạo goal mới
+          Tạo mục tiêu mới
         </Link>
         <SignOutButton />
       </div>

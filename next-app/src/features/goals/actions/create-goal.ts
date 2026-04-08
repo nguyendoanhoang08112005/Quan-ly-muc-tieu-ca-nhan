@@ -22,7 +22,7 @@ export async function createGoalAction(
   if (!parsed.success) {
     return buildGoalFormErrorState(
       values,
-      "Du lieu goal chua hop le.",
+      "Dữ liệu mục tiêu chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -32,7 +32,7 @@ export async function createGoalAction(
   if (!goalId) {
     return buildGoalFormErrorState(
       values,
-      "Category hoac tag khong hop le cho goal nay."
+      "Danh mục hoặc thẻ không hợp lệ cho mục tiêu này."
     );
   }
 

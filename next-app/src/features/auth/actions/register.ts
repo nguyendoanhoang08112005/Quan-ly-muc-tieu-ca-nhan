@@ -30,7 +30,7 @@ export async function registerWithCredentials(
   if (!parsed.success) {
     return {
       status: "error",
-      message: "Du lieu dang ky chua hop le.",
+      message: "Dữ liệu đăng ký chưa hợp lệ.",
       fieldErrors: parsed.error.flatten().fieldErrors,
       values: {
         name: rawValues.name,

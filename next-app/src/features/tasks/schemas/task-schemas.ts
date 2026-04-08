@@ -10,7 +10,7 @@ const optionalNumericId = z.preprocess((value) => {
   const trimmed = value.trim();
 
   return trimmed === "" ? undefined : trimmed;
-}, z.string().regex(/^\d+$/, "Gia tri khong hop le.").optional());
+}, z.string().regex(/^\d+$/, "Giá trị không hợp lệ.").optional());
 
 const optionalDateTimeField = z
   .string()
@@ -18,7 +18,7 @@ const optionalDateTimeField = z
   .default("")
   .refine(
     (value) => value === "" || parseDateTimeLocalInput(value) !== null,
-    "Han task khong hop le."
+    "Hạn công việc không hợp lệ."
   );
 
 const optionalEstimatedMinutes = z.preprocess((value) => {
@@ -34,20 +34,20 @@ const optionalEstimatedMinutes = z.preprocess((value) => {
 export const taskIdSchema = z
   .string()
   .trim()
-  .regex(/^\d+$/, "Task id khong hop le.");
+  .regex(/^\d+$/, "Mã công việc không hợp lệ.");
 
 export const taskFormSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(3, "Ten task phai co it nhat 3 ky tu.")
-    .max(180, "Ten task khong duoc vuot qua 180 ky tu."),
+    .min(3, "Tên công việc phải có ít nhất 3 ký tự.")
+    .max(180, "Tên công việc không được vượt quá 180 ký tự."),
   description: z.string().trim().default(""),
   status: z.enum(workStatusValues, {
-    message: "Trang thai task khong hop le."
+    message: "Trạng thái công việc không hợp lệ."
   }),
   priority: z.enum(goalPriorityValues, {
-    message: "Do uu tien task khong hop le."
+    message: "Độ ưu tiên công việc không hợp lệ."
   }),
   dueAt: optionalDateTimeField,
   estimatedMinutes: optionalEstimatedMinutes,

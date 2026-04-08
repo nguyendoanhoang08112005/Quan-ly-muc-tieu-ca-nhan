@@ -13,13 +13,13 @@ const optionalNumericId = z.preprocess((value) => {
   const trimmed = value.trim();
 
   return trimmed === "" ? undefined : trimmed;
-}, z.string().regex(/^\d+$/, "Gia tri khong hop le.").optional());
+}, z.string().regex(/^\d+$/, "Giá trị không hợp lệ.").optional());
 
 const dateField = z
   .string()
   .trim()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Ngay khong hop le.")
-  .refine((value) => parseDateInput(value) !== null, "Ngay khong hop le.");
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Ngày không hợp lệ.")
+  .refine((value) => parseDateInput(value) !== null, "Ngày không hợp lệ.");
 
 const optionalDateField = z
   .string()
@@ -27,7 +27,7 @@ const optionalDateField = z
   .default("")
   .refine(
     (value) => value === "" || parseDateInput(value) !== null,
-    "Ngay khong hop le."
+    "Ngày không hợp lệ."
   );
 
 const optionalTimeField = z
@@ -36,7 +36,7 @@ const optionalTimeField = z
   .default("")
   .refine(
     (value) => value === "" || parseTimeInput(value) !== null,
-    "Gio nhac khong hop le."
+    "Giờ nhắc không hợp lệ."
   );
 
 const requiredPositiveNumber = z.preprocess((value) => {
@@ -57,34 +57,34 @@ const nonNegativeNumber = z.preprocess((value) => {
   const trimmed = value.trim();
 
   return trimmed === "" ? undefined : Number(trimmed);
-}, z.number().int().min(0, "Gia tri khong duoc am."));
+}, z.number().int().min(0, "Giá trị không được âm."));
 
 export const habitIdSchema = z
   .string()
   .trim()
-  .regex(/^\d+$/, "Habit id khong hop le.");
+  .regex(/^\d+$/, "Mã thói quen không hợp lệ.");
 
 export const habitFormSchema = z
   .object({
     title: z
       .string()
       .trim()
-      .min(3, "Ten habit phai co it nhat 3 ky tu.")
-      .max(180, "Ten habit khong duoc vuot qua 180 ky tu."),
+      .min(3, "Tên thói quen phải có ít nhất 3 ký tự.")
+      .max(180, "Tên thói quen không được vượt quá 180 ký tự."),
     description: z.string().trim().default(""),
     goalId: optionalNumericId,
     frequency: z.enum(habitFrequencyValues, {
-      message: "Tan suat habit khong hop le."
+      message: "Tần suất thói quen không hợp lệ."
     }),
     targetCount: requiredPositiveNumber,
     unit: z
       .string()
       .trim()
-      .min(1, "Don vi khong duoc de trong.")
-      .max(50, "Don vi khong duoc vuot qua 50 ky tu."),
+      .min(1, "Đơn vị không được để trống.")
+      .max(50, "Đơn vị không được vượt quá 50 ký tự."),
     reminderTime: optionalTimeField,
     status: z.enum(habitStatusValues, {
-      message: "Trang thai habit khong hop le."
+      message: "Trạng thái thói quen không hợp lệ."
     }),
     startDate: dateField,
     endDate: optionalDateField
@@ -101,7 +101,7 @@ export const habitFormSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["endDate"],
-        message: "Ngay ket thuc phai bang hoac sau ngay bat dau."
+        message: "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu."
       });
     }
   });
@@ -109,7 +109,7 @@ export const habitFormSchema = z
 export const habitLogFormSchema = z.object({
   logDate: dateField,
   completedCount: nonNegativeNumber,
-  note: z.string().trim().max(10000, "Ghi chu qua dai.").default("")
+  note: z.string().trim().max(10000, "Ghi chú quá dài.").default("")
 });
 
 export type HabitFormInput = z.infer<typeof habitFormSchema>;

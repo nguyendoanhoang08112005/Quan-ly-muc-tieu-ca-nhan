@@ -1,15 +1,15 @@
 import type { RelatedEntityType } from "@/features/notifications/types";
 
 export const relatedEntityTypeLabels: Record<RelatedEntityType, string> = {
-  goal: "Goal",
-  milestone: "Milestone",
-  task: "Task",
-  habit: "Habit",
-  project: "Project",
-  journal_entry: "Journal entry",
-  reminder: "Reminder",
-  note: "Note",
-  pomodoro_session: "Pomodoro"
+  goal: "Mục tiêu",
+  milestone: "Cột mốc",
+  task: "Công việc",
+  habit: "Thói quen",
+  project: "Dự án",
+  journal_entry: "Nhật ký",
+  reminder: "Nhắc nhở",
+  note: "Ghi chú",
+  pomodoro_session: "Phiên pomodoro"
 };
 
 export const relatedEntityTypeFromPrisma = {
@@ -37,6 +37,17 @@ export const relatedEntityTypeToPrisma = {
 } as const;
 
 export function getNotificationTypeLabel(type: string) {
+  const labels: Record<string, string> = {
+    "goal.progress": "Tiến độ mục tiêu",
+    "task.deadline": "Hạn công việc",
+    "social.following": "Thông tin theo dõi",
+    "pomodoro.completed": "Hoàn thành pomodoro"
+  };
+
+  if (labels[type]) {
+    return labels[type];
+  }
+
   return type
     .split(/[._-]/g)
     .filter(Boolean)

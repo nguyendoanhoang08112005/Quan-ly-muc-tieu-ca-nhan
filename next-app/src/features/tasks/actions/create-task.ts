@@ -25,7 +25,7 @@ export async function createTaskAction(
   const values = readTaskFormValues(formData);
 
   if (!parsedGoalId.success || !parsedMilestoneId.success) {
-    return buildTaskFormErrorState(values, "Milestone hoac goal khong hop le.");
+    return buildTaskFormErrorState(values, "Cột mốc hoặc mục tiêu không hợp lệ.");
   }
 
   const parsedValues = taskFormSchema.safeParse(values);
@@ -33,7 +33,7 @@ export async function createTaskAction(
   if (!parsedValues.success) {
     return buildTaskFormErrorState(
       values,
-      "Du lieu task chua hop le.",
+      "Dữ liệu công việc chưa hợp lệ.",
       parsedValues.error.flatten().fieldErrors
     );
   }
@@ -46,7 +46,7 @@ export async function createTaskAction(
   );
 
   if (!createdTaskId) {
-    return buildTaskFormErrorState(values, "Không tạo được task.");
+    return buildTaskFormErrorState(values, "Không tạo được công việc.");
   }
 
   revalidatePath("/dashboard");

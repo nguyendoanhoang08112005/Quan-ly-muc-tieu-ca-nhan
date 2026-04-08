@@ -22,14 +22,14 @@ export default async function CategoriesPage() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Categories
+              Danh mục
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Metadata cho goals
+              Dữ liệu phân loại cho mục tiêu
             </h1>
           </div>
           <div className="rounded-full bg-stone-100 px-4 py-2 text-sm font-semibold text-stone-700">
-            {categories.length} category
+            {categories.length} danh mục
           </div>
         </div>
 
@@ -56,7 +56,7 @@ export default async function CategoriesPage() {
                       {category.name}
                     </h2>
                     <p className="mt-2 text-sm text-stone-500">
-                      {category.goalsCount} goal đang sử dụng
+                      {category.goalsCount} mục tiêu đang sử dụng
                     </p>
                   </div>
 
@@ -75,7 +75,7 @@ export default async function CategoriesPage() {
           </div>
         ) : (
           <div className="mt-8 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center text-sm text-stone-500">
-            Chưa có category nào.
+            Chưa có danh mục nào.
           </div>
         )}
       </section>

@@ -20,16 +20,13 @@ export default async function GoalsPage() {
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Phase 4
-            </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Goal list đã chạy bằng Server Component
+              Danh sách mục tiêu
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Trang này đọc thẳng từ Prisma ở server, không còn fetch bằng
-              `useEffect`. Mutation create/edit/delete được đưa qua Server
-              Actions.
+              Trang này đọc dữ liệu trực tiếp từ Prisma ở máy chủ, không còn tải
+              bằng `useEffect`. Các thao tác tạo, sửa, xóa được xử lý bằng hành
+              động phía máy chủ.
             </p>
           </div>
 
@@ -38,14 +35,14 @@ export default async function GoalsPage() {
             href="/goals/new"
           >
             <Plus className="h-4 w-4" />
-            Tạo goal mới
+            Tạo mục tiêu mới
           </Link>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tổng goal
+              Tổng mục tiêu
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {goals.length}
@@ -69,7 +66,7 @@ export default async function GoalsPage() {
                 : "Chưa có"}
             </div>
             <p className="mt-2 text-sm text-stone-500">
-              {completedGoals.length} goal đã hoàn thành
+              {completedGoals.length} mục tiêu đã hoàn thành
             </p>
           </div>
         </div>

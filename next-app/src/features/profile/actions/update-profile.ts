@@ -21,7 +21,7 @@ export async function updateProfileAction(
   if (!parsedValues.success) {
     return buildProfileFormErrorState(
       values,
-      "Du lieu profile chua hop le.",
+      "Dữ liệu hồ sơ chưa hợp lệ.",
       parsedValues.error.flatten().fieldErrors
     );
   }
@@ -45,7 +45,7 @@ export async function updateProfileAction(
 
   return {
     status: "success",
-    message: "Cập nhật profile thành công.",
+    message: "Cập nhật hồ sơ thành công.",
     sessionUpdate: {
       email: result.user.email,
       image: result.user.avatarPath,

@@ -14,11 +14,11 @@ export function CompletePomodoroSessionForm({
       <input name="sessionId" type="hidden" value={sessionId} />
       <label className="block">
         <span className="mb-2 block text-sm font-semibold text-stone-700">
-          Ghi chu session
+          Ghi chú phiên
         </span>
         <textarea className={textareaClassName} name="notes" />
       </label>
-      <Button type="submit">Hoan thanh session</Button>
+      <Button type="submit">Hoàn thành phiên</Button>
     </form>
   );
 }

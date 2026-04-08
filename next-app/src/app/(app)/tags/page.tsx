@@ -21,14 +21,14 @@ export default async function TagsPage() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Tags
+              Thẻ
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Gắn nhãn cho goals
+              Gắn nhãn cho mục tiêu
             </h1>
           </div>
           <div className="rounded-full bg-stone-100 px-4 py-2 text-sm font-semibold text-stone-700">
-            {tags.length} tag
+            {tags.length} thẻ
           </div>
         </div>
 
@@ -52,7 +52,7 @@ export default async function TagsPage() {
                       {tag.name}
                     </h2>
                     <p className="mt-2 text-sm text-stone-500">
-                      {tag.goalsCount} goal đang gắn tag này
+                      {tag.goalsCount} mục tiêu đang gắn thẻ này
                     </p>
                   </div>
 

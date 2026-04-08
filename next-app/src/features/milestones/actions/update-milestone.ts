@@ -38,7 +38,7 @@ export async function updateMilestoneAction(
   if (!parsedValues.success) {
     return buildMilestoneFormErrorState(
       values,
-      "Du lieu milestone chua hop le.",
+      "Dữ liệu cột mốc chưa hợp lệ.",
       parsedValues.error.flatten().fieldErrors
     );
   }
@@ -53,7 +53,7 @@ export async function updateMilestoneAction(
   if (!updatedMilestoneId) {
     return buildMilestoneFormErrorState(
       values,
-      "Milestone khong ton tai hoac da bi xoa."
+      "Cột mốc không tồn tại hoặc đã bị xóa."
     );
   }
 

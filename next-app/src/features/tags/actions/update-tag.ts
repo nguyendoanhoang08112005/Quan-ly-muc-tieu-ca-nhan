@@ -22,7 +22,7 @@ export async function updateTagAction(
   const parsedTagId = tagIdSchema.safeParse(tagId);
 
   if (!parsedTagId.success) {
-    return buildTagFormErrorState(values, "Không tìm thấy tag để cập nhật.");
+    return buildTagFormErrorState(values, "Không tìm thấy thẻ để cập nhật.");
   }
 
   const parsedValues = tagFormSchema.safeParse(values);
@@ -30,7 +30,7 @@ export async function updateTagAction(
   if (!parsedValues.success) {
     return buildTagFormErrorState(
       values,
-      "Dữ liệu tag chưa hợp lệ.",
+      "Dữ liệu thẻ chưa hợp lệ.",
       parsedValues.error.flatten().fieldErrors
     );
   }
@@ -42,7 +42,7 @@ export async function updateTagAction(
   );
 
   if (!updatedTagId) {
-    return buildTagFormErrorState(values, "Tag không tồn tại hoặc đã bị xóa.");
+    return buildTagFormErrorState(values, "Thẻ không tồn tại hoặc đã bị xóa.");
   }
 
   revalidatePath("/tags");

@@ -6,7 +6,7 @@ export function DeleteTagForm({ tagId }: { tagId: string }) {
     <form action={deleteTagAction}>
       <input name="tagId" type="hidden" value={tagId} />
       <Button type="submit" variant="destructive">
-        Xoa
+        Xóa thẻ
       </Button>
     </form>
   );

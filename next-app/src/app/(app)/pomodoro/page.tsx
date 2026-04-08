@@ -37,15 +37,12 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Phase 8
-            </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Pomodoro sessions
+              Phiên pomodoro
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Pomodoro đã có persistence, active session và completion flow gắn
-              với task thật trong hệ thống.
+              Pomodoro giờ đã lưu bền vững, có phiên đang chạy và luồng hoàn
+              thành gắn với công việc thực trong hệ thống.
             </p>
           </div>
 
@@ -53,7 +50,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
             className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
             href={"/tasks" as Route}
           >
-            Mở tasks
+            Mở công việc
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -61,7 +58,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
         <div className="mt-8 grid gap-4 md:grid-cols-4">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tổng sessions
+              Tổng phiên
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {overview.summary.totalSessions}
@@ -98,10 +95,10 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Active session
+              Phiên đang chạy
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              {overview.activeSession ? "Đang focus" : "Bắt đầu session mới"}
+              {overview.activeSession ? "Đang tập trung" : "Bắt đầu phiên mới"}
             </h2>
           </div>
 
@@ -114,7 +111,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
 
               <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Task đang focus
+                  Công việc đang tập trung
                 </p>
                 <h3 className="mt-3 text-2xl font-black text-stone-950">
                   {overview.activeSession.taskTitle}
@@ -153,7 +150,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
               Lịch sử
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Recent sessions
+              Các phiên gần đây
             </h2>
           </div>
 
@@ -217,7 +214,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
                         className={cn(buttonVariants({ variant: "secondary" }))}
                         href={`/goals/${session.goalId}` as Route}
                       >
-                        Xem goal
+                        Xem mục tiêu
                       </Link>
                       <Link
                         className={cn(buttonVariants({ variant: "secondary" }))}
@@ -236,10 +233,10 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
                 <TimerReset className="h-8 w-8 text-stone-500" />
               </div>
               <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-                Chưa có pomodoro session nào
+                Chưa có phiên pomodoro nào
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-                Chọn một task ở bên trái để bắt đầu session focus đầu tiên.
+                Chọn một công việc ở bên trái để bắt đầu phiên tập trung đầu tiên.
               </p>
             </div>
           )}

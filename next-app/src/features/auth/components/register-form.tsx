@@ -17,14 +17,11 @@ export function RegisterForm() {
   return (
     <form action={formAction} className="space-y-5">
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-          Phase 3
-        </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
           Tạo tài khoản
         </h2>
         <p className="mt-3 text-sm leading-6 text-stone-600">
-          Đăng ký bằng server action có validate Zod trước khi ghi vào database.
+          Đăng ký bằng hành động phía máy chủ có xác thực Zod trước khi ghi vào cơ sở dữ liệu.
         </p>
       </div>
 

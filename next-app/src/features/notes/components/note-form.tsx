@@ -61,11 +61,8 @@ export function NoteForm({
       {noteId ? <input name="noteId" type="hidden" value={noteId} /> : null}
 
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-          Phase 7
-        </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cập nhật note" : "Tạo note mới"}
+          {mode === "edit" ? "Cập nhật ghi chú" : "Tạo ghi chú mới"}
         </h2>
       </div>
 
@@ -98,7 +95,7 @@ export function NoteForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Đối tượng được gắn note
+            Đối tượng được gắn ghi chú
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -124,7 +121,7 @@ export function NoteForm({
 
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Noi dung ghi chu
+            Nội dung ghi chú
           </span>
           <textarea
             className={textareaClassName}
@@ -144,16 +141,16 @@ export function NoteForm({
           {mode === "edit"
             ? isPending
               ? "Đang cập nhật..."
-              : "Cập nhật note"
+              : "Cập nhật ghi chú"
             : isPending
               ? "Đang tạo..."
-              : "Tạo note"}
+              : "Tạo ghi chú"}
         </Button>
         <Link
           className="inline-flex h-10 items-center justify-center rounded-2xl border border-stone-300 px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
           href={cancelHref}
         >
-          Huy
+          Hủy
         </Link>
       </div>
     </form>

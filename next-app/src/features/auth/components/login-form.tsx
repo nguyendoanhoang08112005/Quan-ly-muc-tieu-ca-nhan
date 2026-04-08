@@ -59,12 +59,9 @@ export function LoginForm({
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-          Phase 3
-        </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">Đăng nhập</h2>
         <p className="mt-3 text-sm leading-6 text-stone-600">
-          Đăng nhập bằng Credentials provider của NextAuth trên nền Prisma.
+          Đăng nhập bằng hệ thống xác thực hiện tại trên nền Prisma.
         </p>
       </div>
 

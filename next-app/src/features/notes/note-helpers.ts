@@ -1,12 +1,12 @@
 import type { NoteFormValues, NoteableType } from "@/features/notes/types";
 
 export const noteableTypeLabels: Record<NoteableType, string> = {
-  goal: "Goal",
-  milestone: "Milestone",
-  task: "Task",
-  habit: "Habit",
-  project: "Project",
-  journal_entry: "Journal entry"
+  goal: "Mục tiêu",
+  milestone: "Cột mốc",
+  task: "Công việc",
+  habit: "Thói quen",
+  project: "Dự án",
+  journal_entry: "Nhật ký"
 };
 
 export const noteableTypeToPrisma = {

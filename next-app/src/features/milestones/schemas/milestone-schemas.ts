@@ -8,7 +8,7 @@ const optionalDateField = z
   .default("")
   .refine(
     (value) => value === "" || parseDateInput(value) !== null,
-    "Ngay khong hop le."
+    "Ngày không hợp lệ."
   );
 
 const optionalSequenceSchema = z.preprocess((value) => {
@@ -24,7 +24,7 @@ const optionalSequenceSchema = z.preprocess((value) => {
 export const milestoneIdSchema = z
   .string()
   .trim()
-  .regex(/^\d+$/, "Milestone id khong hop le.");
+  .regex(/^\d+$/, "Mã cột mốc không hợp lệ.");
 
 export const milestoneFormSchema = z
   .object({
@@ -32,14 +32,14 @@ export const milestoneFormSchema = z
       .string()
       .trim()
       .min(3, "Ten milestone phai co it nhat 3 ky tu.")
-      .max(180, "Ten milestone khong duoc vuot qua 180 ky tu."),
+      .max(180, "Tên cột mốc không được vượt quá 180 ký tự."),
     description: z.string().trim().default(""),
     status: z.enum(workStatusValues, {
-      message: "Trang thai milestone khong hop le."
+      message: "Trạng thái cột mốc không hợp lệ."
     }),
     startDate: optionalDateField,
     targetDate: optionalDateField,
-    note: z.string().trim().max(10000, "Ghi chu qua dai.").default(""),
+    note: z.string().trim().max(10000, "Ghi chú quá dài.").default(""),
     sequenceNo: optionalSequenceSchema
   })
   .superRefine((value, context) => {
@@ -58,7 +58,7 @@ export const milestoneFormSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["targetDate"],
-        message: "Ngay muc tieu phai bang hoac sau ngay bat dau."
+        message: "Ngày mục tiêu phải bằng hoặc sau ngày bắt đầu."
       });
     }
   });

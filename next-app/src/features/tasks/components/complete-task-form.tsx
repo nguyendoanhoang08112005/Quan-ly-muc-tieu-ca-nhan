@@ -18,7 +18,7 @@ export function CompleteTaskForm({
       {projectId ? <input name="projectId" type="hidden" value={projectId} /> : null}
       <input name="taskId" type="hidden" value={taskId} />
       <Button disabled={disabled} type="submit" variant="secondary">
-        Hoan thanh
+        Hoàn thành
       </Button>
     </form>
   );

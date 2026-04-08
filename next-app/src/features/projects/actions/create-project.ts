@@ -23,7 +23,7 @@ export async function createProjectAction(
   if (!parsed.success) {
     return buildProjectFormErrorState(
       values,
-      "Du lieu project chua hop le.",
+      "Dữ liệu dự án chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -33,7 +33,7 @@ export async function createProjectAction(
   if (!projectId) {
     return buildProjectFormErrorState(
       values,
-      "Goal lien ket voi project khong hop le."
+      "Mục tiêu liên kết với dự án không hợp lệ."
     );
   }
 

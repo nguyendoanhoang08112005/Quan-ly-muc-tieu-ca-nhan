@@ -10,10 +10,10 @@ export default function GlobalError({ error, reset }: ErrorProps) {
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="max-w-lg rounded-3xl border border-red-200 bg-white p-8 shadow-sm">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-600">
-          Loi he thong
+          Lỗi hệ thống
         </p>
         <h1 className="mt-3 text-3xl font-black text-stone-950">
-          App moi gap su co khi render
+          Ứng dụng mới gặp sự cố khi hiển thị
         </h1>
         <p className="mt-4 text-sm leading-6 text-stone-600">
           {error.message || "Đã xảy ra lỗi không xác định."}
@@ -23,7 +23,7 @@ export default function GlobalError({ error, reset }: ErrorProps) {
           onClick={reset}
           type="button"
         >
-          Thu tai lai
+          Thử tải lại
         </button>
       </div>
     </div>

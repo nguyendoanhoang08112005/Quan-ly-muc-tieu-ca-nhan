@@ -38,11 +38,8 @@ export function TagForm({
       {tagId ? <input name="tagId" type="hidden" value={tagId} /> : null}
 
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-          Phase 6
-        </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cập nhật tag" : "Tạo tag mới"}
+          {mode === "edit" ? "Cập nhật thẻ" : "Tạo thẻ mới"}
         </h2>
       </div>
 
@@ -55,7 +52,7 @@ export function TagForm({
       <div className="grid gap-5 md:grid-cols-2">
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ten tag
+            Tên thẻ
           </span>
           <Input defaultValue={state.values.name} name="name" />
           {state.fieldErrors?.name?.[0] ? (
@@ -67,7 +64,7 @@ export function TagForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Mau
+            Màu
           </span>
           <Input defaultValue={state.values.color} name="color" placeholder="#ea580c" />
         </label>
@@ -78,16 +75,16 @@ export function TagForm({
           {mode === "edit"
             ? isPending
               ? "Đang cập nhật..."
-              : "Cập nhật tag"
+              : "Cập nhật thẻ"
             : isPending
               ? "Đang tạo..."
-              : "Tạo tag"}
+              : "Tạo thẻ"}
         </Button>
         <Link
           className="inline-flex h-10 items-center justify-center rounded-2xl border border-stone-300 px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
           href={cancelHref}
         >
-          Huy
+          Hủy
         </Link>
       </div>
     </form>

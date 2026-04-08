@@ -8,19 +8,18 @@ export default function NotFound() {
           404
         </p>
         <h1 className="mt-3 text-3xl font-black text-stone-950">
-          Khong tim thay trang
+          Không tìm thấy trang
         </h1>
         <p className="mt-4 text-sm leading-6 text-stone-600">
-          Route nay chua duoc migrate hoac khong ton tai trong app moi.
+          Trang này chưa được chuyển sang hệ mới hoặc không tồn tại.
         </p>
         <Link
           className="mt-6 inline-flex rounded-2xl bg-stone-950 px-4 py-2.5 text-sm font-semibold text-white"
           href="/"
         >
-          Ve trang chu
+          Về trang chủ
         </Link>
       </div>
     </div>
   );
 }
-

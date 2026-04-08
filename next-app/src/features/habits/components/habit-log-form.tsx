@@ -49,14 +49,14 @@ export function HabitLogForm({
       <div className="grid gap-4 md:grid-cols-2">
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ngay log
+            Ngày ghi nhật ký
           </span>
           <Input defaultValue={state.values.logDate} name="logDate" type="date" />
         </label>
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            So lan hoan thanh
+            Số lần hoàn thành
           </span>
           <Input
             defaultValue={state.values.completedCount}
@@ -69,7 +69,7 @@ export function HabitLogForm({
 
       <label className="block">
         <span className="mb-2 block text-sm font-semibold text-stone-700">
-          Ghi chu log
+          Ghi chú log
         </span>
         <textarea
           className={textareaClassName}
@@ -79,7 +79,7 @@ export function HabitLogForm({
       </label>
 
       <Button disabled={isPending} type="submit">
-        {isPending ? "Đang lưu log..." : "Lưu habit log"}
+        {isPending ? "Đang lưu nhật ký..." : "Lưu nhật ký thói quen"}
       </Button>
     </form>
   );

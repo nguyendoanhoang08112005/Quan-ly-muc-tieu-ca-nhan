@@ -6,7 +6,7 @@ export function DeleteCategoryForm({ categoryId }: { categoryId: string }) {
     <form action={deleteCategoryAction}>
       <input name="categoryId" type="hidden" value={categoryId} />
       <Button type="submit" variant="destructive">
-        Xoa
+        Xóa danh mục
       </Button>
     </form>
   );

@@ -28,15 +28,12 @@ export default async function NotificationsPage() {
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Phase 8
-            </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Notification center
+              Trung tâm thông báo
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Notification center tập trung vào unread state, recent events và
-              điều hướng nhanh tới entity liên quan.
+              Trung tâm thông báo tập trung vào trạng thái chưa đọc, sự kiện gần
+              đây và điều hướng nhanh tới nội dung liên quan.
             </p>
           </div>
 
@@ -46,7 +43,7 @@ export default async function NotificationsPage() {
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tổng notifications
+              Tổng thông báo
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {summary.total}
@@ -140,11 +137,11 @@ export default async function NotificationsPage() {
             <Bell className="h-8 w-8 text-stone-500" />
           </div>
           <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-            Chưa có notification nào
+            Chưa có thông báo nào
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-            Notification mới sẽ xuất hiện ở đây khi hệ thống bắt đầu ghi nhận
-            các sự kiện như pomodoro session hoàn thành.
+            Thông báo mới sẽ xuất hiện ở đây khi hệ thống bắt đầu ghi nhận các
+            sự kiện như phiên pomodoro hoàn thành.
           </p>
         </section>
       )}

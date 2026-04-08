@@ -14,7 +14,7 @@ export function TaskSubtasksPanel({
   return (
     <div className="mt-5 rounded-[1.5rem] border border-stone-200 bg-white px-4 py-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-black text-stone-950">Subtasks checklist</p>
+        <p className="text-sm font-black text-stone-950">Danh sách công việc con</p>
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
           {subtasks.filter((subtask) => subtask.status === "completed").length}/
           {subtasks.length}
@@ -56,7 +56,7 @@ export function TaskSubtasksPanel({
                 <input name="taskId" type="hidden" value={taskId} />
                 <input name="subtaskId" type="hidden" value={subtask.id} />
                 <Button size="sm" type="submit" variant="ghost">
-                  Xoa
+                  Xóa
                 </Button>
               </form>
             </div>
@@ -64,7 +64,7 @@ export function TaskSubtasksPanel({
         </div>
       ) : (
         <div className="mt-4 rounded-2xl border border-dashed border-stone-300 bg-stone-50 px-4 py-4 text-sm text-stone-500">
-          Chua co subtask nao cho task nay.
+          Chưa có công việc con nào cho công việc này.
         </div>
       )}
 
@@ -73,11 +73,11 @@ export function TaskSubtasksPanel({
         <input
           className="h-10 min-w-[220px] flex-1 rounded-2xl border border-stone-300 bg-white px-4 text-sm text-stone-950 shadow-sm outline-none transition placeholder:text-stone-400 focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
           name="name"
-          placeholder="Them subtask moi"
+          placeholder="Thêm công việc con mới"
           type="text"
         />
         <Button size="sm" type="submit">
-          Them subtask
+          Thêm công việc con
         </Button>
       </form>
     </div>

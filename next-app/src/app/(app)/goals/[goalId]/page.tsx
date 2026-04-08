@@ -72,7 +72,7 @@ export default async function GoalDetailPage({
             href={"/goals" as Route}
           >
             <ArrowLeft className="h-4 w-4" />
-            Quay lai goals
+            Quay lại mục tiêu
           </Link>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -81,14 +81,14 @@ export default async function GoalDetailPage({
               href={`/goals/${goal.id}/edit` as Route}
             >
               <PencilLine className="h-4 w-4" />
-              Chinh sua
+              Chỉnh sửa
             </Link>
             <Link
               className={cn(buttonVariants({ size: "default" }), "gap-2")}
               href={`/goals/${goal.id}/milestones/new` as Route}
             >
               <Plus className="h-4 w-4" />
-              Them milestone
+              Thêm cột mốc
             </Link>
             <DeleteGoalForm goalId={goal.id} />
           </div>
@@ -97,7 +97,7 @@ export default async function GoalDetailPage({
         <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
             <div className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-stone-500">
-              Goal detail
+              Chi tiết mục tiêu
             </div>
             <h1 className="mt-4 text-4xl font-black tracking-tight text-stone-950">
               {goal.title}
@@ -124,13 +124,13 @@ export default async function GoalDetailPage({
                   goalPriorityClassNames[goal.priority]
                 )}
               >
-                Uu tien {goalPriorityLabels[goal.priority]}
+                Ưu tiên {goalPriorityLabels[goal.priority]}
               </span>
               <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                Han {formatDisplayDate(goal.targetDate)}
+                Hạn {formatDisplayDate(goal.targetDate)}
               </span>
               <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                {goal.isPublic ? "Cong khai cho follow" : "Rieng tu"}
+                {goal.isPublic ? "Công khai để theo dõi" : "Riêng tư"}
               </span>
             </div>
 
@@ -168,7 +168,7 @@ export default async function GoalDetailPage({
           <div className="grid gap-4 sm:grid-cols-3 lg:w-[440px] lg:grid-cols-1">
             <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
               <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-                Progress
+                  Tiến độ
               </div>
               <div className="mt-2 text-4xl font-black">
                 {Math.round(goal.progress)}%
@@ -177,7 +177,7 @@ export default async function GoalDetailPage({
             <div className="grid gap-4 sm:col-span-2 sm:grid-cols-2 lg:grid-cols-2">
               <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Milestone
+                  Cột mốc
                 </div>
                 <div className="mt-2 text-3xl font-black text-stone-950">
                   {goal.milestonesCount}
@@ -185,7 +185,7 @@ export default async function GoalDetailPage({
               </div>
               <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Task xong
+                  Công việc hoàn thành
                 </div>
                 <div className="mt-2 text-3xl font-black text-stone-950">
                   {completedTasks}/{totalTasks}
@@ -206,15 +206,15 @@ export default async function GoalDetailPage({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Flow chinh
+              Luồng chính
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Milestone va task trong goal
+              Cột mốc và công việc trong mục tiêu
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-stone-600">
-              Detail page nay da doc du lieu nested theo dung thu tu cu:
-              milestone theo sequence_no, task theo is_focus, sort_order, roi den
-              due_at.
+              Trang chi tiết này đọc dữ liệu lồng nhau theo đúng thứ tự cũ:
+              cột mốc theo số thứ tự, công việc theo mức độ tập trung, thứ tự
+              sắp xếp rồi đến hạn.
             </p>
           </div>
 
@@ -223,7 +223,7 @@ export default async function GoalDetailPage({
             href={`/goals/${goal.id}/milestones/new` as Route}
           >
             <Plus className="h-4 w-4" />
-            Tao milestone moi
+            Tạo cột mốc mới
           </Link>
         </div>
 
@@ -244,7 +244,7 @@ export default async function GoalDetailPage({
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       <div className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-stone-500">
-                        Milestone {milestone.sequenceNo}
+                        Cột mốc {milestone.sequenceNo}
                       </div>
                       <h3 className="mt-4 text-2xl font-black text-stone-950">
                         {milestone.title}
@@ -256,7 +256,7 @@ export default async function GoalDetailPage({
 
                     <div className="rounded-2xl bg-stone-100 px-4 py-3 text-right">
                       <div className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
-                        Progress
+                        Tiến độ
                       </div>
                       <div className="text-2xl font-black text-stone-950">
                         {Math.round(milestone.progress)}%
@@ -280,7 +280,7 @@ export default async function GoalDetailPage({
                       Mục tiêu {formatDisplayDate(milestone.targetDate)}
                     </span>
                     <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                      {milestone.tasksCount} task
+                      {milestone.tasksCount} công việc
                     </span>
                   </div>
 
@@ -299,14 +299,14 @@ export default async function GoalDetailPage({
                       href={`/goals/${goal.id}/milestones/${milestone.id}/edit` as Route}
                     >
                       <PencilLine className="h-4 w-4" />
-                      Sửa milestone
+                      Sửa cột mốc
                     </Link>
                     <Link
                       className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
                       href={`/goals/${goal.id}/milestones/${milestone.id}/tasks/new` as Route}
                     >
                       <Plus className="h-4 w-4" />
-                      Thêm task
+                      Thêm công việc
                     </Link>
                     <DeleteMilestoneForm
                       goalId={goal.id}
@@ -333,7 +333,7 @@ export default async function GoalDetailPage({
                                 <div className="flex flex-wrap gap-2">
                                   {task.isFocus ? (
                                     <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                                      Focus
+                                      Tập trung
                                     </span>
                                   ) : null}
                                   <span
@@ -358,7 +358,7 @@ export default async function GoalDetailPage({
 
                               <div className="text-right">
                                 <div className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-                                  Progress
+                                  Tiến độ
                                 </div>
                                 <div className="text-2xl font-black text-stone-950">
                                   {Math.round(task.progress)}%
@@ -375,7 +375,7 @@ export default async function GoalDetailPage({
                                       backgroundColor: task.project.color ?? undefined
                                     }}
                                   />
-                                  Project: {task.project.name}
+                                  Dự án: {task.project.name}
                                 </span>
                               ) : null}
                               <span className="rounded-full bg-white px-3 py-1">
@@ -392,7 +392,7 @@ export default async function GoalDetailPage({
                                 </span>
                               ) : null}
                               <span className="rounded-full bg-white px-3 py-1">
-                                Subtasks {task.completedSubtasksCount}/{task.subtasksCount}
+                                Công việc con {task.completedSubtasksCount}/{task.subtasksCount}
                               </span>
                             </div>
 
@@ -404,14 +404,14 @@ export default async function GoalDetailPage({
                                   className={cn(buttonVariants({ variant: "secondary" }))}
                                   href={`/projects/${task.project.id}` as Route}
                                 >
-                                  Xem project
+                                  Xem dự án
                                 </Link>
                               ) : null}
                               <Link
                                 className={cn(buttonVariants({ variant: "secondary" }))}
                                 href={`/goals/${goal.id}/tasks/${task.id}/edit` as Route}
                               >
-                                Sửa task
+                                Sửa công việc
                               </Link>
                               <CompleteTaskForm
                                 disabled={task.status === "completed"}
@@ -431,8 +431,8 @@ export default async function GoalDetailPage({
                     </div>
                   ) : (
                     <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-5 py-6 text-sm leading-6 text-stone-500">
-                      Milestone này chưa có task nào. Bạn có thể tạo task đầu tiên
-                      ngay từ detail page này.
+                      Cột mốc này chưa có công việc nào. Bạn có thể tạo công
+                      việc đầu tiên ngay từ trang chi tiết này.
                     </div>
                   )}
                 </article>
@@ -442,11 +442,11 @@ export default async function GoalDetailPage({
         ) : (
           <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
             <h3 className="text-2xl font-black text-stone-950">
-              Goal này chưa có milestone
+              Mục tiêu này chưa có cột mốc
             </h3>
             <p className="mt-3 text-sm leading-7 text-stone-500">
-              Phase 5 đã mở xong flow milestone/task. Hãy tạo milestone đầu tiên
-              để tiếp tục chia goal thành các bước rõ ràng.
+              Hãy tạo cột mốc đầu tiên để tiếp tục chia mục tiêu thành các bước
+              rõ ràng.
             </p>
             <div className="mt-6">
               <Link
@@ -454,7 +454,7 @@ export default async function GoalDetailPage({
                 href={`/goals/${goal.id}/milestones/new` as Route}
               >
                 <Plus className="h-4 w-4" />
-                Tạo milestone đầu tiên
+                Tạo cột mốc đầu tiên
               </Link>
             </div>
           </div>
@@ -464,14 +464,14 @@ export default async function GoalDetailPage({
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-            Goal logs
+            Nhật ký mục tiêu
           </p>
           <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-            Timeline thay đổi
+            Dòng thời gian thay đổi
           </h2>
           <p className="mt-2 max-w-3xl text-sm leading-7 text-stone-600">
             Mục này ghi lại các thay đổi tiến độ và sự kiện quan trọng gắn với
-            goal, milestone và task.
+            mục tiêu, cột mốc và công việc.
           </p>
         </div>
 
@@ -489,24 +489,24 @@ export default async function GoalDetailPage({
                         {goalLogTypeLabels[log.logType] ?? log.logType}
                       </span>
                       {log.progressSnapshot !== null ? (
-                        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
-                          Snapshot {Math.round(log.progressSnapshot)}%
-                        </span>
-                      ) : null}
+                            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                              Ảnh chụp {Math.round(log.progressSnapshot)}%
+                            </span>
+                          ) : null}
                     </div>
 
                     <h3 className="mt-3 text-lg font-black text-stone-950">
-                      {log.title ?? "Cập nhật goal"}
+                      {log.title ?? "Cập nhật mục tiêu"}
                     </h3>
                     <p className="mt-2 text-sm leading-6 text-stone-600">
-                      {log.content ?? "Không có nội dung bổ sung cho log này."}
+                      {log.content ?? "Không có nội dung bổ sung cho nhật ký này."}
                     </p>
 
                     <p className="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
                       {log.milestoneTitle
-                        ? `Milestone ${log.milestoneTitle}`
-                        : "Goal level"}
-                      {log.taskTitle ? ` • Task ${log.taskTitle}` : ""}
+                        ? `Cột mốc ${log.milestoneTitle}`
+                        : "Cấp mục tiêu"}
+                      {log.taskTitle ? ` • Công việc ${log.taskTitle}` : ""}
                     </p>
                   </div>
 
@@ -520,11 +520,11 @@ export default async function GoalDetailPage({
         ) : (
           <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
             <h3 className="text-2xl font-black text-stone-950">
-              Chưa có thay đổi nào được ghi log
+              Chưa có thay đổi nào được ghi nhận
             </h3>
             <p className="mt-3 text-sm leading-7 text-stone-500">
-              Khi progress hoặc task thay đổi, timeline sẽ bắt đầu hiện dữ liệu
-              tại đây.
+              Khi tiến độ hoặc công việc thay đổi, dòng thời gian sẽ bắt đầu
+              hiển thị dữ liệu tại đây.
             </p>
           </div>
         )}

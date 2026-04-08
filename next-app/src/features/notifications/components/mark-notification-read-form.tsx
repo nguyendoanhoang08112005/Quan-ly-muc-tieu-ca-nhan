@@ -16,7 +16,7 @@ export function MarkNotificationReadForm({
     <form action={markNotificationReadAction}>
       <input name="notificationId" type="hidden" value={notificationId} />
       <Button type="submit" variant="secondary">
-        Danh dau da doc
+        Đánh dấu đã đọc
       </Button>
     </form>
   );

@@ -10,7 +10,7 @@ export function InterruptPomodoroSessionForm({
     <form action={interruptPomodoroSessionAction}>
       <input name="sessionId" type="hidden" value={sessionId} />
       <Button type="submit" variant="secondary">
-        Dung session
+        Dừng phiên
       </Button>
     </form>
   );

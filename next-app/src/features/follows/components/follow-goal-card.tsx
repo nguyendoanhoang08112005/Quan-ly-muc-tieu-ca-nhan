@@ -43,7 +43,7 @@ export function FollowGoalCard({
             {goal.title}
           </h3>
           <p className="mt-2 text-sm font-semibold text-stone-500">
-            Owner: {goal.owner.name}
+            Người sở hữu: {goal.owner.name}
           </p>
           <p className="mt-3 text-sm leading-6 text-stone-600">
             {goal.description}
@@ -82,7 +82,7 @@ export function FollowGoalCard({
 
         <div className="rounded-[1.5rem] bg-stone-50 px-4 py-4 text-right">
           <div className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-            Progress
+            Tiến độ
           </div>
           <div className="mt-2 text-3xl font-black text-stone-950">
             {Math.round(goal.progress)}%
@@ -93,22 +93,22 @@ export function FollowGoalCard({
       <div className="mt-5 grid gap-3 text-sm text-stone-600 md:grid-cols-2 xl:grid-cols-4">
         <div className="flex items-center gap-2">
           <CalendarDays className="h-4 w-4" />
-          <span>Han {formatDisplayDate(goal.targetDate)}</span>
+          <span>Hạn {formatDisplayDate(goal.targetDate)}</span>
         </div>
         <div className="flex items-center gap-2">
           <Flag className="h-4 w-4" />
           <span>
-            {goal.milestonesCount} milestone • {goal.tasksCount} task
+            {goal.milestonesCount} cột mốc • {goal.tasksCount} công việc
           </span>
         </div>
         <div className="flex items-center gap-2">
           <Users className="h-4 w-4" />
-          <span>{goal.followerCount} follower</span>
+          <span>{goal.followerCount} người theo dõi</span>
         </div>
         <div className="text-stone-500">
           {goal.followedAt
-            ? `Theo doi tu ${formatDisplayDateTime(goal.followedAt)}`
-            : "Goal công khai"}
+            ? `Theo dõi từ ${formatDisplayDateTime(goal.followedAt)}`
+            : "Mục tiêu công khai"}
         </div>
       </div>
 

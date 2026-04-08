@@ -6,7 +6,7 @@ export function DeleteGoalForm({ goalId }: { goalId: string }) {
     <form action={deleteGoalAction}>
       <input name="goalId" type="hidden" value={goalId} />
       <Button type="submit" variant="secondary">
-        Xóa goal
+        Xóa mục tiêu
       </Button>
     </form>
   );

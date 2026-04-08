@@ -40,14 +40,14 @@ export function PomodoroStartForm({
 
       <label className="block">
         <span className="mb-2 block text-sm font-semibold text-stone-700">
-          Chon task
+          Chọn công việc
         </span>
         <select
           className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
           defaultValue={state.values.taskId}
           name="taskId"
         >
-          <option value="">Chon task de focus</option>
+          <option value="">Chọn công việc để tập trung</option>
           {taskOptions.map((task) => (
             <option key={task.id} value={task.id}>
               {task.title} | {task.goalTitle}
@@ -63,7 +63,7 @@ export function PomodoroStartForm({
 
       <label className="block">
         <span className="mb-2 block text-sm font-semibold text-stone-700">
-          Thoi luong
+          Thời lượng
         </span>
         <Input
           defaultValue={state.values.durationMinutes}

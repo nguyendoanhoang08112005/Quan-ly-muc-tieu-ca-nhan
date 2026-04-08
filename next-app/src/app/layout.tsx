@@ -5,15 +5,15 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: getAppBaseUrl(),
   title: {
-    default: "Quan ly muc tieu ca nhan",
-    template: "%s | Quan ly muc tieu ca nhan"
+    default: "Quản lý mục tiêu cá nhân",
+    template: "%s | Quản lý mục tiêu cá nhân"
   },
-  description: "Nen tang Next.js moi cho ung dung quan ly muc tieu ca nhan.",
-  applicationName: "Quan ly muc tieu ca nhan",
+  description: "Nền tảng Next.js mới cho ứng dụng quản lý mục tiêu cá nhân.",
+  applicationName: "Quản lý mục tiêu cá nhân",
   openGraph: {
-    title: "Quan ly muc tieu ca nhan",
-    description: "Nen tang Next.js moi cho ung dung quan ly muc tieu ca nhan.",
-    siteName: "Quan ly muc tieu ca nhan",
+    title: "Quản lý mục tiêu cá nhân",
+    description: "Nền tảng Next.js mới cho ứng dụng quản lý mục tiêu cá nhân.",
+    siteName: "Quản lý mục tiêu cá nhân",
     type: "website"
   }
 };

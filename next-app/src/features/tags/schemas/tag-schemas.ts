@@ -3,14 +3,14 @@ import { z } from "zod";
 export const tagIdSchema = z
   .string()
   .trim()
-  .regex(/^\d+$/, "Tag id khong hop le.");
+  .regex(/^\d+$/, "Mã thẻ không hợp lệ.");
 
 export const tagFormSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(2, "Ten tag phai co it nhat 2 ky tu.")
-    .max(60, "Ten tag khong duoc vuot qua 60 ky tu."),
+    .min(2, "Tên thẻ phải có ít nhất 2 ký tự.")
+    .max(60, "Tên thẻ không được vượt quá 60 ký tự."),
   color: z
     .string()
     .trim()

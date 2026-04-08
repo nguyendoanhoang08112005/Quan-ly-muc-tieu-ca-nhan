@@ -54,15 +54,12 @@ export function TaskForm({
       {taskId ? <input name="taskId" type="hidden" value={taskId} /> : null}
 
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-          Phase 5
-        </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cập nhật task" : "Tạo task mới"}
+          {mode === "edit" ? "Cập nhật công việc" : "Tạo công việc mới"}
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-          Task mutation duoc validate va sau do dong bo lai progress milestone
-          va goal tuong ung.
+          Thao tác công việc được xác thực trước, sau đó đồng bộ lại tiến độ
+          cột mốc và mục tiêu tương ứng.
         </p>
       </div>
 
@@ -75,12 +72,12 @@ export function TaskForm({
       <div className="grid gap-5 md:grid-cols-2">
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Tên task
+            Tên công việc
           </span>
           <Input
             defaultValue={state.values.title}
             name="title"
-            placeholder="Ví dụ: Tạo Zod schema cho task"
+            placeholder="Ví dụ: Tạo schema Zod cho công việc"
           />
           {state.fieldErrors?.title?.[0] ? (
             <p className="mt-2 text-sm text-rose-600">
@@ -96,7 +93,7 @@ export function TaskForm({
           <Textarea
             defaultValue={state.values.description}
             name="description"
-            placeholder="Task này cần hoàn thành điều gì?"
+            placeholder="Công việc này cần hoàn thành điều gì?"
             rows={4}
           />
         </label>
@@ -120,7 +117,7 @@ export function TaskForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Do uu tien
+            Độ ưu tiên
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -137,7 +134,7 @@ export function TaskForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Han task
+            Hạn công việc
           </span>
           <Input
             defaultValue={state.values.dueAt}
@@ -153,7 +150,7 @@ export function TaskForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            So phut du kien
+            Số phút dự kiến
           </span>
           <Input
             defaultValue={state.values.estimatedMinutes}
@@ -170,14 +167,14 @@ export function TaskForm({
 
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Project
+            Dự án
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
             defaultValue={state.values.projectId}
             name="projectId"
           >
-            <option value="">Không gắn project</option>
+            <option value="">Không gắn dự án</option>
             {projectOptions.map((project) => (
               <option key={project.id} value={project.id}>
                 {project.goalTitle
@@ -201,7 +198,7 @@ export function TaskForm({
             type="checkbox"
           />
           <span className="text-sm font-medium text-stone-700">
-            Danh dau day la task focus
+            Đánh dấu đây là công việc ưu tiên
           </span>
         </label>
       </div>
@@ -211,16 +208,16 @@ export function TaskForm({
           {mode === "edit"
             ? isPending
               ? "Đang cập nhật..."
-              : "Cập nhật task"
+              : "Cập nhật công việc"
             : isPending
               ? "Đang tạo..."
-              : "Tạo task"}
+              : "Tạo công việc"}
         </Button>
         <Link
           className="inline-flex h-11 items-center justify-center rounded-2xl border border-stone-300 px-5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
           href={cancelHref}
         >
-          Huy
+          Hủy
         </Link>
       </div>
     </form>

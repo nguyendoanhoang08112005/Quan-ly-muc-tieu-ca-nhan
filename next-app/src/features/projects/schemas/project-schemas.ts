@@ -10,7 +10,7 @@ const optionalNumericId = z.preprocess((value) => {
   const trimmed = value.trim();
 
   return trimmed === "" ? undefined : trimmed;
-}, z.string().regex(/^\d+$/, "Gia tri khong hop le.").optional());
+}, z.string().regex(/^\d+$/, "Giá trị không hợp lệ.").optional());
 
 const optionalDateField = z
   .string()
@@ -18,13 +18,13 @@ const optionalDateField = z
   .default("")
   .refine(
     (value) => value === "" || parseDateInput(value) !== null,
-    "Ngay khong hop le."
+    "Ngày không hợp lệ."
   );
 
 export const projectIdSchema = z
   .string()
   .trim()
-  .regex(/^\d+$/, "Project id khong hop le.");
+  .regex(/^\d+$/, "Mã dự án không hợp lệ.");
 
 export const projectFormSchema = z
   .object({
@@ -32,13 +32,13 @@ export const projectFormSchema = z
     name: z
       .string()
       .trim()
-      .min(3, "Ten project phai co it nhat 3 ky tu.")
-      .max(180, "Ten project khong duoc vuot qua 180 ky tu."),
+      .min(3, "Tên dự án phải có ít nhất 3 ký tự.")
+      .max(180, "Tên dự án không được vượt quá 180 ký tự."),
     description: z.string().trim().default(""),
     status: z.enum(projectStatusValues, {
-      message: "Trang thai project khong hop le."
+      message: "Trạng thái dự án không hợp lệ."
     }),
-    color: z.string().trim().max(20, "Mau project qua dai.").default(""),
+    color: z.string().trim().max(20, "Màu dự án quá dài.").default(""),
     startDate: optionalDateField,
     endDate: optionalDateField
   })
@@ -54,7 +54,7 @@ export const projectFormSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["endDate"],
-        message: "Ngay ket thuc phai bang hoac sau ngay bat dau."
+        message: "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu."
       });
     }
   });

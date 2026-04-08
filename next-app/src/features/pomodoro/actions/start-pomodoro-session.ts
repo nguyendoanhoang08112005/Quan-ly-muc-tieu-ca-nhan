@@ -21,7 +21,7 @@ export async function startPomodoroSessionAction(
   if (!parsed.success) {
     return buildPomodoroStartFormErrorState(
       values,
-      "Du lieu pomodoro chua hop le.",
+      "Dữ liệu pomodoro chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -32,8 +32,8 @@ export async function startPomodoroSessionAction(
     return buildPomodoroStartFormErrorState(
       values,
       result.reason === "active_session"
-        ? "Ban dang co mot pomodoro session chua ket thuc."
-        : "Task duoc chon cho pomodoro khong hop le."
+        ? "Bạn đang có một phiên pomodoro chưa kết thúc."
+        : "Công việc được chọn cho pomodoro không hợp lệ."
     );
   }
 

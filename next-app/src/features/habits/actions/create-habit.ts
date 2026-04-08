@@ -23,7 +23,7 @@ export async function createHabitAction(
   if (!parsed.success) {
     return buildHabitFormErrorState(
       values,
-      "Du lieu habit chua hop le.",
+      "Dữ liệu thói quen chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -33,7 +33,7 @@ export async function createHabitAction(
   if (!habitId) {
     return buildHabitFormErrorState(
       values,
-      "Goal duoc lien ket voi habit khong hop le."
+      "Mục tiêu được liên kết với thói quen không hợp lệ."
     );
   }
 

@@ -2,12 +2,12 @@ import type { ProjectFormValues, ProjectStatus } from "@/features/projects/types
 import { getTodayDateInput } from "@/lib/dates";
 
 export const projectStatusLabels: Record<ProjectStatus, string> = {
-  planning: "Len ke hoach",
+  planning: "Lên kế hoạch",
   active: "Đang chạy",
-  paused: "Tam dung",
-  completed: "Hoan thanh",
+  paused: "Tạm dừng",
+  completed: "Hoàn thành",
   cancelled: "Đã hủy",
-  archived: "Luu tru"
+  archived: "Lưu trữ"
 };
 
 export const projectStatusClassNames: Record<ProjectStatus, string> = {

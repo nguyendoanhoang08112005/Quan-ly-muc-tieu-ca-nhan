@@ -6,7 +6,7 @@ export function UnfollowGoalForm({ goalId }: { goalId: string }) {
     <form action={unfollowGoalAction}>
       <input name="goalId" type="hidden" value={goalId} />
       <Button size="sm" type="submit" variant="secondary">
-        Unfollow
+        Bỏ theo dõi
       </Button>
     </form>
   );

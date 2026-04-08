@@ -26,13 +26,13 @@ export async function updateProjectAction(
   const parsed = projectFormSchema.safeParse(values);
 
   if (!parsedProjectId.success) {
-    return buildProjectFormErrorState(values, "Project khong hop le.");
+    return buildProjectFormErrorState(values, "Dự án không hợp lệ.");
   }
 
   if (!parsed.success) {
     return buildProjectFormErrorState(
       values,
-      "Du lieu project chua hop le.",
+      "Dữ liệu dự án chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -46,7 +46,7 @@ export async function updateProjectAction(
   if (!updatedProjectId) {
     return buildProjectFormErrorState(
       values,
-      "Không tìm thấy project hoặc goal liên kết không hợp lệ."
+      "Không tìm thấy dự án hoặc mục tiêu liên kết không hợp lệ."
     );
   }
 

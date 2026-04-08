@@ -25,7 +25,7 @@ export async function createMilestoneAction(
   const values = readMilestoneFormValues(formData);
 
   if (!parsedGoalId.success) {
-    return buildMilestoneFormErrorState(values, "Goal khong hop le.");
+    return buildMilestoneFormErrorState(values, "Mục tiêu không hợp lệ.");
   }
 
   const parsedValues = milestoneFormSchema.safeParse(values);
@@ -33,7 +33,7 @@ export async function createMilestoneAction(
   if (!parsedValues.success) {
     return buildMilestoneFormErrorState(
       values,
-      "Du lieu milestone chua hop le.",
+      "Dữ liệu cột mốc chưa hợp lệ.",
       parsedValues.error.flatten().fieldErrors
     );
   }

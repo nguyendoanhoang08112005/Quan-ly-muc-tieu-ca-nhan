@@ -36,8 +36,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <AuthShell
-      description="Đăng nhập để truy cập dashboard và bắt đầu migrate từng module nghiệp vụ trên app mới."
-      eyebrow="Authentication"
+      description="Đăng nhập để truy cập bảng điều khiển và sử dụng hệ thống mới."
+      eyebrow="Đăng nhập"
       footer={
         <p>
           Chưa có tài khoản?{" "}
@@ -49,7 +49,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </Link>
         </p>
       }
-      title="Đăng nhập vào hệ thống mới"
+      title="Đăng nhập vào hệ thống"
     >
       <LoginForm
         callbackUrl={callbackUrl}

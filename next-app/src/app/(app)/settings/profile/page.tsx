@@ -7,7 +7,7 @@ import { formatDisplayDateTime } from "@/lib/dates";
 import { getProfileSummaryForUser } from "@/server/modules/profile/queries";
 
 export const metadata: Metadata = {
-  title: "Profile"
+  title: "Hồ sơ"
 };
 
 export default async function ProfileSettingsPage() {
@@ -33,7 +33,7 @@ export default async function ProfileSettingsPage() {
     },
     {
       icon: Globe2,
-      label: "Timezone",
+      label: "Múi giờ",
       value: profile.timezone
     },
     {
@@ -59,16 +59,13 @@ export default async function ProfileSettingsPage() {
 
       <section className="space-y-6">
         <div className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-          <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-            Settings
-          </p>
           <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-            Profile và session
+            Hồ sơ và phiên đăng nhập
           </h1>
           <p className="mt-4 text-sm leading-7 text-stone-600">
-            Đây là phần migrate profile từ Laravel sang Next.js. Sau khi lưu,
-            session JWT sẽ được cập nhật lại để tên, email và locale mới hiển
-            thị đúng ngay trên app shell.
+            Đây là khu vực chuyển đổi hồ sơ từ Laravel sang Next.js. Sau khi
+            lưu, phiên JWT sẽ được cập nhật lại để tên, email và ngôn ngữ mới
+            hiển thị đúng ngay trên khung ứng dụng.
           </p>
         </div>
 
@@ -105,7 +102,7 @@ export default async function ProfileSettingsPage() {
           </p>
           <dl className="mt-5 space-y-4 text-sm text-stone-600">
             <div className="flex items-start justify-between gap-4">
-              <dt className="font-semibold text-stone-700">User ID</dt>
+              <dt className="font-semibold text-stone-700">Mã người dùng</dt>
               <dd className="text-right font-mono text-xs text-stone-500">
                 {profile.id}
               </dd>
@@ -115,11 +112,13 @@ export default async function ProfileSettingsPage() {
               <dd>{formatDisplayDateTime(profile.createdAt)}</dd>
             </div>
             <div className="flex items-start justify-between gap-4">
-              <dt className="font-semibold text-stone-700">Locale</dt>
+              <dt className="font-semibold text-stone-700">Ngôn ngữ</dt>
               <dd>{profile.locale}</dd>
             </div>
             <div className="flex items-start justify-between gap-4">
-              <dt className="font-semibold text-stone-700">Avatar path</dt>
+              <dt className="font-semibold text-stone-700">
+                Đường dẫn ảnh đại diện
+              </dt>
               <dd className="max-w-[16rem] break-all text-right">
                 {profile.avatarPath ?? "Chưa cài đặt"}
               </dd>

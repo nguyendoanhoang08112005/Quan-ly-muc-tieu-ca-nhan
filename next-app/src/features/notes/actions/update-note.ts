@@ -23,13 +23,13 @@ export async function updateNoteAction(
   const parsed = noteFormSchema.safeParse(values);
 
   if (!parsedNoteId.success) {
-    return buildNoteFormErrorState(values, "Note khong hop le.");
+    return buildNoteFormErrorState(values, "Ghi chú không hợp lệ.");
   }
 
   if (!parsed.success) {
     return buildNoteFormErrorState(
       values,
-      "Du lieu note chua hop le.",
+      "Dữ liệu ghi chú chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -43,7 +43,7 @@ export async function updateNoteAction(
   if (!updatedNoteId) {
     return buildNoteFormErrorState(
       values,
-      "Không tìm thấy note hoặc đối tượng được gắn note không hợp lệ."
+      "Không tìm thấy ghi chú hoặc đối tượng được gắn ghi chú không hợp lệ."
     );
   }
 

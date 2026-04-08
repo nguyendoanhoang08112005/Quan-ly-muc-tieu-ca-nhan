@@ -22,15 +22,12 @@ export default async function ProjectsPage() {
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Phase 9
-            </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Projects đã được giữ lại
+              Danh sách dự án
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Project giờ là module độc lập, nhưng vẫn gắn với goal và task để
-              không bị trôi thành legacy domain vô chủ.
+              Dự án giờ là mô-đun độc lập, nhưng vẫn gắn với mục tiêu và công
+              việc để không bị trôi thành phần cũ không còn người quản lý.
             </p>
           </div>
 
@@ -39,14 +36,14 @@ export default async function ProjectsPage() {
             href="/projects/new"
           >
             <Plus className="h-4 w-4" />
-            Tạo project mới
+            Tạo dự án mới
           </Link>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tổng projects
+              Tổng dự án
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {projects.length}
@@ -60,7 +57,7 @@ export default async function ProjectsPage() {
           </div>
           <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Có task
+              Có công việc
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {projects.filter((project) => project.tasksCount > 0).length}
@@ -109,14 +106,14 @@ export default async function ProjectsPage() {
                       Kết thúc {formatDisplayDate(project.endDate)}
                     </span>
                     <span className="rounded-full bg-stone-100 px-3 py-1">
-                      {project.completedTasksCount}/{project.tasksCount} task
+                      {project.completedTasksCount}/{project.tasksCount} công việc
                     </span>
                   </div>
                 </div>
 
                 <div className="rounded-[1.5rem] bg-stone-50 px-4 py-4 text-right">
                   <div className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-                    Progress
+                    Tiến độ
                   </div>
                   <div className="mt-2 text-3xl font-black text-stone-950">
                     {Math.round(project.progress)}%
@@ -129,13 +126,13 @@ export default async function ProjectsPage() {
                   className={cn(buttonVariants({ variant: "secondary" }))}
                   href={`/projects/${project.id}` as Route}
                 >
-                  Xem project
+                  Xem dự án
                 </Link>
                 <Link
                   className={cn(buttonVariants({ variant: "secondary" }))}
                   href={`/projects/${project.id}/edit` as Route}
                 >
-                  Sửa project
+                  Sửa dự án
                 </Link>
                 <DeleteProjectForm projectId={project.id} />
               </div>
@@ -145,11 +142,11 @@ export default async function ProjectsPage() {
       ) : (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
           <h2 className="text-2xl font-black text-stone-950">
-            Chưa có project nào
+            Chưa có dự án nào
           </h2>
           <p className="mt-3 text-sm leading-7 text-stone-500">
-            Tạo project để gom task theo một nhóm công việc có ý nghĩa hơn thay
-            vì để legacy domain này tiếp tục bị bỏ dang dở.
+            Tạo dự án để gom công việc theo một nhóm có ý nghĩa hơn, thay vì để
+            mô-đun cũ này tiếp tục bị bỏ dang dở.
           </p>
         </section>
       )}

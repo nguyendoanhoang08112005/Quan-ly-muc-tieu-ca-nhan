@@ -50,25 +50,22 @@ export function GoalForm({
     mode === "edit"
       ? isPending
         ? "Đang cập nhật..."
-        : "Cập nhật goal"
+        : "Cập nhật mục tiêu"
       : isPending
-        ? "Đang tạo goal..."
-        : "Tạo goal";
+        ? "Đang tạo mục tiêu..."
+        : "Tạo mục tiêu";
 
   return (
     <form action={formAction} className="space-y-6">
       {goalId ? <input name="goalId" type="hidden" value={goalId} /> : null}
 
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-          Phase 4
-        </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
           {mode === "edit" ? "Cập nhật mục tiêu" : "Tạo mục tiêu mới"}
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-          Form nay chay bang Server Actions + Zod. Page van la Server Component,
-          chi phan form moi bat `use client`.
+          Biểu mẫu này xác thực bằng Zod. Trang vẫn hiển thị ở máy chủ, chỉ
+          phần biểu mẫu mới dùng `use client`.
         </p>
       </div>
 
@@ -81,12 +78,12 @@ export function GoalForm({
       <div className="grid gap-5 md:grid-cols-2">
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ten muc tieu
+            Tên mục tiêu
           </span>
           <Input
             defaultValue={state.values.title}
             name="title"
-            placeholder="Vi du: Hoan thanh flow goal CRUD bang Next.js"
+            placeholder="Ví dụ: Hoàn thành đầy đủ chức năng mục tiêu trên hệ thống mới"
           />
           {state.fieldErrors?.title?.[0] ? (
             <p className="mt-2 text-sm text-rose-600">
@@ -97,12 +94,12 @@ export function GoalForm({
 
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Mo ta
+            Mô tả
           </span>
           <Textarea
             defaultValue={state.values.description}
             name="description"
-            placeholder="Mo ta ket qua, pham vi va y nghia cua muc tieu nay."
+            placeholder="Mô tả kết quả, phạm vi và ý nghĩa của mục tiêu này."
             rows={5}
           />
           {state.fieldErrors?.description?.[0] ? (
@@ -114,7 +111,7 @@ export function GoalForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Loai muc tieu
+            Loại mục tiêu
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -136,14 +133,14 @@ export function GoalForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Category
+            Danh mục
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
             defaultValue={state.values.categoryId}
             name="categoryId"
           >
-            <option value="">Không gắn category</option>
+            <option value="">Không gắn danh mục</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -159,7 +156,7 @@ export function GoalForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Do uu tien
+            Độ ưu tiên
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -181,7 +178,7 @@ export function GoalForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Trang thai
+            Trạng thái
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -203,7 +200,7 @@ export function GoalForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ngay bat dau
+            Ngày bắt đầu
           </span>
           <Input
             onChange={(event) => {
@@ -228,7 +225,7 @@ export function GoalForm({
         <div className="block">
           <label>
             <span className="mb-2 block text-sm font-semibold text-stone-700">
-              Ngay muc tieu
+              Ngày mục tiêu
             </span>
             <Input
               onChange={(event) => setTargetDate(event.target.value)}
@@ -246,15 +243,15 @@ export function GoalForm({
                 onClick={() => setTargetDate(addDaysToDateInput(startDate, days))}
                 type="button"
               >
-                +{days} ngay
+                +{days} ngày
               </button>
             ))}
           </div>
 
           <p className="mt-3 text-xs text-stone-500">
             {timelineDays === null
-              ? "Chon ngay bat dau va ngay muc tieu de tinh timeline."
-              : `Timeline tam tinh: ${timelineDays} ngay.`}
+              ? "Chọn ngày bắt đầu và ngày mục tiêu để tính dòng thời gian."
+              : `Dòng thời gian tạm tính: ${timelineDays} ngày.`}
           </p>
 
           {state.fieldErrors?.targetDate?.[0] ? (
@@ -266,7 +263,7 @@ export function GoalForm({
 
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Tags
+            Thẻ
           </span>
           <div className="grid gap-3 rounded-[1.5rem] border border-stone-200 bg-stone-50 p-4 sm:grid-cols-2">
             {tags.length > 0 ? (
@@ -287,7 +284,7 @@ export function GoalForm({
               ))
             ) : (
               <div className="text-sm text-stone-500">
-                Chưa có tag nào. Bạn có thể tạo ở trang Tags.
+                Chưa có thẻ nào. Bạn có thể tạo ở trang Thẻ.
               </div>
             )}
           </div>
@@ -300,12 +297,12 @@ export function GoalForm({
 
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ghi chu
+            Ghi chú
           </span>
           <Textarea
             defaultValue={state.values.note}
             name="note"
-            placeholder="Thong tin bo sung, rang buoc, tai nguyen can chuan bi..."
+            placeholder="Thông tin bổ sung, ràng buộc, tài nguyên cần chuẩn bị..."
             rows={4}
           />
           {state.fieldErrors?.note?.[0] ? (
@@ -324,7 +321,7 @@ export function GoalForm({
           />
           <span>
             <span className="block text-sm font-semibold text-stone-800">
-              Cong khai goal nay
+              Công khai mục tiêu này
             </span>
             <span className="mt-1 block text-sm leading-6 text-stone-600">
               Goal công khai sẽ xuất hiện trong khu vực Follow để người dùng
@@ -342,7 +339,7 @@ export function GoalForm({
           className="inline-flex h-11 items-center justify-center rounded-2xl border border-stone-300 px-5 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
           href={cancelHref}
         >
-          Huy
+          Hủy
         </Link>
       </div>
     </form>

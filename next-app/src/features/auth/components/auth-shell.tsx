@@ -10,9 +10,9 @@ type AuthShellProps = {
 };
 
 const highlights = [
-  "App Router server-first",
-  "Credentials auth voi NextAuth",
-  "Validation va permission o server"
+  "Điều hướng ưu tiên máy chủ",
+  "Đăng nhập bằng tài khoản và mật khẩu",
+  "Xác thực dữ liệu và phân quyền ở máy chủ"
 ];
 
 export function AuthShell({
@@ -30,7 +30,7 @@ export function AuthShell({
             className="inline-flex rounded-full border-2 border-black px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-black"
             href="/"
           >
-            Ve landing page
+            Về trang chủ
           </Link>
 
           <p className="mt-8 text-xs font-black uppercase tracking-[0.25em] text-stone-500">

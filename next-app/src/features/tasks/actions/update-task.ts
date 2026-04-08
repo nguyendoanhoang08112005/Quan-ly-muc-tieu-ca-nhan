@@ -25,7 +25,7 @@ export async function updateTaskAction(
   const values = readTaskFormValues(formData);
 
   if (!parsedGoalId.success || !parsedTaskId.success) {
-    return buildTaskFormErrorState(values, "Không tìm thấy task để cập nhật.");
+    return buildTaskFormErrorState(values, "Không tìm thấy công việc để cập nhật.");
   }
 
   const parsedValues = taskFormSchema.safeParse(values);
@@ -33,7 +33,7 @@ export async function updateTaskAction(
   if (!parsedValues.success) {
     return buildTaskFormErrorState(
       values,
-      "Dữ liệu task chưa hợp lệ.",
+      "Dữ liệu công việc chưa hợp lệ.",
       parsedValues.error.flatten().fieldErrors
     );
   }
@@ -46,7 +46,10 @@ export async function updateTaskAction(
   );
 
   if (!updatedTaskId) {
-    return buildTaskFormErrorState(values, "Task không tồn tại hoặc đã bị xóa.");
+    return buildTaskFormErrorState(
+      values,
+      "Công việc không tồn tại hoặc đã bị xóa."
+    );
   }
 
   revalidatePath("/dashboard");

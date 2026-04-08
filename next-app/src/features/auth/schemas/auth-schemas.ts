@@ -3,19 +3,19 @@ import { z } from "zod";
 const emailSchema = z
   .string()
   .trim()
-  .min(1, "Email la bat buoc.")
-  .max(190, "Email khong duoc vuot qua 190 ky tu.")
-  .email("Email khong hop le.")
+  .min(1, "Email là bắt buộc.")
+  .max(190, "Email không được vượt quá 190 ký tự.")
+  .email("Email không hợp lệ.")
   .transform((value) => value.toLowerCase());
 
 const passwordSchema = z
   .string()
-  .min(8, "Mat khau phai co it nhat 8 ky tu.")
-  .max(72, "Mat khau khong duoc vuot qua 72 ky tu.");
+  .min(8, "Mật khẩu phải có ít nhất 8 ký tự.")
+  .max(72, "Mật khẩu không được vượt quá 72 ký tự.");
 
 export const loginSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, "Mat khau la bat buoc.")
+  password: z.string().min(1, "Mật khẩu là bắt buộc.")
 });
 
 export const registerSchema = z
@@ -23,18 +23,18 @@ export const registerSchema = z
     name: z
       .string()
       .trim()
-      .min(2, "Ten phai co it nhat 2 ky tu.")
-      .max(150, "Ten khong duoc vuot qua 150 ky tu."),
+      .min(2, "Tên phải có ít nhất 2 ký tự.")
+      .max(150, "Tên không được vượt quá 150 ký tự."),
     email: emailSchema,
     password: passwordSchema,
-    passwordConfirmation: z.string().min(1, "Ban can xac nhan mat khau.")
+    passwordConfirmation: z.string().min(1, "Bạn cần xác nhận mật khẩu.")
   })
   .superRefine((value, context) => {
     if (value.password !== value.passwordConfirmation) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["passwordConfirmation"],
-        message: "Mat khau xac nhan khong khop."
+        message: "Mật khẩu xác nhận không khớp."
       });
     }
   });

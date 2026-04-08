@@ -9,8 +9,8 @@ import { parseDateInput } from "@/lib/dates";
 const dateField = z
   .string()
   .trim()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Ngay khong hop le.")
-  .refine((value) => parseDateInput(value) !== null, "Ngay khong hop le.");
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Ngày không hợp lệ.")
+  .refine((value) => parseDateInput(value) !== null, "Ngày không hợp lệ.");
 
 const optionalNumericId = z.preprocess((value) => {
   if (typeof value !== "string") {
@@ -20,40 +20,40 @@ const optionalNumericId = z.preprocess((value) => {
   const trimmed = value.trim();
 
   return trimmed === "" ? undefined : trimmed;
-}, z.string().regex(/^\d+$/, "Gia tri khong hop le.").optional());
+}, z.string().regex(/^\d+$/, "Giá trị không hợp lệ.").optional());
 
 export const goalIdSchema = z
   .string()
   .trim()
-  .regex(/^\d+$/, "Goal id khong hop le.");
+  .regex(/^\d+$/, "Mã mục tiêu không hợp lệ.");
 
 export const goalFormSchema = z
   .object({
     title: z
       .string()
       .trim()
-      .min(3, "Ten muc tieu phai co it nhat 3 ky tu.")
-      .max(180, "Ten muc tieu khong duoc vuot qua 180 ky tu."),
+      .min(3, "Tên mục tiêu phải có ít nhất 3 ký tự.")
+      .max(180, "Tên mục tiêu không được vượt quá 180 ký tự."),
     description: z
       .string()
       .trim()
-      .min(10, "Mo ta phai co it nhat 10 ky tu."),
+      .min(10, "Mô tả phải có ít nhất 10 ký tự."),
     goalType: z.enum(goalTypeValues, {
-      message: "Loai muc tieu khong hop le."
+      message: "Loại mục tiêu không hợp lệ."
     }),
     priority: z.enum(goalPriorityValues, {
-      message: "Do uu tien khong hop le."
+      message: "Độ ưu tiên không hợp lệ."
     }),
     status: z.enum(goalStatusValues, {
-      message: "Trang thai khong hop le."
+      message: "Trạng thái không hợp lệ."
     }),
     startDate: dateField,
     targetDate: dateField,
-    note: z.string().trim().max(10000, "Ghi chu qua dai.").default(""),
+    note: z.string().trim().max(10000, "Ghi chú quá dài.").default(""),
     isPublic: z.boolean().default(false),
     categoryId: optionalNumericId,
     tagIds: z
-      .array(z.string().regex(/^\d+$/, "Tag khong hop le."))
+      .array(z.string().regex(/^\d+$/, "Thẻ không hợp lệ."))
       .default([])
   })
   .superRefine((value, context) => {
@@ -68,7 +68,7 @@ export const goalFormSchema = z
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["targetDate"],
-        message: "Ngay muc tieu phai bang hoac sau ngay bat dau."
+        message: "Ngày mục tiêu phải bằng hoặc sau ngày bắt đầu."
       });
     }
   });

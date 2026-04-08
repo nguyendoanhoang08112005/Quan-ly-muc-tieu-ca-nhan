@@ -10,18 +10,17 @@ export function EmptyGoalsState() {
         <Target className="h-8 w-8 text-stone-500" />
       </div>
       <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-        Bạn chưa có goal nào
+        Bạn chưa có mục tiêu nào
       </h2>
       <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-        Phase 4 đã sẵn sàng cho flow list-create-detail-edit. Hãy tạo goal đầu
-        tiên để khởi động hệ Next.js mới.
+        Hãy tạo mục tiêu đầu tiên để khởi động hệ Next.js mới.
       </p>
       <div className="mt-8">
         <Link
           className={cn(buttonVariants({ size: "lg" }), "rounded-full")}
           href="/goals/new"
         >
-          Tạo goal đầu tiên
+          Tạo mục tiêu đầu tiên
         </Link>
       </div>
     </div>

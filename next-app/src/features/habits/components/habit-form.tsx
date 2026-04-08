@@ -50,11 +50,8 @@ export function HabitForm({
       {habitId ? <input name="habitId" type="hidden" value={habitId} /> : null}
 
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-          Phase 7
-        </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cập nhật habit" : "Tạo habit mới"}
+          {mode === "edit" ? "Cập nhật thói quen" : "Tạo thói quen mới"}
         </h2>
       </div>
 
@@ -67,7 +64,7 @@ export function HabitForm({
       <div className="grid gap-5 md:grid-cols-2">
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ten habit
+            Tên thói quen
           </span>
           <Input defaultValue={state.values.title} name="title" />
           {state.fieldErrors?.title?.[0] ? (
@@ -79,7 +76,7 @@ export function HabitForm({
 
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Mo ta
+            Mô tả
           </span>
           <textarea
             className={textareaClassName}
@@ -90,14 +87,14 @@ export function HabitForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Goal lien ket
+            Mục tiêu liên kết
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
             defaultValue={state.values.goalId}
             name="goalId"
           >
-            <option value="">Không liên kết goal</option>
+            <option value="">Không liên kết mục tiêu</option>
             {goalOptions.map((goal) => (
               <option key={goal.id} value={goal.id}>
                 {goal.title}
@@ -108,7 +105,7 @@ export function HabitForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Tan suat
+            Tần suất
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -125,7 +122,7 @@ export function HabitForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Muc tieu moi ky
+            Mục tiêu mỗi kỳ
           </span>
           <Input
             defaultValue={state.values.targetCount}
@@ -142,14 +139,14 @@ export function HabitForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Don vi
+            Đơn vị
           </span>
-          <Input defaultValue={state.values.unit} name="unit" placeholder="lan" />
+          <Input defaultValue={state.values.unit} name="unit" placeholder="lần" />
         </label>
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Gio nhac
+            Giờ nhắc
           </span>
           <Input
             defaultValue={state.values.reminderTime}
@@ -160,7 +157,7 @@ export function HabitForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Trang thai
+            Trạng thái
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -177,7 +174,7 @@ export function HabitForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ngay bat dau
+            Ngày bắt đầu
           </span>
           <Input
             defaultValue={state.values.startDate}
@@ -193,7 +190,7 @@ export function HabitForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ngay ket thuc
+            Ngày kết thúc
           </span>
           <Input defaultValue={state.values.endDate} name="endDate" type="date" />
           {state.fieldErrors?.endDate?.[0] ? (
@@ -209,16 +206,16 @@ export function HabitForm({
           {mode === "edit"
             ? isPending
               ? "Đang cập nhật..."
-              : "Cập nhật habit"
+              : "Cập nhật thói quen"
             : isPending
               ? "Đang tạo..."
-              : "Tạo habit"}
+              : "Tạo thói quen"}
         </Button>
         <Link
           className="inline-flex h-10 items-center justify-center rounded-2xl border border-stone-300 px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
           href={cancelHref}
         >
-          Huy
+          Hủy
         </Link>
       </div>
     </form>

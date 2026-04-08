@@ -21,15 +21,12 @@ export default async function NotesPage() {
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Phase 7
-            </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Notes polymorphic
+              Ghi chú đa đối tượng
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Notes có thể được gắn vào goal, milestone, task, habit, project và
-              journal entry.
+              Ghi chú có thể được gắn vào mục tiêu, cột mốc, công việc, thói
+              quen, dự án và mục nhật ký.
             </p>
           </div>
 
@@ -38,7 +35,7 @@ export default async function NotesPage() {
             href="/notes/new"
           >
             <Plus className="h-4 w-4" />
-            Tạo note mới
+            Tạo ghi chú mới
           </Link>
         </div>
       </section>
@@ -87,11 +84,11 @@ export default async function NotesPage() {
       ) : (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
           <h2 className="text-2xl font-black text-stone-950">
-            Chưa có note nào
+            Chưa có ghi chú nào
           </h2>
           <p className="mt-3 text-sm leading-7 text-stone-500">
-            Tạo note đầu tiên để lưu insight, ghi chú hoặc context cho từng đối
-            tượng trong hệ thống.
+            Tạo ghi chú đầu tiên để lưu ý tưởng, ghi chú hoặc ngữ cảnh cho từng
+            đối tượng trong hệ thống.
           </p>
         </section>
       )}

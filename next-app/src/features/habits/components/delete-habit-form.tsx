@@ -6,7 +6,7 @@ export function DeleteHabitForm({ habitId }: { habitId: string }) {
     <form action={deleteHabitAction}>
       <input name="habitId" type="hidden" value={habitId} />
       <Button type="submit" variant="destructive">
-        Xóa habit
+        Xóa thói quen
       </Button>
     </form>
   );

@@ -1,10 +1,10 @@
 import type { CategoryFormValues, CategoryType } from "@/features/categories/types";
 
 export const categoryTypeLabels: Record<CategoryType, string> = {
-  goal: "Goal",
-  task: "Task",
-  habit: "Habit",
-  all: "All"
+  goal: "Mục tiêu",
+  task: "Công việc",
+  habit: "Thói quen",
+  all: "Tất cả"
 };
 
 export const categoryTypeToPrisma = {

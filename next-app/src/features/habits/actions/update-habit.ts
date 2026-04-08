@@ -23,13 +23,13 @@ export async function updateHabitAction(
   const parsed = habitFormSchema.safeParse(values);
 
   if (!parsedHabitId.success) {
-    return buildHabitFormErrorState(values, "Habit khong hop le.");
+    return buildHabitFormErrorState(values, "Thói quen không hợp lệ.");
   }
 
   if (!parsed.success) {
     return buildHabitFormErrorState(
       values,
-      "Du lieu habit chua hop le.",
+      "Dữ liệu thói quen chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -43,7 +43,7 @@ export async function updateHabitAction(
   if (!updatedHabitId) {
     return buildHabitFormErrorState(
       values,
-      "Không tìm thấy habit hoặc goal liên kết không hợp lệ."
+      "Không tìm thấy thói quen hoặc mục tiêu liên kết không hợp lệ."
     );
   }
 

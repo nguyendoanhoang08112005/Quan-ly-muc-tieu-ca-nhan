@@ -23,7 +23,7 @@ export async function createCategoryAction(
   if (!parsed.success) {
     return buildCategoryFormErrorState(
       values,
-      "Du lieu category chua hop le.",
+      "Dữ liệu danh mục chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }

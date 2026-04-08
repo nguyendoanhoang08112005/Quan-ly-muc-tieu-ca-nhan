@@ -44,11 +44,8 @@ export function CategoryForm({
       ) : null}
 
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-          Phase 6
-        </p>
         <h2 className="mt-3 text-3xl font-black text-stone-950">
-          {mode === "edit" ? "Cập nhật category" : "Tạo category mới"}
+          {mode === "edit" ? "Cập nhật danh mục" : "Tạo danh mục mới"}
         </h2>
       </div>
 
@@ -61,7 +58,7 @@ export function CategoryForm({
       <div className="grid gap-5 md:grid-cols-2">
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Ten category
+            Tên danh mục
           </span>
           <Input defaultValue={state.values.name} name="name" />
           {state.fieldErrors?.name?.[0] ? (
@@ -73,7 +70,7 @@ export function CategoryForm({
 
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Mau
+            Màu
           </span>
           <Input defaultValue={state.values.color} name="color" placeholder="#0f172a" />
         </label>
@@ -87,7 +84,7 @@ export function CategoryForm({
 
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">
-            Loai category
+            Loại danh mục
           </span>
           <select
             className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
@@ -108,16 +105,16 @@ export function CategoryForm({
           {mode === "edit"
             ? isPending
               ? "Đang cập nhật..."
-              : "Cập nhật category"
+              : "Cập nhật danh mục"
             : isPending
               ? "Đang tạo..."
-              : "Tạo category"}
+              : "Tạo danh mục"}
         </Button>
         <Link
           className="inline-flex h-10 items-center justify-center rounded-2xl border border-stone-300 px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
           href={cancelHref}
         >
-          Huy
+          Hủy
         </Link>
       </div>
     </form>

@@ -13,7 +13,7 @@ export function DeleteMilestoneForm({
       <input name="goalId" type="hidden" value={goalId} />
       <input name="milestoneId" type="hidden" value={milestoneId} />
       <Button type="submit" variant="destructive">
-        Xóa milestone
+        Xóa cột mốc
       </Button>
     </form>
   );

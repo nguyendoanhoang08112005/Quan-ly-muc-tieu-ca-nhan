@@ -25,13 +25,13 @@ export async function upsertHabitLogAction(
   const parsed = habitLogFormSchema.safeParse(values);
 
   if (!parsedHabitId.success) {
-    return buildHabitLogFormErrorState(values, "Habit không hợp lệ.");
+    return buildHabitLogFormErrorState(values, "Thói quen không hợp lệ.");
   }
 
   if (!parsed.success) {
     return buildHabitLogFormErrorState(
       values,
-      "Dữ liệu log habit chưa hợp lệ.",
+      "Dữ liệu nhật ký thói quen chưa hợp lệ.",
       parsed.error.flatten().fieldErrors
     );
   }
@@ -45,7 +45,7 @@ export async function upsertHabitLogAction(
   if (!savedHabitId) {
     return buildHabitLogFormErrorState(
       values,
-      "Không tìm thấy habit để ghi log."
+      "Không tìm thấy thói quen để ghi log."
     );
   }
 
@@ -56,6 +56,6 @@ export async function upsertHabitLogAction(
   return {
     ...getInitialHabitLogFormActionState(values),
     status: "success",
-    message: "Đã cập nhật habit log."
+    message: "Đã cập nhật nhật ký thói quen."
   };
 }
