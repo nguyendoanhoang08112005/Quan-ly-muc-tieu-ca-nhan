@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "test:unit": "node --experimental-transform-types --loader ./tests/node-loader.mjs --test tests/unit/*.test.ts",
+    "test:integration": "node --test tests/integration/*.test.mjs",
     "typecheck": "next typegen && tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
