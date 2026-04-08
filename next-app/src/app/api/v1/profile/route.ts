@@ -15,7 +15,7 @@ import { updateProfileForUser } from "@/server/modules/profile/mutations";
 import { getProfileSummaryForUser } from "@/server/modules/profile/queries";
 
 export async function PATCH(request: Request) {
-  const auth = await getApiAuthenticatedUser();
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();

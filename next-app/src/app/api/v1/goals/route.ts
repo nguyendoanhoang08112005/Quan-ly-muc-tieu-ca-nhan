@@ -15,8 +15,8 @@ import { serializeGoalResource } from "@/lib/api/v1/serializers";
 import { createGoalForUser } from "@/server/modules/goals/mutations";
 import { getGoalDetailForUser, listGoalsForUser } from "@/server/modules/goals/queries";
 
-export async function GET() {
-  const auth = await getApiAuthenticatedUser();
+export async function GET(request: Request) {
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();
@@ -30,7 +30,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const auth = await getApiAuthenticatedUser();
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();

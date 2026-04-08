@@ -27,7 +27,7 @@ export async function POST(
   request: Request,
   { params }: MilestoneTasksRouteContext
 ) {
-  const auth = await getApiAuthenticatedUser();
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();

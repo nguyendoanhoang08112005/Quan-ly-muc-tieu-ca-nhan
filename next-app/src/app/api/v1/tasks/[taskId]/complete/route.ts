@@ -18,10 +18,10 @@ type CompleteTaskRouteContext = {
 };
 
 export async function PATCH(
-  _request: Request,
+  request: Request,
   { params }: CompleteTaskRouteContext
 ) {
-  const auth = await getApiAuthenticatedUser();
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();

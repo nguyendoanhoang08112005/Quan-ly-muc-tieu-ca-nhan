@@ -30,10 +30,10 @@ type MilestoneRouteContext = {
 };
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: MilestoneRouteContext
 ) {
-  const auth = await getApiAuthenticatedUser();
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();
@@ -65,7 +65,7 @@ export async function PATCH(
   request: Request,
   { params }: MilestoneRouteContext
 ) {
-  const auth = await getApiAuthenticatedUser();
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();
@@ -145,10 +145,10 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: MilestoneRouteContext
 ) {
-  const auth = await getApiAuthenticatedUser();
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();

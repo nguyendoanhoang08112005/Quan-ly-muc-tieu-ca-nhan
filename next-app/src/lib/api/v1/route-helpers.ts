@@ -1,8 +1,35 @@
 import { NextResponse } from "next/server";
 import type { ZodError } from "zod";
 import { getServerAuthSession } from "@/lib/auth/session";
+import { authenticateApiToken } from "@/lib/api/v1/token";
 
-export async function getApiAuthenticatedUser() {
+function readBearerToken(request?: Request) {
+  const authorizationHeader = request?.headers.get("authorization");
+
+  if (!authorizationHeader) {
+    return null;
+  }
+
+  const [scheme, value] = authorizationHeader.split(" ");
+
+  if (!scheme || !value || scheme.toLowerCase() !== "bearer") {
+    return "";
+  }
+
+  return value.trim();
+}
+
+export async function getApiAuthenticatedUser(request?: Request) {
+  const bearerToken = readBearerToken(request);
+
+  if (bearerToken !== null) {
+    if (!bearerToken) {
+      return null;
+    }
+
+    return authenticateApiToken(bearerToken);
+  }
+
   const session = await getServerAuthSession();
 
   if (!session?.user?.id) {
@@ -10,6 +37,7 @@ export async function getApiAuthenticatedUser() {
   }
 
   return {
+    authMethod: "session" as const,
     session,
     user: session.user,
     userId: BigInt(session.user.id)

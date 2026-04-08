@@ -6,8 +6,8 @@ import {
 import { serializeDashboardSummaryResource } from "@/lib/api/v1/serializers";
 import { getDashboardOverviewForUser } from "@/server/modules/dashboard/queries";
 
-export async function GET() {
-  const auth = await getApiAuthenticatedUser();
+export async function GET(request: Request) {
+  const auth = await getApiAuthenticatedUser(request);
 
   if (!auth) {
     return jsonUnauthorizedResponse();
