@@ -35,6 +35,13 @@ export const workStatusLabels: Record<WorkStatus, string> = {
   paused: "Tam dung"
 };
 
+export const workStatusClassNames: Record<WorkStatus, string> = {
+  not_started: "bg-stone-100 text-stone-700",
+  in_progress: "bg-sky-100 text-sky-700",
+  completed: "bg-emerald-100 text-emerald-700",
+  paused: "bg-amber-100 text-amber-700"
+};
+
 export const goalStatusClassNames: Record<GoalStatus, string> = {
   not_started: "bg-stone-100 text-stone-700",
   in_progress: "bg-sky-100 text-sky-700",
@@ -97,6 +104,13 @@ export const workStatusFromPrisma = {
   IN_PROGRESS: "in_progress",
   COMPLETED: "completed",
   PAUSED: "paused"
+} as const;
+
+export const workStatusToPrisma = {
+  not_started: "NOT_STARTED",
+  in_progress: "IN_PROGRESS",
+  completed: "COMPLETED",
+  paused: "PAUSED"
 } as const;
 
 export function buildDefaultGoalFormValues(): GoalFormValues {

@@ -10,7 +10,8 @@ const buttonVariants = cva(
         default: "bg-stone-950 text-white hover:bg-stone-800",
         secondary:
           "border border-stone-300 bg-white text-stone-950 hover:bg-stone-100",
-        ghost: "text-stone-700 hover:bg-stone-100 hover:text-stone-950"
+        ghost: "text-stone-700 hover:bg-stone-100 hover:text-stone-950",
+        destructive: "bg-rose-600 text-white hover:bg-rose-700"
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -44,4 +45,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-

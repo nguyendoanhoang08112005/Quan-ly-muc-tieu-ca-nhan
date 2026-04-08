@@ -7,7 +7,8 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/dashboard" as Route, label: "Dashboard" },
-  { href: "/goals" as Route, label: "Goals" }
+  { href: "/goals" as Route, label: "Goals" },
+  { href: "/tasks" as Route, label: "Tasks" }
 ];
 
 export function AppSidebar({ user }: { user: AppSessionUser }) {

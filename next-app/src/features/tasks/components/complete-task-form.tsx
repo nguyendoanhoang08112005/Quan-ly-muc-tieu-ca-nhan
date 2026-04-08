@@ -1,0 +1,22 @@
+import { completeTaskAction } from "@/features/tasks/actions/complete-task";
+import { Button } from "@/components/ui/button";
+
+export function CompleteTaskForm({
+  goalId,
+  taskId,
+  disabled
+}: {
+  goalId: string;
+  taskId: string;
+  disabled?: boolean;
+}) {
+  return (
+    <form action={completeTaskAction}>
+      <input name="goalId" type="hidden" value={goalId} />
+      <input name="taskId" type="hidden" value={taskId} />
+      <Button disabled={disabled} type="submit" variant="secondary">
+        Hoan thanh
+      </Button>
+    </form>
+  );
+}

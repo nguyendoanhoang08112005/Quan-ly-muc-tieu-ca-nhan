@@ -1,4 +1,5 @@
 const DATE_INPUT_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const DATE_TIME_LOCAL_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
 const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 
 function pad(value: number) {
@@ -7,6 +8,10 @@ function pad(value: number) {
 
 export function isDateInput(value: string) {
   return DATE_INPUT_PATTERN.test(value);
+}
+
+export function isDateTimeLocalInput(value: string) {
+  return DATE_TIME_LOCAL_PATTERN.test(value);
 }
 
 export function parseDateInput(value: string) {
@@ -29,6 +34,38 @@ export function formatDateInput(value: Date | null | undefined) {
     pad(value.getUTCMonth() + 1),
     pad(value.getUTCDate())
   ].join("-");
+}
+
+export function parseDateTimeLocalInput(value: string) {
+  if (!isDateTimeLocalInput(value)) {
+    return null;
+  }
+
+  const [datePart, timePart] = value.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hours, minutes] = timePart.split(":").map(Number);
+
+  return new Date(year, month - 1, day, hours, minutes, 0, 0);
+}
+
+export function formatDateTimeLocalInput(
+  value: Date | string | null | undefined
+) {
+  if (!value) {
+    return "";
+  }
+
+  const date = typeof value === "string" ? new Date(value) : value;
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return [
+    date.getFullYear(),
+    pad(date.getMonth() + 1),
+    pad(date.getDate())
+  ].join("-") + `T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
 export function getTodayDateInput() {
@@ -76,5 +113,25 @@ export function formatDisplayDate(value: Date | string | null | undefined) {
     month: "2-digit",
     year: "numeric",
     timeZone: "UTC"
+  }).format(date);
+}
+
+export function formatDisplayDateTime(value: Date | string | null | undefined) {
+  if (!value) {
+    return "Chua co han";
+  }
+
+  const date = typeof value === "string" ? new Date(value) : value;
+
+  if (Number.isNaN(date.getTime())) {
+    return "Chua co han";
+  }
+
+  return new Intl.DateTimeFormat("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
   }).format(date);
 }
