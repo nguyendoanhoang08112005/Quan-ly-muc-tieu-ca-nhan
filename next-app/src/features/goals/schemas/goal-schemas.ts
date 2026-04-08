@@ -50,6 +50,7 @@ export const goalFormSchema = z
     startDate: dateField,
     targetDate: dateField,
     note: z.string().trim().max(10000, "Ghi chu qua dai.").default(""),
+    isPublic: z.boolean().default(false),
     categoryId: optionalNumericId,
     tagIds: z
       .array(z.string().regex(/^\d+$/, "Tag khong hop le."))

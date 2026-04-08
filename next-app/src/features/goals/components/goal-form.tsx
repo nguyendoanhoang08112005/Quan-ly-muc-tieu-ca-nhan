@@ -314,6 +314,24 @@ export function GoalForm({
             </p>
           ) : null}
         </label>
+
+        <label className="flex items-start gap-3 rounded-[1.5rem] border border-stone-200 bg-stone-50 px-4 py-4 md:col-span-2">
+          <input
+            className="mt-1 h-4 w-4 rounded border-stone-300"
+            defaultChecked={state.values.isPublic}
+            name="isPublic"
+            type="checkbox"
+          />
+          <span>
+            <span className="block text-sm font-semibold text-stone-800">
+              Cong khai goal nay
+            </span>
+            <span className="mt-1 block text-sm leading-6 text-stone-600">
+              Goal cong khai se xuat hien trong khu vuc Follow de nguoi dung
+              khac co the theo doi tien do cua ban.
+            </span>
+          </span>
+        </label>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">

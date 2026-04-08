@@ -32,6 +32,7 @@ const goalListSelect = {
   startDate: true,
   targetDate: true,
   note: true,
+  isPublic: true,
   category: {
     select: {
       id: true,
@@ -180,6 +181,7 @@ const goalEditSelect = {
   startDate: true,
   targetDate: true,
   note: true,
+  isPublic: true,
   categoryId: true,
   tagLinks: {
     select: {
@@ -288,6 +290,7 @@ function mapGoal(
     startDate: formatDateInput(goal.startDate),
     targetDate: formatDateInput(goal.targetDate),
     note: goal.note ?? null,
+    isPublic: goal.isPublic,
     category,
     tags,
     tasksCount: goal._count.tasks,
@@ -390,6 +393,7 @@ export async function getGoalFormValuesForUser(userId: bigint, goalId: bigint) {
     startDate: formatDateInput(goal.startDate),
     targetDate: formatDateInput(goal.targetDate),
     note: goal.note ?? "",
+    isPublic: goal.isPublic,
     categoryId: goal.categoryId?.toString() ?? "",
     tagIds: goal.tagLinks.map((tagLink) => tagLink.tagId.toString())
   };

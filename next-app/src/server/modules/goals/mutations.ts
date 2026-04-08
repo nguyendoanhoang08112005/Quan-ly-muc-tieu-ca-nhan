@@ -133,6 +133,7 @@ export async function createGoalForUser(userId: bigint, input: GoalFormInput) {
       targetDate: parseDateInput(input.targetDate),
       completedAt: isCompleted ? new Date() : null,
       note: input.note || null,
+      isPublic: input.isPublic,
       tagLinks:
         metadata.tagIds.length > 0
           ? {
@@ -169,7 +170,8 @@ export async function updateGoalForUser(
       id: true,
       title: true,
       progressPercentage: true,
-      completedAt: true
+      completedAt: true,
+      isPublic: true
     }
   });
 
@@ -207,9 +209,19 @@ export async function updateGoalForUser(
             ? existingGoal.completedAt ?? new Date()
             : null,
         progressPercentage: nextProgress,
-        note: input.note || null
+        note: input.note || null,
+        isPublic: input.isPublic
       }
     });
+
+    if (existingGoal.isPublic && !input.isPublic) {
+      await tx.follow.deleteMany({
+        where: {
+          followableType: "GOAL",
+          followableId: existingGoal.id
+        }
+      });
+    }
 
     await tx.goalTag.deleteMany({
       where: {
@@ -253,6 +265,13 @@ export async function softDeleteGoalForUser(userId: bigint, goalId: bigint) {
     },
     data: {
       deletedAt: new Date()
+    }
+  });
+
+  await prisma.follow.deleteMany({
+    where: {
+      followableType: "GOAL",
+      followableId: existingGoal.id
     }
   });
 

@@ -38,6 +38,7 @@ export function readGoalFormValues(formData: FormData): GoalFormValues {
     startDate: readFormValue(formData, "startDate"),
     targetDate: readFormValue(formData, "targetDate"),
     note: readFormValue(formData, "note"),
+    isPublic: formData.get("isPublic") === "on",
     categoryId: readFormValue(formData, "categoryId"),
     tagIds: formData
       .getAll("tagIds")

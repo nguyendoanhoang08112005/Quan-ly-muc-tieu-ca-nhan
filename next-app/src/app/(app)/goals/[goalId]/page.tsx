@@ -129,6 +129,9 @@ export default async function GoalDetailPage({
               <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
                 Han {formatDisplayDate(goal.targetDate)}
               </span>
+              <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+                {goal.isPublic ? "Cong khai cho follow" : "Rieng tu"}
+              </span>
             </div>
 
             {goal.category || goal.tags.length > 0 ? (

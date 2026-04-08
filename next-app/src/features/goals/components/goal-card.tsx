@@ -56,6 +56,9 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
         <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">
           {goalPriorityLabels[goal.priority]}
         </span>
+        <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">
+          {goal.isPublic ? "Cong khai" : "Rieng tu"}
+        </span>
       </div>
 
       {goal.category || goal.tags.length > 0 ? (

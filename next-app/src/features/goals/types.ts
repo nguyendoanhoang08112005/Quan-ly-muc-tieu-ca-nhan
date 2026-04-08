@@ -33,6 +33,7 @@ export type GoalFormValues = {
   startDate: string;
   targetDate: string;
   note: string;
+  isPublic: boolean;
   categoryId: string;
   tagIds: string[];
 };
@@ -125,6 +126,7 @@ export type GoalListItem = {
   startDate: string | null;
   targetDate: string | null;
   note: string | null;
+  isPublic: boolean;
   category: GoalCategorySummary | null;
   tags: GoalTagSummary[];
   tasksCount: number;

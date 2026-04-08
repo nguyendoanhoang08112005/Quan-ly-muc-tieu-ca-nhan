@@ -134,6 +134,7 @@ export function buildDefaultGoalFormValues(): GoalFormValues {
     startDate,
     targetDate: addDaysToDateInput(startDate, 7),
     note: "",
+    isPublic: false,
     categoryId: "",
     tagIds: []
   };

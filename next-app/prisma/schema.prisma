@@ -248,6 +248,7 @@ model Goal {
   outcomeNote        String?        @map("outcome_note") @db.Text
   note               String?        @db.LongText
   isArchived         Boolean        @default(false) @map("is_archived")
+  isPublic           Boolean        @default(false) @map("is_public")
   isRecurring        Boolean        @default(false) @map("is_recurring")
   recurrenceRule     Json?          @map("recurrence_rule")
   sortOrder          Int            @default(0) @map("sort_order")
@@ -271,6 +272,7 @@ model Goal {
   @@index([userId, priority], map: "goals_user_id_priority_index")
   @@index([userId, targetDate], map: "goals_user_id_target_date_index")
   @@index([userId, isArchived], map: "goals_user_id_is_archived_index")
+  @@index([userId, isPublic], map: "goals_user_id_is_public_index")
   @@map("goals")
 }
 

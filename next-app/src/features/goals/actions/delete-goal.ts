@@ -19,5 +19,6 @@ export async function deleteGoalAction(formData: FormData) {
 
   revalidatePath("/dashboard");
   revalidatePath("/goals");
+  revalidatePath("/follows");
   redirect("/goals");
 }

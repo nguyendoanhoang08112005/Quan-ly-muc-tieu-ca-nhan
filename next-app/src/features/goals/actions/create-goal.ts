@@ -40,5 +40,6 @@ export async function createGoalAction(
   revalidatePath("/goals");
   revalidatePath("/categories");
   revalidatePath("/tags");
+  revalidatePath("/follows");
   redirect(`/goals/${goalId}`);
 }
