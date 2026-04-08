@@ -82,6 +82,20 @@ export type GoalTaskSummary = {
   startedAt: string | null;
   completedAt: string | null;
   sortOrder: number;
+  project: {
+    id: string;
+    name: string;
+    color: string | null;
+  } | null;
+  subtasks: Array<{
+    id: string;
+    name: string;
+    status: "pending" | "in_progress" | "completed";
+    completedAt: string | null;
+    sortOrder: number;
+  }>;
+  subtasksCount: number;
+  completedSubtasksCount: number;
 };
 
 export type GoalMilestoneSummary = {

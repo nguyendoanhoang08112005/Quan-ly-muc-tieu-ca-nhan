@@ -17,6 +17,7 @@ import {
 import { goalIdSchema } from "@/features/goals/schemas/goal-schemas";
 import { DeleteMilestoneForm } from "@/features/milestones/components/delete-milestone-form";
 import { milestoneIdSchema } from "@/features/milestones/schemas/milestone-schemas";
+import { TaskSubtasksPanel } from "@/features/subtasks/components/task-subtasks-panel";
 import { CompleteTaskForm } from "@/features/tasks/components/complete-task-form";
 import { DeleteTaskForm } from "@/features/tasks/components/delete-task-form";
 import { taskIdSchema } from "@/features/tasks/schemas/task-schemas";
@@ -363,6 +364,17 @@ export default async function GoalDetailPage({
                             </div>
 
                             <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-stone-500">
+                              {task.project ? (
+                                <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1">
+                                  <span
+                                    className="h-2.5 w-2.5 rounded-full bg-stone-400"
+                                    style={{
+                                      backgroundColor: task.project.color ?? undefined
+                                    }}
+                                  />
+                                  Project: {task.project.name}
+                                </span>
+                              ) : null}
                               <span className="rounded-full bg-white px-3 py-1">
                                 Due {formatDisplayDateTime(task.dueAt)}
                               </span>
@@ -376,9 +388,22 @@ export default async function GoalDetailPage({
                                   Thuc te {task.actualMinutes} phut
                                 </span>
                               ) : null}
+                              <span className="rounded-full bg-white px-3 py-1">
+                                Subtasks {task.completedSubtasksCount}/{task.subtasksCount}
+                              </span>
                             </div>
 
+                            <TaskSubtasksPanel subtasks={task.subtasks} taskId={task.id} />
+
                             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-stone-200 pt-4">
+                              {task.project ? (
+                                <Link
+                                  className={cn(buttonVariants({ variant: "secondary" }))}
+                                  href={`/projects/${task.project.id}` as Route}
+                                >
+                                  Xem project
+                                </Link>
+                              ) : null}
                               <Link
                                 className={cn(buttonVariants({ variant: "secondary" }))}
                                 href={`/goals/${goal.id}/tasks/${task.id}/edit` as Route}
@@ -388,10 +413,12 @@ export default async function GoalDetailPage({
                               <CompleteTaskForm
                                 disabled={task.status === "completed"}
                                 goalId={goal.id}
+                                projectId={task.project?.id}
                                 taskId={parsedTaskId.data}
                               />
                               <DeleteTaskForm
                                 goalId={goal.id}
+                                projectId={task.project?.id}
                                 taskId={parsedTaskId.data}
                               />
                             </div>

@@ -2,6 +2,16 @@ import { z } from "zod";
 import { goalPriorityValues, workStatusValues } from "@/features/goals/types";
 import { parseDateTimeLocalInput } from "@/lib/dates";
 
+const optionalNumericId = z.preprocess((value) => {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed === "" ? undefined : trimmed;
+}, z.string().regex(/^\d+$/, "Gia tri khong hop le.").optional());
+
 const optionalDateTimeField = z
   .string()
   .trim()
@@ -41,6 +51,7 @@ export const taskFormSchema = z.object({
   }),
   dueAt: optionalDateTimeField,
   estimatedMinutes: optionalEstimatedMinutes,
+  projectId: optionalNumericId,
   isFocus: z.boolean()
 });
 

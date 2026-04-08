@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { goalPriorityLabels, workStatusClassNames, workStatusLabels } from "@/features/goals/goal-helpers";
 import { CompleteTaskForm } from "@/features/tasks/components/complete-task-form";
 import { DeleteTaskForm } from "@/features/tasks/components/delete-task-form";
+import { TaskSubtasksPanel } from "@/features/subtasks/components/task-subtasks-panel";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDateTime } from "@/lib/dates";
 import { cn } from "@/lib/utils";
@@ -25,11 +26,12 @@ export default async function TasksPage() {
               Phase 5
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Tasks da co route rieng
+              Tasks da co project va subtasks
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
               Tasks khong con chi hien trong goal detail. Page nay doc du lieu
-              that tu Prisma va cho phep complete, edit, delete nhanh.
+              that tu Prisma, cho phep gan project, va quan ly subtasks ngay
+              tren tung task card.
             </p>
           </div>
 
@@ -111,6 +113,17 @@ export default async function TasksPage() {
                         Milestone {task.milestoneSequenceNo}: {task.milestoneTitle}
                       </span>
                     ) : null}
+                    {task.project ? (
+                      <span className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1">
+                        <span
+                          className="h-2.5 w-2.5 rounded-full bg-stone-400"
+                          style={{
+                            backgroundColor: task.project.color ?? undefined
+                          }}
+                        />
+                        Project: {task.project.name}
+                      </span>
+                    ) : null}
                     <span className="rounded-full bg-stone-100 px-3 py-1">
                       Han {formatDisplayDateTime(task.dueAt)}
                     </span>
@@ -119,6 +132,9 @@ export default async function TasksPage() {
                         Uoc tinh {task.estimatedMinutes} phut
                       </span>
                     ) : null}
+                    <span className="rounded-full bg-stone-100 px-3 py-1">
+                      Subtasks {task.completedSubtasksCount}/{task.subtasksCount}
+                    </span>
                   </div>
                 </div>
 
@@ -132,6 +148,8 @@ export default async function TasksPage() {
                 </div>
               </div>
 
+              <TaskSubtasksPanel subtasks={task.subtasks} taskId={task.id} />
+
               <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-stone-200 pt-5">
                 <Link
                   className={cn(buttonVariants({ variant: "secondary" }))}
@@ -139,6 +157,14 @@ export default async function TasksPage() {
                 >
                   Xem goal
                 </Link>
+                {task.project ? (
+                  <Link
+                    className={cn(buttonVariants({ variant: "secondary" }))}
+                    href={`/projects/${task.project.id}` as Route}
+                  >
+                    Xem project
+                  </Link>
+                ) : null}
                 <Link
                   className={cn(buttonVariants({ variant: "secondary" }))}
                   href={`/goals/${task.goalId}/tasks/${task.id}/edit` as Route}
@@ -154,9 +180,14 @@ export default async function TasksPage() {
                 <CompleteTaskForm
                   disabled={task.status === "completed"}
                   goalId={task.goalId}
+                  projectId={task.project?.id}
                   taskId={task.id}
                 />
-                <DeleteTaskForm goalId={task.goalId} taskId={task.id} />
+                <DeleteTaskForm
+                  goalId={task.goalId}
+                  projectId={task.project?.id}
+                  taskId={task.id}
+                />
               </div>
             </article>
           ))}

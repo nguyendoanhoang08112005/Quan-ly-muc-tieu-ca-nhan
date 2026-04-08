@@ -36,6 +36,7 @@ export function readTaskFormValues(formData: FormData): TaskFormValues {
     priority: readFormValue(formData, "priority") as TaskFormValues["priority"],
     dueAt: readFormValue(formData, "dueAt"),
     estimatedMinutes: readFormValue(formData, "estimatedMinutes"),
+    projectId: readFormValue(formData, "projectId"),
     isFocus: formData.get("isFocus") === "on"
   };
 }

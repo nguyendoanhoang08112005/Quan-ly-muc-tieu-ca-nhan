@@ -10,6 +10,7 @@ import {
   goalPriorityLabels,
   workStatusLabels
 } from "@/features/goals/goal-helpers";
+import type { ProjectOption } from "@/features/projects/types";
 import { createTaskAction } from "@/features/tasks/actions/create-task";
 import { getInitialTaskFormActionState } from "@/features/tasks/actions/shared";
 import { updateTaskAction } from "@/features/tasks/actions/update-task";
@@ -22,6 +23,7 @@ type TaskFormProps = {
   taskId?: string;
   initialValues?: Partial<TaskFormValues>;
   mode: "create" | "edit";
+  projectOptions: ProjectOption[];
 };
 
 export function TaskForm({
@@ -30,7 +32,8 @@ export function TaskForm({
   milestoneId,
   taskId,
   initialValues,
-  mode
+  mode,
+  projectOptions
 }: TaskFormProps) {
   const initialState = useMemo(
     () => getInitialTaskFormActionState(initialValues),
@@ -161,6 +164,31 @@ export function TaskForm({
           {state.fieldErrors?.estimatedMinutes?.[0] ? (
             <p className="mt-2 text-sm text-rose-600">
               {state.fieldErrors.estimatedMinutes[0]}
+            </p>
+          ) : null}
+        </label>
+
+        <label className="block md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-stone-700">
+            Project
+          </span>
+          <select
+            className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+            defaultValue={state.values.projectId}
+            name="projectId"
+          >
+            <option value="">Khong gan project</option>
+            {projectOptions.map((project) => (
+              <option key={project.id} value={project.id}>
+                {project.goalTitle
+                  ? `${project.name} | ${project.goalTitle}`
+                  : project.name}
+              </option>
+            ))}
+          </select>
+          {state.fieldErrors?.projectId?.[0] ? (
+            <p className="mt-2 text-sm text-rose-600">
+              {state.fieldErrors.projectId[0]}
             </p>
           ) : null}
         </label>

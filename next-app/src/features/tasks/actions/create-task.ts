@@ -52,6 +52,10 @@ export async function createTaskAction(
   revalidatePath("/dashboard");
   revalidatePath("/goals");
   revalidatePath("/tasks");
+  revalidatePath("/projects");
   revalidatePath(`/goals/${parsedGoalId.data}`);
+  if (parsedValues.data.projectId) {
+    revalidatePath(`/projects/${parsedValues.data.projectId}`);
+  }
   redirect(`/goals/${parsedGoalId.data}` as Route);
 }

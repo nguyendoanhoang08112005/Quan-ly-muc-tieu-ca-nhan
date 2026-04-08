@@ -143,7 +143,27 @@ const goalDetailSelect = {
           isFocus: true,
           startedAt: true,
           completedAt: true,
-          sortOrder: true
+          sortOrder: true,
+          project: {
+            select: {
+              id: true,
+              name: true,
+              color: true
+            }
+          },
+          subtasks: {
+            where: {
+              deletedAt: null
+            },
+            orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+            select: {
+              id: true,
+              name: true,
+              status: true,
+              completedAt: true,
+              sortOrder: true
+            }
+          }
         }
       }
     }
@@ -177,6 +197,17 @@ function toNumber(value: number | { toNumber(): number } | null | undefined) {
 }
 
 function mapTask(task: Prisma.TaskGetPayload<{ select: (typeof goalDetailSelect)["milestones"]["select"]["tasks"]["select"] }>): GoalTaskSummary {
+  const subtasks = task.subtasks.map((subtask) => ({
+    id: subtask.id.toString(),
+    name: subtask.name,
+    status: subtask.status.toLowerCase() as GoalTaskSummary["subtasks"][number]["status"],
+    completedAt: subtask.completedAt?.toISOString() ?? null,
+    sortOrder: subtask.sortOrder
+  }));
+  const completedSubtasksCount = subtasks.filter((subtask) => {
+    return subtask.status === "completed";
+  }).length;
+
   return {
     id: task.id.toString(),
     title: task.title,
@@ -190,7 +221,17 @@ function mapTask(task: Prisma.TaskGetPayload<{ select: (typeof goalDetailSelect)
     actualMinutes: task.actualMinutes ?? null,
     startedAt: task.startedAt?.toISOString() ?? null,
     completedAt: task.completedAt?.toISOString() ?? null,
-    sortOrder: task.sortOrder
+    sortOrder: task.sortOrder,
+    project: task.project
+      ? {
+          id: task.project.id.toString(),
+          name: task.project.name,
+          color: task.project.color ?? null
+        }
+      : null,
+    subtasks,
+    subtasksCount: subtasks.length,
+    completedSubtasksCount
   };
 }
 

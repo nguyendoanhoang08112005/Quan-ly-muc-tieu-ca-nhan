@@ -4,6 +4,7 @@ import { goalIdSchema } from "@/features/goals/schemas/goal-schemas";
 import { TaskForm } from "@/features/tasks/components/task-form";
 import { taskIdSchema } from "@/features/tasks/schemas/task-schemas";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
+import { listProjectOptionsForGoal } from "@/server/modules/projects/queries";
 import { getTaskFormValuesForUser } from "@/server/modules/tasks/queries";
 
 type EditTaskPageProps = {
@@ -23,11 +24,14 @@ export default async function EditTaskPage({ params }: EditTaskPageProps) {
     notFound();
   }
 
-  const task = await getTaskFormValuesForUser(
-    userId,
-    BigInt(parsedGoalId.data),
-    BigInt(parsedTaskId.data)
-  );
+  const [task, projectOptions] = await Promise.all([
+    getTaskFormValuesForUser(
+      userId,
+      BigInt(parsedGoalId.data),
+      BigInt(parsedTaskId.data)
+    ),
+    listProjectOptionsForGoal(userId, BigInt(parsedGoalId.data))
+  ]);
 
   if (!task) {
     notFound();
@@ -41,6 +45,7 @@ export default async function EditTaskPage({ params }: EditTaskPageProps) {
           goalId={parsedGoalId.data}
           initialValues={task}
           mode="edit"
+          projectOptions={projectOptions}
           taskId={parsedTaskId.data}
         />
       </div>

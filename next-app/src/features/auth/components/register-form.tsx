@@ -4,10 +4,8 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  initialRegisterActionState,
-  registerWithCredentials
-} from "@/features/auth/actions/register";
+import { registerWithCredentials } from "@/features/auth/actions/register";
+import { initialRegisterActionState } from "@/features/auth/actions/register-shared";
 import { authRoutes } from "@/lib/auth/routes";
 
 export function RegisterForm() {

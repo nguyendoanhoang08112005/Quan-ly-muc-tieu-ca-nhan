@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { Prisma, PrismaClient } from "@prisma/client";
 import { getPrismaClient } from "@/lib/db/prisma";
 import { parseDateTimeLocalInput } from "@/lib/dates";
 import {
@@ -8,6 +9,32 @@ import {
 } from "@/features/goals/goal-helpers";
 import type { TaskFormInput } from "@/features/tasks/schemas/task-schemas";
 import { syncGoalProgress, syncMilestoneProgress } from "@/server/modules/goals/progress";
+import { syncProjectProgress } from "@/server/modules/projects/progress";
+
+async function resolveTaskProjectId(
+  prisma: PrismaClient | Prisma.TransactionClient,
+  userId: bigint,
+  goalId: bigint,
+  projectId: string | undefined
+) {
+  if (!projectId) {
+    return null;
+  }
+
+  const project = await prisma.project.findFirst({
+    where: {
+      id: BigInt(projectId),
+      userId,
+      deletedAt: null,
+      OR: [{ goalId: null }, { goalId }]
+    },
+    select: {
+      id: true
+    }
+  });
+
+  return project?.id ?? undefined;
+}
 
 export async function createTaskForMilestone(
   userId: bigint,
@@ -18,6 +45,12 @@ export async function createTaskForMilestone(
   const prisma = getPrismaClient();
 
   return prisma.$transaction(async (tx) => {
+    const projectId = await resolveTaskProjectId(
+      tx,
+      userId,
+      goalId,
+      input.projectId
+    );
     const milestone = await tx.milestone.findFirst({
       where: {
         id: milestoneId,
@@ -32,6 +65,10 @@ export async function createTaskForMilestone(
     });
 
     if (!milestone) {
+      return null;
+    }
+
+    if (input.projectId && projectId === undefined) {
       return null;
     }
 
@@ -52,6 +89,7 @@ export async function createTaskForMilestone(
         userId,
         goalId: milestone.goalId,
         milestoneId: milestone.id,
+        projectId: projectId ?? null,
         title: input.title,
         description: input.description || null,
         status: workStatusToPrisma[input.status],
@@ -75,6 +113,10 @@ export async function createTaskForMilestone(
       taskTitle: task.title
     });
 
+    if (projectId) {
+      await syncProjectProgress(tx, projectId);
+    }
+
     return task.id.toString();
   });
 }
@@ -88,6 +130,12 @@ export async function updateTaskForGoal(
   const prisma = getPrismaClient();
 
   return prisma.$transaction(async (tx) => {
+    const nextProjectId = await resolveTaskProjectId(
+      tx,
+      userId,
+      goalId,
+      input.projectId
+    );
     const existingTask = await tx.task.findFirst({
       where: {
         id: taskId,
@@ -98,6 +146,7 @@ export async function updateTaskForGoal(
       select: {
         id: true,
         milestoneId: true,
+        projectId: true,
         progressPercentage: true,
         startedAt: true,
         completedAt: true,
@@ -106,6 +155,10 @@ export async function updateTaskForGoal(
     });
 
     if (!existingTask) {
+      return null;
+    }
+
+    if (input.projectId && nextProjectId === undefined) {
       return null;
     }
 
@@ -123,6 +176,7 @@ export async function updateTaskForGoal(
       data: {
         title: input.title,
         description: input.description || null,
+        projectId: nextProjectId ?? null,
         status: workStatusToPrisma[input.status],
         priority: goalPriorityToPrisma[input.priority],
         dueAt: input.dueAt ? parseDateTimeLocalInput(input.dueAt) : null,
@@ -152,6 +206,17 @@ export async function updateTaskForGoal(
       });
     }
 
+    if (
+      existingTask.projectId &&
+      (!nextProjectId || existingTask.projectId !== nextProjectId)
+    ) {
+      await syncProjectProgress(tx, existingTask.projectId);
+    }
+
+    if (nextProjectId) {
+      await syncProjectProgress(tx, nextProjectId);
+    }
+
     return existingTask.id.toString();
   });
 }
@@ -174,6 +239,7 @@ export async function softDeleteTaskForGoal(
       select: {
         id: true,
         milestoneId: true,
+        projectId: true,
         title: true
       }
     });
@@ -191,6 +257,16 @@ export async function softDeleteTaskForGoal(
       }
     });
 
+    await tx.subtask.updateMany({
+      where: {
+        taskId: task.id,
+        deletedAt: null
+      },
+      data: {
+        deletedAt: new Date()
+      }
+    });
+
     if (task.milestoneId) {
       await syncMilestoneProgress(tx, task.milestoneId, {
         taskId: task.id,
@@ -201,6 +277,10 @@ export async function softDeleteTaskForGoal(
         taskId: task.id,
         taskTitle: task.title
       });
+    }
+
+    if (task.projectId) {
+      await syncProjectProgress(tx, task.projectId);
     }
 
     return true;
@@ -225,6 +305,7 @@ export async function completeTaskForGoal(
       select: {
         id: true,
         milestoneId: true,
+        projectId: true,
         title: true,
         completedAt: true
       }
@@ -255,6 +336,10 @@ export async function completeTaskForGoal(
         taskId: task.id,
         taskTitle: task.title
       });
+    }
+
+    if (task.projectId) {
+      await syncProjectProgress(tx, task.projectId);
     }
 
     return true;

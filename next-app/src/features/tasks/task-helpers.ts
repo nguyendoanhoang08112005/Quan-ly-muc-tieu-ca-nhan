@@ -8,6 +8,7 @@ export function buildDefaultTaskFormValues(): TaskFormValues {
     priority: "medium",
     dueAt: "",
     estimatedMinutes: "",
+    projectId: "",
     isFocus: false
   };
 }

@@ -1,5 +1,21 @@
 import type { GoalPriority, WorkStatus } from "@/features/goals/types";
 
+export type SubtaskSummary = {
+  id: string;
+  name: string;
+  status: "pending" | "in_progress" | "completed";
+  completedAt: string | null;
+  sortOrder: number;
+};
+
+export type TaskProjectOption = {
+  id: string;
+  name: string;
+  color: string | null;
+  goalId: string | null;
+  goalTitle: string | null;
+};
+
 export type TaskFormValues = {
   title: string;
   description: string;
@@ -7,6 +23,7 @@ export type TaskFormValues = {
   priority: GoalPriority;
   dueAt: string;
   estimatedMinutes: string;
+  projectId: string;
   isFocus: boolean;
 };
 
@@ -26,4 +43,12 @@ export type TaskListItem = {
   milestoneId: string | null;
   milestoneTitle: string | null;
   milestoneSequenceNo: number | null;
+  project: {
+    id: string;
+    name: string;
+    color: string | null;
+  } | null;
+  subtasks: SubtaskSummary[];
+  subtasksCount: number;
+  completedSubtasksCount: number;
 };

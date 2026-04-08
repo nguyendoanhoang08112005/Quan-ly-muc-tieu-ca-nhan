@@ -3,28 +3,9 @@
 import { redirect } from "next/navigation";
 import { getPrismaClient } from "@/lib/db/prisma";
 import { hashPassword } from "@/lib/auth/password";
+import type { RegisterActionState } from "@/features/auth/actions/register-shared";
 import { authRoutes } from "@/lib/auth/routes";
 import { registerSchema } from "@/features/auth/schemas/auth-schemas";
-
-type RegisterField = "name" | "email" | "password" | "passwordConfirmation";
-
-export type RegisterActionState = {
-  status: "idle" | "error";
-  message?: string;
-  fieldErrors?: Partial<Record<RegisterField, string[]>>;
-  values?: {
-    name: string;
-    email: string;
-  };
-};
-
-export const initialRegisterActionState: RegisterActionState = {
-  status: "idle",
-  values: {
-    name: "",
-    email: ""
-  }
-};
 
 function readFormValue(formData: FormData, key: string) {
   const value = formData.get(key);

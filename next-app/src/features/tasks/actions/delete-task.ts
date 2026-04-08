@@ -9,11 +9,20 @@ import { softDeleteTaskForGoal } from "@/server/modules/tasks/mutations";
 export async function deleteTaskAction(formData: FormData) {
   const userId = await requireAuthenticatedUserId();
   const goalId = formData.get("goalId");
+  const projectId = formData.get("projectId");
   const taskId = formData.get("taskId");
   const parsedGoalId = milestoneIdSchema.safeParse(goalId);
   const parsedTaskId = taskIdSchema.safeParse(taskId);
+  const parsedProjectId =
+    typeof projectId === "string" && projectId.length > 0
+      ? taskIdSchema.safeParse(projectId)
+      : null;
 
-  if (!parsedGoalId.success || !parsedTaskId.success) {
+  if (
+    !parsedGoalId.success ||
+    !parsedTaskId.success ||
+    (parsedProjectId !== null && !parsedProjectId.success)
+  ) {
     return;
   }
 
@@ -26,5 +35,9 @@ export async function deleteTaskAction(formData: FormData) {
   revalidatePath("/dashboard");
   revalidatePath("/goals");
   revalidatePath("/tasks");
+  revalidatePath("/projects");
   revalidatePath(`/goals/${parsedGoalId.data}`);
+  if (parsedProjectId?.success) {
+    revalidatePath(`/projects/${parsedProjectId.data}`);
+  }
 }
