@@ -16,7 +16,9 @@
     "prisma:seed": "node prisma/seed.mjs",
     "legacy:plan": "node prisma/import-legacy.mjs",
     "legacy:import": "node prisma/import-legacy.mjs",
-    "legacy:reconcile": "node prisma/reconcile-import.mjs"
+    "legacy:reconcile": "node prisma/reconcile-import.mjs",
+    "ops:preflight": "node scripts/cutover-preflight.mjs",
+    "ops:smoke": "node scripts/staging-smoke.mjs"
   },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.6.0",
