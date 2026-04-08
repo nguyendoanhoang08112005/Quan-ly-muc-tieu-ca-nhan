@@ -55,14 +55,73 @@ async function buildUniqueGoalSlug(
   return `${baseSlug}-${Date.now()}`.slice(0, 220);
 }
 
+async function resolveGoalMetadata(
+  userId: bigint,
+  input: GoalFormInput
+) {
+  const prisma = getPrismaClient();
+  const tagIds = [...new Set(input.tagIds)].map((tagId) => BigInt(tagId));
+  const categoryId = input.categoryId ? BigInt(input.categoryId) : null;
+
+  if (categoryId) {
+    const category = await prisma.category.findFirst({
+      where: {
+        id: categoryId,
+        deletedAt: null,
+        OR: [{ userId }, { userId: null }],
+        type: {
+          in: ["GOAL", "ALL"]
+        }
+      },
+      select: {
+        id: true
+      }
+    });
+
+    if (!category) {
+      return null;
+    }
+  }
+
+  if (tagIds.length > 0) {
+    const tags = await prisma.tag.findMany({
+      where: {
+        userId,
+        deletedAt: null,
+        id: {
+          in: tagIds
+        }
+      },
+      select: {
+        id: true
+      }
+    });
+
+    if (tags.length !== tagIds.length) {
+      return null;
+    }
+  }
+
+  return {
+    categoryId,
+    tagIds
+  };
+}
+
 export async function createGoalForUser(userId: bigint, input: GoalFormInput) {
   const prisma = getPrismaClient();
   const slug = await buildUniqueGoalSlug(userId, input.title);
   const isCompleted = input.status === "completed";
+  const metadata = await resolveGoalMetadata(userId, input);
+
+  if (!metadata) {
+    return null;
+  }
 
   const goal = await prisma.goal.create({
     data: {
       userId,
+      categoryId: metadata.categoryId,
       title: input.title,
       slug,
       description: input.description,
@@ -73,7 +132,17 @@ export async function createGoalForUser(userId: bigint, input: GoalFormInput) {
       startDate: parseDateInput(input.startDate),
       targetDate: parseDateInput(input.targetDate),
       completedAt: isCompleted ? new Date() : null,
-      note: input.note || null
+      note: input.note || null,
+      tagLinks:
+        metadata.tagIds.length > 0
+          ? {
+              createMany: {
+                data: metadata.tagIds.map((tagId) => ({
+                  tagId
+                }))
+              }
+            }
+          : undefined
     },
     select: {
       id: true
@@ -89,6 +158,7 @@ export async function updateGoalForUser(
   input: GoalFormInput
 ) {
   const prisma = getPrismaClient();
+  const metadata = await resolveGoalMetadata(userId, input);
   const existingGoal = await prisma.goal.findFirst({
     where: {
       id: goalId,
@@ -103,7 +173,7 @@ export async function updateGoalForUser(
     }
   });
 
-  if (!existingGoal) {
+  if (!existingGoal || !metadata) {
     return null;
   }
 
@@ -115,27 +185,45 @@ export async function updateGoalForUser(
         ? 0
         : undefined;
 
-  await prisma.goal.update({
-    where: {
-      id: existingGoal.id
-    },
-    data: {
-      title: input.title,
-      slug: titleChanged
-        ? await buildUniqueGoalSlug(userId, input.title, existingGoal.id)
-        : undefined,
-      description: input.description,
-      goalType: goalTypeToPrisma[input.goalType],
-      priority: goalPriorityToPrisma[input.priority],
-      status: goalStatusToPrisma[input.status],
-      startDate: parseDateInput(input.startDate),
-      targetDate: parseDateInput(input.targetDate),
-      completedAt:
-        input.status === "completed"
-          ? existingGoal.completedAt ?? new Date()
-          : null,
-      progressPercentage: nextProgress,
-      note: input.note || null
+  await prisma.$transaction(async (tx) => {
+    await tx.goal.update({
+      where: {
+        id: existingGoal.id
+      },
+      data: {
+        categoryId: metadata.categoryId,
+        title: input.title,
+        slug: titleChanged
+          ? await buildUniqueGoalSlug(userId, input.title, existingGoal.id)
+          : undefined,
+        description: input.description,
+        goalType: goalTypeToPrisma[input.goalType],
+        priority: goalPriorityToPrisma[input.priority],
+        status: goalStatusToPrisma[input.status],
+        startDate: parseDateInput(input.startDate),
+        targetDate: parseDateInput(input.targetDate),
+        completedAt:
+          input.status === "completed"
+            ? existingGoal.completedAt ?? new Date()
+            : null,
+        progressPercentage: nextProgress,
+        note: input.note || null
+      }
+    });
+
+    await tx.goalTag.deleteMany({
+      where: {
+        goalId: existingGoal.id
+      }
+    });
+
+    if (metadata.tagIds.length > 0) {
+      await tx.goalTag.createMany({
+        data: metadata.tagIds.map((tagId) => ({
+          goalId: existingGoal.id,
+          tagId
+        }))
+      });
     }
   });
 

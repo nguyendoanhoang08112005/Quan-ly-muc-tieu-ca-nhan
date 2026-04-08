@@ -12,6 +12,16 @@ const dateField = z
   .regex(/^\d{4}-\d{2}-\d{2}$/, "Ngay khong hop le.")
   .refine((value) => parseDateInput(value) !== null, "Ngay khong hop le.");
 
+const optionalNumericId = z.preprocess((value) => {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed === "" ? undefined : trimmed;
+}, z.string().regex(/^\d+$/, "Gia tri khong hop le.").optional());
+
 export const goalIdSchema = z
   .string()
   .trim()
@@ -39,7 +49,11 @@ export const goalFormSchema = z
     }),
     startDate: dateField,
     targetDate: dateField,
-    note: z.string().trim().max(10000, "Ghi chu qua dai.").default("")
+    note: z.string().trim().max(10000, "Ghi chu qua dai.").default(""),
+    categoryId: optionalNumericId,
+    tagIds: z
+      .array(z.string().regex(/^\d+$/, "Tag khong hop le."))
+      .default([])
   })
   .superRefine((value, context) => {
     const startDate = parseDateInput(value.startDate);

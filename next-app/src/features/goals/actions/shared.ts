@@ -37,7 +37,11 @@ export function readGoalFormValues(formData: FormData): GoalFormValues {
     status: readFormValue(formData, "status") as GoalFormValues["status"],
     startDate: readFormValue(formData, "startDate"),
     targetDate: readFormValue(formData, "targetDate"),
-    note: readFormValue(formData, "note")
+    note: readFormValue(formData, "note"),
+    categoryId: readFormValue(formData, "categoryId"),
+    tagIds: formData
+      .getAll("tagIds")
+      .filter((value): value is string => typeof value === "string")
   };
 }
 

@@ -33,6 +33,39 @@ export type GoalFormValues = {
   startDate: string;
   targetDate: string;
   note: string;
+  categoryId: string;
+  tagIds: string[];
+};
+
+export type GoalCategorySummary = {
+  id: string;
+  name: string;
+  color: string | null;
+  icon: string | null;
+};
+
+export type GoalTagSummary = {
+  id: string;
+  name: string;
+  color: string | null;
+};
+
+export type GoalLogSummary = {
+  id: string;
+  logType: string;
+  title: string | null;
+  content: string | null;
+  progressSnapshot: number | null;
+  loggedAt: string;
+  milestoneTitle: string | null;
+  taskTitle: string | null;
+};
+
+export type GoalMetadataOption = {
+  id: string;
+  name: string;
+  color: string | null;
+  icon?: string | null;
 };
 
 export type GoalTaskSummary = {
@@ -78,6 +111,8 @@ export type GoalListItem = {
   startDate: string | null;
   targetDate: string | null;
   note: string | null;
+  category: GoalCategorySummary | null;
+  tags: GoalTagSummary[];
   tasksCount: number;
   milestonesCount: number;
   createdAt: string;
@@ -87,4 +122,5 @@ export type GoalListItem = {
 export type GoalDetail = GoalListItem & {
   completedAt: string | null;
   milestones: GoalMilestoneSummary[];
+  logs: GoalLogSummary[];
 };

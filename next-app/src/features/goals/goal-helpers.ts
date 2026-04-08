@@ -35,6 +35,15 @@ export const workStatusLabels: Record<WorkStatus, string> = {
   paused: "Tam dung"
 };
 
+export const goalLogTypeLabels: Record<string, string> = {
+  progress_update: "Cap nhat tien do",
+  status_change: "Doi trang thai",
+  note: "Ghi chu",
+  risk: "Rui ro",
+  completion: "Hoan thanh",
+  ai_suggestion: "Goi y AI"
+};
+
 export const workStatusClassNames: Record<WorkStatus, string> = {
   not_started: "bg-stone-100 text-stone-700",
   in_progress: "bg-sky-100 text-sky-700",
@@ -124,7 +133,9 @@ export function buildDefaultGoalFormValues(): GoalFormValues {
     status: "not_started",
     startDate,
     targetDate: addDaysToDateInput(startDate, 7),
-    note: ""
+    note: "",
+    categoryId: "",
+    tagIds: []
   };
 }
 

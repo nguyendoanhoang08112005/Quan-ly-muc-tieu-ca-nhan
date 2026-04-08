@@ -29,7 +29,16 @@ export async function createGoalAction(
 
   const goalId = await createGoalForUser(userId, parsed.data);
 
+  if (!goalId) {
+    return buildGoalFormErrorState(
+      values,
+      "Category hoac tag khong hop le cho goal nay."
+    );
+  }
+
   revalidatePath("/dashboard");
   revalidatePath("/goals");
+  revalidatePath("/categories");
+  revalidatePath("/tags");
   redirect(`/goals/${goalId}`);
 }

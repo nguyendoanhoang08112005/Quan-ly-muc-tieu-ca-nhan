@@ -5,6 +5,7 @@ import { ArrowLeft, PencilLine, Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { DeleteGoalForm } from "@/features/goals/components/delete-goal-form";
 import {
+  goalLogTypeLabels,
   goalPriorityClassNames,
   goalPriorityLabels,
   goalStatusClassNames,
@@ -128,6 +129,36 @@ export default async function GoalDetailPage({
                 Han {formatDisplayDate(goal.targetDate)}
               </span>
             </div>
+
+            {goal.category || goal.tags.length > 0 ? (
+              <div className="mt-4 flex flex-wrap gap-2 text-sm">
+                {goal.category ? (
+                  <span className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+                    <span
+                      className="h-2.5 w-2.5 rounded-full bg-stone-400"
+                      style={{
+                        backgroundColor: goal.category.color ?? undefined
+                      }}
+                    />
+                    {goal.category.name}
+                  </span>
+                ) : null}
+                {goal.tags.map((tag) => (
+                  <span
+                    className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-600"
+                    key={tag.id}
+                  >
+                    <span
+                      className="h-2.5 w-2.5 rounded-full bg-stone-400"
+                      style={{
+                        backgroundColor: tag.color ?? undefined
+                      }}
+                    />
+                    #{tag.name}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3 lg:w-[440px] lg:grid-cols-1">
@@ -396,6 +427,75 @@ export default async function GoalDetailPage({
                 Tao milestone dau tien
               </Link>
             </div>
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
+            Goal logs
+          </p>
+          <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
+            Timeline thay doi
+          </h2>
+          <p className="mt-2 max-w-3xl text-sm leading-7 text-stone-600">
+            Muc nay ghi lai cac thay doi tien do va su kien quan trong gan voi
+            goal, milestone va task.
+          </p>
+        </div>
+
+        {goal.logs.length > 0 ? (
+          <div className="mt-6 grid gap-4">
+            {goal.logs.map((log) => (
+              <article
+                className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5"
+                key={log.id}
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="max-w-3xl">
+                    <div className="flex flex-wrap gap-2">
+                      <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-700">
+                        {goalLogTypeLabels[log.logType] ?? log.logType}
+                      </span>
+                      {log.progressSnapshot !== null ? (
+                        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                          Snapshot {Math.round(log.progressSnapshot)}%
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <h3 className="mt-3 text-lg font-black text-stone-950">
+                      {log.title ?? "Cap nhat goal"}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">
+                      {log.content ?? "Khong co noi dung bo sung cho log nay."}
+                    </p>
+
+                    <p className="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
+                      {log.milestoneTitle
+                        ? `Milestone ${log.milestoneTitle}`
+                        : "Goal level"}
+                      {log.taskTitle ? ` • Task ${log.taskTitle}` : ""}
+                    </p>
+                  </div>
+
+                  <div className="text-sm text-stone-500">
+                    {formatDisplayDateTime(log.loggedAt)}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
+            <h3 className="text-2xl font-black text-stone-950">
+              Chua co thay doi nao duoc ghi log
+            </h3>
+            <p className="mt-3 text-sm leading-7 text-stone-500">
+              Khi progress hoac task thay doi, timeline se bat dau hien du lieu
+              tai day.
+            </p>
           </div>
         )}
       </section>

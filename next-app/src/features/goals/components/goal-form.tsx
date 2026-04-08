@@ -14,21 +14,25 @@ import {
   goalStatusLabels,
   goalTypeLabels
 } from "@/features/goals/goal-helpers";
-import type { GoalFormValues } from "@/features/goals/types";
+import type { GoalFormValues, GoalMetadataOption } from "@/features/goals/types";
 import { addDaysToDateInput, diffDateInputs } from "@/lib/dates";
 
 type GoalFormProps = {
   cancelHref: Route;
+  categories: GoalMetadataOption[];
   goalId?: string;
   initialValues?: Partial<GoalFormValues>;
   mode: "create" | "edit";
+  tags: GoalMetadataOption[];
 };
 
 export function GoalForm({
   cancelHref,
+  categories,
   goalId,
   initialValues,
-  mode
+  mode,
+  tags
 }: GoalFormProps) {
   const initialState = useMemo(
     () => getInitialGoalFormActionState(initialValues),
@@ -126,6 +130,29 @@ export function GoalForm({
           {state.fieldErrors?.goalType?.[0] ? (
             <p className="mt-2 text-sm text-rose-600">
               {state.fieldErrors.goalType[0]}
+            </p>
+          ) : null}
+        </label>
+
+        <label className="block">
+          <span className="mb-2 block text-sm font-semibold text-stone-700">
+            Category
+          </span>
+          <select
+            className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+            defaultValue={state.values.categoryId}
+            name="categoryId"
+          >
+            <option value="">Khong gan category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          {state.fieldErrors?.categoryId?.[0] ? (
+            <p className="mt-2 text-sm text-rose-600">
+              {state.fieldErrors.categoryId[0]}
             </p>
           ) : null}
         </label>
@@ -236,6 +263,40 @@ export function GoalForm({
             </p>
           ) : null}
         </div>
+
+        <label className="block md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-stone-700">
+            Tags
+          </span>
+          <div className="grid gap-3 rounded-[1.5rem] border border-stone-200 bg-stone-50 p-4 sm:grid-cols-2">
+            {tags.length > 0 ? (
+              tags.map((tag) => (
+                <label
+                  className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3 text-sm font-medium text-stone-700"
+                  key={tag.id}
+                >
+                  <input
+                    className="h-4 w-4 rounded border-stone-300"
+                    defaultChecked={state.values.tagIds.includes(tag.id)}
+                    name="tagIds"
+                    type="checkbox"
+                    value={tag.id}
+                  />
+                  <span>{tag.name}</span>
+                </label>
+              ))
+            ) : (
+              <div className="text-sm text-stone-500">
+                Chua co tag nao. Ban co the tao o trang Tags.
+              </div>
+            )}
+          </div>
+          {state.fieldErrors?.tagIds?.[0] ? (
+            <p className="mt-2 text-sm text-rose-600">
+              {state.fieldErrors.tagIds[0]}
+            </p>
+          ) : null}
+        </label>
 
         <label className="block md:col-span-2">
           <span className="mb-2 block text-sm font-semibold text-stone-700">

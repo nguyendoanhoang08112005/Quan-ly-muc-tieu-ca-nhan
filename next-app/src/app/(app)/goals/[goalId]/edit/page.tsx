@@ -2,7 +2,10 @@ import type { Route } from "next";
 import { notFound } from "next/navigation";
 import { GoalForm } from "@/features/goals/components/goal-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
-import { getGoalFormValuesForUser } from "@/server/modules/goals/queries";
+import {
+  getGoalFormValuesForUser,
+  listGoalMetadataOptions
+} from "@/server/modules/goals/queries";
 
 type EditGoalPageProps = {
   params: Promise<{
@@ -13,7 +16,10 @@ type EditGoalPageProps = {
 export default async function EditGoalPage({ params }: EditGoalPageProps) {
   const userId = await requireAuthenticatedUserId();
   const { goalId } = await params;
-  const goal = await getGoalFormValuesForUser(userId, BigInt(goalId));
+  const [goal, options] = await Promise.all([
+    getGoalFormValuesForUser(userId, BigInt(goalId)),
+    listGoalMetadataOptions(userId)
+  ]);
 
   if (!goal) {
     notFound();
@@ -24,9 +30,11 @@ export default async function EditGoalPage({ params }: EditGoalPageProps) {
       <div className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <GoalForm
           cancelHref={`/goals/${goalId}` as Route}
+          categories={options.categories}
           goalId={goalId}
           initialValues={goal}
           mode="edit"
+          tags={options.tags}
         />
       </div>
     </div>

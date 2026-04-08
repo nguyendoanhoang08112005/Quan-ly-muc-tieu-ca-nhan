@@ -1,18 +1,53 @@
 import Link from "next/link";
-import { ArrowRight, Plus } from "lucide-react";
+import type { Route } from "next";
+import {
+  ArrowRight,
+  CheckCircle2,
+  ClipboardList,
+  Clock3,
+  Layers3,
+  Plus,
+  Tags
+} from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { goalStatusLabels } from "@/features/goals/goal-helpers";
+import {
+  goalLogTypeLabels,
+  goalPriorityLabels,
+  goalStatusClassNames,
+  goalStatusLabels,
+  workStatusClassNames,
+  workStatusLabels
+} from "@/features/goals/goal-helpers";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
-import { formatDisplayDate } from "@/lib/dates";
+import { formatDisplayDate, formatDisplayDateTime } from "@/lib/dates";
 import { cn } from "@/lib/utils";
-import { listGoalsForUser } from "@/server/modules/goals/queries";
+import { getDashboardOverviewForUser } from "@/server/modules/dashboard/queries";
 
 export default async function DashboardPage() {
   const userId = await requireAuthenticatedUserId();
-  const goals = await listGoalsForUser(userId);
-  const recentGoals = goals.slice(0, 3);
-  const completedGoals = goals.filter((goal) => goal.status === "completed");
-  const inProgressGoals = goals.filter((goal) => goal.status === "in_progress");
+  const dashboard = await getDashboardOverviewForUser(userId);
+  const stats = [
+    {
+      label: "Goal dang active",
+      value: dashboard.summary.activeGoals,
+      icon: Layers3
+    },
+    {
+      label: "Goal hoan thanh",
+      value: dashboard.summary.completedGoals,
+      icon: CheckCircle2
+    },
+    {
+      label: "Task hom nay",
+      value: dashboard.summary.tasksToday,
+      icon: ClipboardList
+    },
+    {
+      label: "Task qua han",
+      value: dashboard.summary.overdueTasks,
+      icon: Clock3
+    }
+  ];
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
@@ -26,9 +61,9 @@ export default async function DashboardPage() {
               Tong quan ca nhan
             </h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Dashboard da bat dau doc du lieu that tu Prisma. O phase nay, no
-              tap trung vao snapshot goal de lam diem neo cho milestone va task
-              sap toi.
+              Dashboard nay da tong hop du lieu thuc tu goals, tasks, metadata
+              va goal logs. Toan bo data duoc doc o server, khong fetch bang
+              client effect.
             </p>
           </div>
 
@@ -52,100 +87,347 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Tong goal
-            </div>
-            <div className="mt-2 text-4xl font-black">{goals.length}</div>
-          </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Dang thuc hien
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {inProgressGoals.length}
-            </div>
-          </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Da hoan thanh
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {completedGoals.length}
-            </div>
-          </div>
-        </div>
-      </section>
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {stats.map((stat) => {
+            const Icon = stat.icon;
 
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-400">
-              Muc tieu gan day
-            </p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Recent goals
-            </h2>
-          </div>
-
-          <Link
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              "gap-2"
-            )}
-            href="/goals"
-          >
-            Xem them
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-
-        {recentGoals.length > 0 ? (
-          <div className="mt-6 grid gap-4">
-            {recentGoals.map((goal) => (
-              <Link
-                className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5 transition hover:border-stone-950"
-                href={`/goals/${goal.id}`}
-                key={goal.id}
+            return (
+              <div
+                className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5"
+                key={stat.label}
               >
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-black text-stone-950">
-                      {goal.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-stone-600">
-                      {goal.description}
-                    </p>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+                    {stat.label}
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-                      Progress
-                    </div>
-                    <div className="text-3xl font-black text-stone-950">
-                      {Math.round(goal.progress)}%
-                    </div>
-                  </div>
+                  <Icon className="h-5 w-5 text-stone-500" />
                 </div>
-                <p className="mt-4 text-sm text-stone-500">
-                  {goalStatusLabels[goal.status]} • Han{" "}
-                  {formatDisplayDate(goal.targetDate)} • {goal.milestonesCount}{" "}
-                  milestone • {goal.tasksCount} task
-                </p>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
-            <h3 className="text-2xl font-black text-stone-950">
-              Chua co goal nao tren he moi
-            </h3>
-            <p className="mt-3 text-sm leading-7 text-stone-500">
-              Tao goal dau tien de dashboard bat dau co du lieu that.
-            </p>
-          </div>
-        )}
+                <div className="mt-4 text-4xl font-black text-stone-950">
+                  {stat.value}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
+
+      <div className="grid gap-8 xl:grid-cols-[1.35fr,0.95fr]">
+        <div className="space-y-8">
+          <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-400">
+                  Goal dang theo duoi
+                </p>
+                <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
+                  Active goals
+                </h2>
+              </div>
+
+              <Link
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "gap-2"
+                )}
+                href="/goals"
+              >
+                Xem them
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {dashboard.activeGoals.length > 0 ? (
+              <div className="mt-6 grid gap-4">
+                {dashboard.activeGoals.map((goal) => (
+                  <Link
+                    className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5 transition hover:border-stone-950"
+                    href={`/goals/${goal.id}` as Route}
+                    key={goal.id}
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div className="max-w-3xl">
+                        <div className="flex flex-wrap gap-2">
+                          <span
+                            className={cn(
+                              "rounded-full px-3 py-1 text-xs font-semibold",
+                              goalStatusClassNames[goal.status]
+                            )}
+                          >
+                            {goalStatusLabels[goal.status]}
+                          </span>
+                          {goal.category ? (
+                            <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-700">
+                              {goal.category.name}
+                            </span>
+                          ) : null}
+                          {goal.tags.slice(0, 3).map((tag) => (
+                            <span
+                              className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-600"
+                              key={tag.id}
+                            >
+                              #{tag.name}
+                            </span>
+                          ))}
+                        </div>
+                        <h3 className="mt-4 text-xl font-black text-stone-950">
+                          {goal.title}
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-stone-600">
+                          {goal.description}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
+                          Progress
+                        </div>
+                        <div className="text-3xl font-black text-stone-950">
+                          {Math.round(goal.progress)}%
+                        </div>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-sm text-stone-500">
+                      Han {formatDisplayDate(goal.targetDate)} •{" "}
+                      {goal.milestonesCount} milestone • {goal.tasksCount} task
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
+                <h3 className="text-2xl font-black text-stone-950">
+                  Chua co goal active
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-stone-500">
+                  Tao goal dau tien de dashboard bat dau co du lieu that.
+                </p>
+              </div>
+            )}
+          </section>
+
+          <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-400">
+                  Goal logs
+                </p>
+                <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
+                  Timeline gan day
+                </h2>
+              </div>
+            </div>
+
+            {dashboard.recentLogs.length > 0 ? (
+              <div className="mt-6 space-y-4">
+                {dashboard.recentLogs.map((log) => (
+                  <Link
+                    className="block rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5 transition hover:border-stone-950"
+                    href={`/goals/${log.goal.id}` as Route}
+                    key={log.id}
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-700">
+                            {goalLogTypeLabels[log.logType] ?? log.logType}
+                          </span>
+                          {log.progressSnapshot !== null ? (
+                            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                              Snapshot {Math.round(log.progressSnapshot)}%
+                            </span>
+                          ) : null}
+                        </div>
+                        <h3 className="mt-3 text-lg font-black text-stone-950">
+                          {log.title ?? log.goal.title}
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-stone-600">
+                          {log.content ?? "Khong co noi dung bo sung cho su kien nay."}
+                        </p>
+                        <p className="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
+                          Goal {log.goal.title}
+                          {log.milestoneTitle ? ` • Milestone ${log.milestoneTitle}` : ""}
+                          {log.taskTitle ? ` • Task ${log.taskTitle}` : ""}
+                        </p>
+                      </div>
+                      <div className="text-sm text-stone-500">
+                        {formatDisplayDateTime(log.loggedAt)}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
+                <h3 className="text-2xl font-black text-stone-950">
+                  Chua co log nao
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-stone-500">
+                  Timeline se hien ra khi progress, milestone hoac task bat dau
+                  thay doi.
+                </p>
+              </div>
+            )}
+          </section>
+        </div>
+
+        <div className="space-y-8">
+          <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+            <h2 className="text-2xl font-black tracking-tight text-stone-950">
+              Metadata va quick check
+            </h2>
+
+            <div className="mt-6 grid gap-4">
+              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
+                <div className="flex items-center gap-3">
+                  <Layers3 className="h-5 w-5 text-stone-500" />
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+                    Categories cho goal
+                  </p>
+                </div>
+                <div className="mt-3 text-3xl font-black text-stone-950">
+                  {dashboard.metadata.categories}
+                </div>
+              </div>
+
+              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
+                <div className="flex items-center gap-3">
+                  <Tags className="h-5 w-5 text-stone-500" />
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+                    Tags dang dung
+                  </p>
+                </div>
+                <div className="mt-3 text-3xl font-black text-stone-950">
+                  {dashboard.metadata.tags}
+                </div>
+              </div>
+
+              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+                  Deadline gan nhat
+                </p>
+                <div className="mt-3 text-lg font-black text-stone-950">
+                  {dashboard.metadata.nearestDeadlineGoal
+                    ? dashboard.metadata.nearestDeadlineGoal.title
+                    : "Chua co goal"}
+                </div>
+                <p className="mt-2 text-sm text-stone-500">
+                  {dashboard.metadata.nearestDeadlineGoal
+                    ? formatDisplayDate(
+                        dashboard.metadata.nearestDeadlineGoal.targetDate
+                      )
+                    : "Ban co the tao goal moi de bat dau lap deadline."}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-3">
+              <Link
+                className={cn(buttonVariants({ size: "lg" }), "justify-start gap-2")}
+                href="/goals/new"
+              >
+                <Plus className="h-4 w-4" />
+                Tao goal moi
+              </Link>
+              <Link
+                className={cn(
+                  buttonVariants({ variant: "secondary", size: "lg" }),
+                  "justify-start"
+                )}
+                href="/categories"
+              >
+                Quan ly categories
+              </Link>
+              <Link
+                className={cn(
+                  buttonVariants({ variant: "secondary", size: "lg" }),
+                  "justify-start"
+                )}
+                href="/tags"
+              >
+                Quan ly tags
+              </Link>
+            </div>
+          </section>
+
+          <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-400">
+                  Task sap den han
+                </p>
+                <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
+                  7 ngay toi
+                </h2>
+              </div>
+
+              <Link
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "gap-2"
+                )}
+                href="/tasks"
+              >
+                Mo tasks
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {dashboard.upcomingTasks.length > 0 ? (
+              <div className="mt-6 space-y-4">
+                {dashboard.upcomingTasks.map((task) => (
+                  <div
+                    className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5"
+                    key={task.id}
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="flex flex-wrap gap-2">
+                          {task.isFocus ? (
+                            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                              Focus
+                            </span>
+                          ) : null}
+                          <span
+                            className={cn(
+                              "rounded-full px-3 py-1 text-xs font-semibold",
+                              workStatusClassNames[task.status]
+                            )}
+                          >
+                            {workStatusLabels[task.status]}
+                          </span>
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-700">
+                            {goalPriorityLabels[task.priority]}
+                          </span>
+                        </div>
+                        <h3 className="mt-3 text-lg font-black text-stone-950">
+                          {task.title}
+                        </h3>
+                        <p className="mt-2 text-sm text-stone-500">
+                          {task.goal.title}
+                          {task.milestone
+                            ? ` • Milestone ${task.milestone.sequenceNo}: ${task.milestone.title}`
+                            : ""}
+                        </p>
+                      </div>
+                      <div className="text-sm text-stone-500">
+                        {formatDisplayDateTime(task.dueAt)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
+                <h3 className="text-2xl font-black text-stone-950">
+                  Chua co task sap den han
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-stone-500">
+                  Khi task co `dueAt`, dashboard se tu dong dua vao khu vuc nay.
+                </p>
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
     </div>
   );
 }

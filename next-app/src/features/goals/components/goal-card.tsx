@@ -58,6 +58,41 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
         </span>
       </div>
 
+      {goal.category || goal.tags.length > 0 ? (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {goal.category ? (
+            <span className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">
+              <span
+                className="h-2.5 w-2.5 rounded-full bg-stone-400"
+                style={{
+                  backgroundColor: goal.category.color ?? undefined
+                }}
+              />
+              {goal.category.name}
+            </span>
+          ) : null}
+          {goal.tags.slice(0, 3).map((tag) => (
+            <span
+              className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600"
+              key={tag.id}
+            >
+              <span
+                className="h-2.5 w-2.5 rounded-full bg-stone-400"
+                style={{
+                  backgroundColor: tag.color ?? undefined
+                }}
+              />
+              #{tag.name}
+            </span>
+          ))}
+          {goal.tags.length > 3 ? (
+            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-500">
+              +{goal.tags.length - 3} tag
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="mt-5 grid gap-3 text-sm text-stone-600 sm:grid-cols-2">
         <div className="flex items-center gap-2">
           <CalendarDays className="h-4 w-4" />

@@ -49,6 +49,8 @@ export async function updateGoalAction(
 
   revalidatePath("/dashboard");
   revalidatePath("/goals");
+  revalidatePath("/categories");
+  revalidatePath("/tags");
   revalidatePath(`/goals/${updatedGoalId}`);
   revalidatePath(`/goals/${updatedGoalId}/edit`);
   redirect(`/goals/${updatedGoalId}`);

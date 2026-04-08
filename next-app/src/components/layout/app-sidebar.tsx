@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 const items = [
   { href: "/dashboard" as Route, label: "Dashboard" },
   { href: "/goals" as Route, label: "Goals" },
-  { href: "/tasks" as Route, label: "Tasks" }
+  { href: "/tasks" as Route, label: "Tasks" },
+  { href: "/categories" as Route, label: "Categories" },
+  { href: "/tags" as Route, label: "Tags" }
 ];
 
 export function AppSidebar({ user }: { user: AppSessionUser }) {
