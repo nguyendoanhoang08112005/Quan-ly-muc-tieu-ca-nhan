@@ -19,22 +19,31 @@ type FilterGroup = {
 
 export function PageFilterForm({
   filters,
+  hiddenFields = [],
   resetHref,
   resultLabel,
   searchPlaceholder,
   searchValue
 }: {
   filters: FilterGroup[];
+  hiddenFields?: Array<{
+    name: string;
+    value: string;
+  }>;
   resetHref: string;
   resultLabel: string;
   searchPlaceholder: string;
   searchValue: string;
 }) {
   return (
-    <section className="rounded-[2rem] border border-stone-200 bg-white p-5 shadow-sm">
-      <form className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr),repeat(2,minmax(0,0.8fr)),auto]" method="get">
-        <label className="block">
-          <span className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-stone-500">
+    <section className="ui-toolbar-panel p-3">
+      <form className="flex flex-wrap items-end gap-3" method="get">
+        {hiddenFields.map((field) => (
+          <input key={field.name} name={field.name} type="hidden" value={field.value} />
+        ))}
+
+        <label className="min-w-[14rem] flex-1">
+          <span className="mb-1.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500">
             <Search className="h-3.5 w-3.5" />
             Tìm nhanh
           </span>
@@ -46,13 +55,13 @@ export function PageFilterForm({
         </label>
 
         {filters.map((filter) => (
-          <label className="block" key={filter.name}>
-            <span className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-stone-500">
+          <label className="min-w-[12rem] flex-1 sm:max-w-[14rem]" key={filter.name}>
+            <span className="mb-1.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500">
               <SlidersHorizontal className="h-3.5 w-3.5" />
               {filter.label}
             </span>
             <select
-              className="h-11 w-full rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+              className="h-9 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
               defaultValue={filter.value}
               name={filter.name}
             >
@@ -65,10 +74,10 @@ export function PageFilterForm({
           </label>
         ))}
 
-        <div className="flex flex-wrap items-end gap-3 lg:justify-end">
+        <div className="ml-auto flex flex-wrap items-end gap-2">
           <button
             className={cn(
-              buttonVariants({ size: "lg" }),
+              buttonVariants({ size: "sm" }),
               "rounded-full !text-white"
             )}
             type="submit"
@@ -77,7 +86,7 @@ export function PageFilterForm({
           </button>
           <Link
             className={cn(
-              buttonVariants({ size: "lg", variant: "secondary" }),
+              buttonVariants({ size: "sm", variant: "secondary" }),
               "rounded-full"
             )}
             href={resetHref as Route}
@@ -87,7 +96,7 @@ export function PageFilterForm({
         </div>
       </form>
 
-      <p className="mt-4 text-sm text-stone-500">{resultLabel}</p>
+      <p className="mt-2 text-xs text-stone-500">{resultLabel}</p>
     </section>
   );
 }

@@ -5,20 +5,20 @@ import { cn } from "@/lib/utils";
 
 export function EmptyGoalsState() {
   return (
-    <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-16 text-center shadow-sm">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-stone-100">
-        <Target className="h-8 w-8 text-stone-500" />
+    <div className="ui-panel border-dashed px-6 py-10 text-center">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-stone-100">
+        <Target className="h-6 w-6 text-stone-500" />
       </div>
-      <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
+      <h2 className="mt-4 text-2xl font-black tracking-tight text-stone-950">
         Bạn chưa có mục tiêu nào
       </h2>
-      <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
+      <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-stone-600">
         Hãy tạo mục tiêu đầu tiên để khởi động hệ Next.js mới.
       </p>
-      <div className="mt-8">
+      <div className="mt-5">
         <Link
           className={cn(
-            buttonVariants({ size: "lg" }),
+            buttonVariants({ size: "sm" }),
             "rounded-full !text-white"
           )}
           href="/goals/new"

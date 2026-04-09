@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
+import { WorkspaceViewTabs } from "@/components/shared/workspace-view-tabs";
+import { GoalBoard } from "@/features/goals/components/goal-board";
 import { EmptyGoalsState } from "@/features/goals/components/empty-goals-state";
 import { GoalCard } from "@/features/goals/components/goal-card";
 import { goalStatusLabels } from "@/features/goals/goal-helpers";
@@ -15,8 +17,37 @@ type GoalsPageProps = {
   searchParams?: Promise<{
     q?: string | string[];
     status?: string | string[];
+    view?: string | string[];
   }>;
 };
+
+function buildGoalsHref({
+  q,
+  status,
+  view
+}: {
+  q: string;
+  status: string;
+  view: "board" | "list";
+}) {
+  const params = new URLSearchParams();
+
+  if (q) {
+    params.set("q", q);
+  }
+
+  if (status !== "all") {
+    params.set("status", status);
+  }
+
+  if (view !== "board") {
+    params.set("view", view);
+  }
+
+  const query = params.toString();
+
+  return query ? `/goals?${query}` : "/goals";
+}
 
 export default async function GoalsPage({ searchParams }: GoalsPageProps) {
   const userId = await requireAuthenticatedUserId();
@@ -24,6 +55,8 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
   const goals = await listGoalsForUser(userId);
   const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
   const statusFilter = getSingleSearchParam(resolvedSearchParams?.status) || "all";
+  const view = getSingleSearchParam(resolvedSearchParams?.view) === "list" ? "list" : "board";
+
   const filteredGoals = goals.filter((goal) => {
     const matchesStatus = statusFilter === "all" || goal.status === statusFilter;
 
@@ -37,6 +70,7 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
       ])
     );
   });
+
   const completedGoals = filteredGoals.filter((goal) => goal.status === "completed");
   const inProgressGoals = filteredGoals.filter((goal) => goal.status === "in_progress");
   const nearestDeadline = filteredGoals
@@ -55,62 +89,67 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
     .sort((left, right) => left.deadline - right.deadline)[0]?.goal;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <section className="ui-toolbar-panel px-4 py-3">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Danh sách mục tiêu
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-stone-500">
+              Mục tiêu
+            </p>
+            <h1 className="mt-1 text-xl font-black tracking-tight text-stone-950">
+              Workspace mục tiêu
             </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Trang này đọc dữ liệu trực tiếp từ Prisma ở máy chủ, không còn tải
-              bằng `useEffect`. Các thao tác tạo, sửa, xóa được xử lý bằng hành
-              động phía máy chủ.
+            <p className="mt-1 text-sm text-stone-600">
+              Chuyển giữa bảng và danh sách để điều phối mục tiêu theo cách gọn hơn.
             </p>
           </div>
 
-          <Link
-            className={cn(
-              buttonVariants({ size: "lg" }),
-              "gap-2 rounded-full !text-white"
-            )}
-            href="/goals/new"
-          >
-            <Plus className="h-4 w-4" />
-            Tạo mục tiêu mới
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <WorkspaceViewTabs
+              tabs={[
+                {
+                  active: view === "board",
+                  count: filteredGoals.length,
+                  href: buildGoalsHref({ q: query, status: statusFilter, view: "board" }),
+                  label: "Bảng"
+                },
+                {
+                  active: view === "list",
+                  count: filteredGoals.length,
+                  href: buildGoalsHref({ q: query, status: statusFilter, view: "list" }),
+                  label: "Danh sách"
+                }
+              ]}
+            />
+            <Link
+              className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full !text-white")}
+              href="/goals/new"
+            >
+              <Plus className="h-4 w-4" />
+              Tạo mục tiêu
+            </Link>
+          </div>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tổng mục tiêu
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {filteredGoals.length}
-            </div>
-          </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Đang thực hiện
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {inProgressGoals.length}
-            </div>
-          </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Gần nhất
-            </div>
-            <div className="mt-2 text-xl font-black text-stone-950">
-              {nearestDeadline
-                ? formatDisplayDate(nearestDeadline.targetDate)
-                : "Chưa có"}
-            </div>
-            <p className="mt-2 text-sm text-stone-500">
-              {completedGoals.length} mục tiêu đã hoàn thành
-            </p>
-          </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <span className="ui-pill">
+            Tổng mục tiêu
+            <strong className="font-semibold text-stone-900">{filteredGoals.length}</strong>
+          </span>
+          <span className="ui-pill">
+            Đang thực hiện
+            <strong className="font-semibold text-stone-900">{inProgressGoals.length}</strong>
+          </span>
+          <span className="ui-pill">
+            Hoàn thành
+            <strong className="font-semibold text-stone-900">{completedGoals.length}</strong>
+          </span>
+          <span className="ui-pill">
+            Hạn gần nhất
+            <strong className="font-semibold text-stone-900">
+              {nearestDeadline ? formatDisplayDate(nearestDeadline.targetDate) : "Chưa có"}
+            </strong>
+          </span>
         </div>
       </section>
 
@@ -129,24 +168,29 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
             value: statusFilter
           }
         ]}
-        resetHref="/goals"
+        hiddenFields={view === "list" ? [{ name: "view", value: "list" }] : []}
+        resetHref={view === "list" ? "/goals?view=list" : "/goals"}
         resultLabel={`Đang hiển thị ${filteredGoals.length}/${goals.length} mục tiêu.`}
-        searchPlaceholder="Tìm theo tên mục tiêu, mô tả, danh mục hoặc thẻ"
+        searchPlaceholder="Tìm theo tên, mô tả, danh mục hoặc thẻ"
         searchValue={query}
       />
 
       {filteredGoals.length > 0 ? (
-        <section className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-          {filteredGoals.map((goal) => (
-            <GoalCard goal={goal} key={goal.id} />
-          ))}
-        </section>
+        view === "board" ? (
+          <GoalBoard goals={filteredGoals} />
+        ) : (
+          <section className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+            {filteredGoals.map((goal) => (
+              <GoalCard goal={goal} key={goal.id} />
+            ))}
+          </section>
+        )
       ) : goals.length > 0 ? (
-        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
-          <h2 className="text-2xl font-black text-stone-950">
+        <section className="ui-panel border-dashed px-6 py-10 text-center">
+          <h2 className="text-xl font-black text-stone-950">
             Không tìm thấy mục tiêu phù hợp
           </h2>
-          <p className="mt-3 text-sm leading-7 text-stone-500">
+          <p className="mt-2 text-sm leading-6 text-stone-500">
             Hãy điều chỉnh bộ lọc để quay lại danh sách mục tiêu rộng hơn.
           </p>
         </section>

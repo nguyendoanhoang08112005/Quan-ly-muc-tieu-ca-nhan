@@ -25,7 +25,7 @@ export default async function AppLayout({
         <AppSidebar user={session.user} />
         <div className="flex-1">
           <AppMobileNav user={session.user} />
-          <main className="px-4 py-6 lg:px-6 lg:py-8">{children}</main>
+          <main className="px-3 py-4 lg:px-4 lg:py-4">{children}</main>
         </div>
       </div>
     </AuthSessionProvider>

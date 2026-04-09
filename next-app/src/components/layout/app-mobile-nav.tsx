@@ -8,19 +8,19 @@ import { cn } from "@/lib/utils";
 export function AppMobileNav({ user }: { user: AppSessionUser }) {
   return (
     <div className="border-b border-stone-200 bg-white lg:hidden">
-      <div className="space-y-4 px-4 py-4">
+      <div className="space-y-3 px-3 py-3">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-stone-500">
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-stone-500">
               Mục tiêu cá nhân
             </p>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-[11px] text-stone-500">
               Hãy bắt đầu với Mục tiêu, Công việc và Thói quen.
             </p>
             <p className="mt-2 text-sm font-semibold text-stone-900">
               {user.name}
             </p>
-            <p className="text-sm text-stone-500">{user.email}</p>
+            <p className="text-xs text-stone-500">{user.email}</p>
           </div>
 
           <Link
