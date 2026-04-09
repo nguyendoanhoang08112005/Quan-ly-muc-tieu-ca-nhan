@@ -5,13 +5,15 @@ import { TaskBoard } from "@/features/tasks/components/task-board";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { cn } from "@/lib/utils";
 import { getDashboardOverviewForUser } from "@/server/modules/dashboard/queries";
+import { listMilestoneQuickCreateOptionsForUser } from "@/server/modules/milestones/queries";
 import { listTasksForUser } from "@/server/modules/tasks/queries";
 
 export default async function DashboardPage() {
   const userId = await requireAuthenticatedUserId();
-  const [dashboard, tasks] = await Promise.all([
+  const [dashboard, tasks, quickCreateMilestones] = await Promise.all([
     getDashboardOverviewForUser(userId),
-    listTasksForUser(userId)
+    listTasksForUser(userId),
+    listMilestoneQuickCreateOptionsForUser(userId, 20)
   ]);
   const openTasks = tasks.filter((task) => task.status !== "completed");
   const focusTasks = openTasks.filter((task) => task.isFocus);
@@ -79,7 +81,7 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <TaskBoard tasks={tasks} />
+      <TaskBoard quickCreateMilestones={quickCreateMilestones} tasks={tasks} />
     </div>
   );
 }

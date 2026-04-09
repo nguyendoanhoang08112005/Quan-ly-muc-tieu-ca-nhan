@@ -60,6 +60,23 @@ function serializeTaskResource(
           color: task.project.color
         }
       : null,
+    goal:
+      "goalTitle" in task
+        ? {
+            id: toApiId(context?.goalId ?? task.goalId),
+            title: task.goalTitle
+          }
+        : undefined,
+    milestone:
+      "milestoneTitle" in task
+        ? task.milestoneId
+          ? {
+              id: toApiId(context?.milestoneId ?? task.milestoneId),
+              title: task.milestoneTitle,
+              sequence_no: task.milestoneSequenceNo
+            }
+          : null
+        : undefined,
     subtasks: task.subtasks.map((subtask) => ({
       id: toApiId(subtask.id),
       name: subtask.name,

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, Plus } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { WorkspaceViewTabs } from "@/components/shared/workspace-view-tabs";
@@ -62,7 +62,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const [tasks, quickCreateMilestones] = await Promise.all([
     listTasksForUser(userId),
-    listMilestoneQuickCreateOptionsForUser(userId)
+    listMilestoneQuickCreateOptionsForUser(userId, 20)
   ]);
   const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
   const statusFilter = getSingleSearchParam(resolvedSearchParams?.status) || "all";
@@ -103,7 +103,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               Workspace công việc
             </h1>
             <p className="mt-1 text-sm text-stone-600">
-              Tập trung vào bảng và danh sách gọn, không còn card dài và section lớn.
+              Tạo, kéo thả và kiểm soát công việc ngay trong cùng một màn hình.
             </p>
           </div>
 
@@ -134,29 +134,6 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                 }
               ]}
             />
-
-            {quickCreateMilestones.length > 0 ? (
-              <details className="rounded-full border border-stone-200 bg-white">
-                <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 text-sm font-semibold text-stone-700 [&::-webkit-details-marker]:hidden">
-                  <Plus className="h-4 w-4" />
-                  Tạo nhanh
-                </summary>
-                <div className="flex max-w-[28rem] flex-wrap gap-2 border-t border-stone-200 p-3">
-                  {quickCreateMilestones.slice(0, 6).map((milestone) => (
-                    <Link
-                      className={cn(
-                        buttonVariants({ size: "sm", variant: "secondary" }),
-                        "h-auto min-h-8 rounded-full px-3 py-2 text-xs"
-                      )}
-                      href={`/goals/${milestone.goal.id}/milestones/${milestone.id}/tasks/new`}
-                      key={milestone.id}
-                    >
-                      {milestone.goal.title} · {milestone.sequenceNo}
-                    </Link>
-                  ))}
-                </div>
-              </details>
-            ) : null}
           </div>
         </div>
 
@@ -174,7 +151,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             <strong className="font-semibold text-stone-900">{completedTasks.length}</strong>
           </span>
           <span className="ui-pill">
-            Cột mốc tạo nhanh
+            Cột mốc sẵn sàng
             <strong className="font-semibold text-stone-900">
               {quickCreateMilestones.length}
             </strong>
@@ -214,10 +191,20 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
         searchValue={query}
       />
 
-      {filteredTasks.length > 0 ? (
-        view === "board" ? (
-          <TaskBoard tasks={filteredTasks} />
-        ) : (
+      {view === "board" ? (
+        <>
+          {filteredTasks.length === 0 ? (
+            <section className="ui-panel border-dashed px-4 py-3 text-sm text-stone-600">
+              Không có công việc nào khớp bộ lọc hiện tại. Bạn vẫn có thể tạo
+              việc mới ngay trong từng cột nếu đã chọn cột mốc ở thanh trên.
+            </section>
+          ) : null}
+          <TaskBoard
+            quickCreateMilestones={quickCreateMilestones}
+            tasks={filteredTasks}
+          />
+        </>
+      ) : filteredTasks.length > 0 ? (
           <section className="ui-panel divide-y divide-stone-200 overflow-hidden">
             {filteredTasks.map((task) => (
               <article
@@ -301,7 +288,6 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               </article>
             ))}
           </section>
-        )
       ) : tasks.length > 0 ? (
         <section className="ui-panel border-dashed px-6 py-10 text-center">
           <h2 className="text-xl font-black text-stone-950">
@@ -320,8 +306,8 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             Chưa có công việc nào
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-stone-600">
-            Hãy tạo công việc trong một cột mốc để bắt đầu theo dõi công việc theo
-            kiểu workspace.
+            Chuyển sang chế độ bảng để tạo việc ngay trong từng cột, hoặc tạo
+            cột mốc trước nếu mục tiêu của bạn chưa có nơi để gắn việc.
           </p>
           {quickCreateMilestones.length > 0 ? (
             <div className="mt-5 flex flex-wrap justify-center gap-2">

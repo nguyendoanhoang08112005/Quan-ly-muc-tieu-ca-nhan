@@ -16,6 +16,18 @@ export type TaskProjectOption = {
   goalTitle: string | null;
 };
 
+export type TaskQuickCreateMilestoneOption = {
+  id: string;
+  title: string;
+  sequenceNo: number;
+  targetDate: string;
+  tasksCount: number;
+  goal: {
+    id: string;
+    title: string;
+  };
+};
+
 export type TaskFormValues = {
   title: string;
   description: string;
