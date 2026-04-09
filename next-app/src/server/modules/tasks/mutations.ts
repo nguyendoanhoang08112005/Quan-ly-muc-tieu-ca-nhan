@@ -36,6 +36,25 @@ async function resolveTaskProjectId(
   return project?.id ?? undefined;
 }
 
+async function getNextTaskSortOrder(
+  prisma: PrismaClient | Prisma.TransactionClient,
+  userId: bigint,
+  status: "NOT_STARTED" | "IN_PROGRESS" | "PAUSED" | "COMPLETED"
+) {
+  const taskOrder = await prisma.task.aggregate({
+    where: {
+      userId,
+      status,
+      deletedAt: null
+    },
+    _max: {
+      sortOrder: true
+    }
+  });
+
+  return (taskOrder._max.sortOrder ?? 0) + 1000;
+}
+
 export async function createTaskForMilestone(
   userId: bigint,
   goalId: bigint,
@@ -72,17 +91,10 @@ export async function createTaskForMilestone(
       return null;
     }
 
-    const taskCount = await tx.task.aggregate({
-      where: {
-        milestoneId,
-        deletedAt: null
-      },
-      _max: {
-        sortOrder: true
-      }
-    });
     const isCompleted = input.status === "completed";
     const isInProgress = input.status === "in_progress";
+    const nextStatus = workStatusToPrisma[input.status];
+    const nextSortOrder = await getNextTaskSortOrder(tx, userId, nextStatus);
 
     const task = await tx.task.create({
       data: {
@@ -92,7 +104,7 @@ export async function createTaskForMilestone(
         projectId: projectId ?? null,
         title: input.title,
         description: input.description || null,
-        status: workStatusToPrisma[input.status],
+        status: nextStatus,
         priority: goalPriorityToPrisma[input.priority],
         progressPercentage: isCompleted ? 100 : 0,
         dueAt: input.dueAt ? parseDateTimeLocalInput(input.dueAt) : null,
@@ -100,7 +112,7 @@ export async function createTaskForMilestone(
         completedAt: isCompleted ? new Date() : null,
         estimatedMinutes: input.estimatedMinutes ?? null,
         isFocus: input.isFocus,
-        sortOrder: (taskCount._max.sortOrder ?? 0) + 1
+        sortOrder: nextSortOrder
       },
       select: {
         id: true,
@@ -147,6 +159,7 @@ export async function updateTaskForGoal(
         id: true,
         milestoneId: true,
         projectId: true,
+        status: true,
         progressPercentage: true,
         startedAt: true,
         completedAt: true,
@@ -162,12 +175,17 @@ export async function updateTaskForGoal(
       return null;
     }
 
+    const nextStatus = workStatusToPrisma[input.status];
     const nextProgress =
       input.status === "completed"
         ? 100
         : Number(existingTask.progressPercentage) === 100
           ? 0
           : undefined;
+    const nextSortOrder =
+      existingTask.status !== nextStatus
+        ? await getNextTaskSortOrder(tx, userId, nextStatus)
+        : undefined;
 
     await tx.task.update({
       where: {
@@ -177,7 +195,7 @@ export async function updateTaskForGoal(
         title: input.title,
         description: input.description || null,
         projectId: nextProjectId ?? null,
-        status: workStatusToPrisma[input.status],
+        status: nextStatus,
         priority: goalPriorityToPrisma[input.priority],
         dueAt: input.dueAt ? parseDateTimeLocalInput(input.dueAt) : null,
         estimatedMinutes: input.estimatedMinutes ?? null,
@@ -190,7 +208,8 @@ export async function updateTaskForGoal(
           input.status === "completed"
             ? existingTask.completedAt ?? new Date()
             : null,
-        progressPercentage: nextProgress
+        progressPercentage: nextProgress,
+        sortOrder: nextSortOrder
       }
     });
 
@@ -218,6 +237,113 @@ export async function updateTaskForGoal(
     }
 
     return existingTask.id.toString();
+  });
+}
+
+export async function reorderTaskForUser(
+  userId: bigint,
+  taskId: bigint,
+  nextStatus: "not_started" | "in_progress" | "paused" | "completed",
+  orderedTaskIds: bigint[]
+) {
+  const prisma = getPrismaClient();
+
+  return prisma.$transaction(async (tx) => {
+    const task = await tx.task.findFirst({
+      where: {
+        id: taskId,
+        userId,
+        deletedAt: null
+      },
+      select: {
+        id: true,
+        goalId: true,
+        milestoneId: true,
+        projectId: true,
+        title: true,
+        status: true,
+        progressPercentage: true,
+        startedAt: true,
+        completedAt: true
+      }
+    });
+
+    if (!task) {
+      return null;
+    }
+
+    const uniqueOrderedIds = [...new Set(orderedTaskIds.map((value) => value.toString()))].map(
+      (value) => BigInt(value)
+    );
+    const ensuredOrderedIds = uniqueOrderedIds.some((value) => value === task.id)
+      ? uniqueOrderedIds
+      : [task.id, ...uniqueOrderedIds];
+    const tasksInDestinationStatus = await tx.task.findMany({
+      where: {
+        id: {
+          in: ensuredOrderedIds
+        },
+        userId,
+        deletedAt: null
+      },
+      select: {
+        id: true
+      }
+    });
+
+    if (tasksInDestinationStatus.length !== ensuredOrderedIds.length) {
+      return null;
+    }
+
+    const nextStatusPrisma = workStatusToPrisma[nextStatus];
+    const statusChanged = task.status !== nextStatusPrisma;
+    const nextProgress =
+      nextStatus === "completed"
+        ? 100
+        : Number(task.progressPercentage) === 100
+          ? 0
+          : undefined;
+
+    for (const [index, orderedId] of ensuredOrderedIds.entries()) {
+      await tx.task.update({
+        where: {
+          id: orderedId
+        },
+        data:
+          orderedId === task.id
+            ? {
+                status: nextStatusPrisma,
+                progressPercentage: nextProgress,
+                startedAt:
+                  nextStatus === "in_progress" ? task.startedAt ?? new Date() : task.startedAt,
+                completedAt: nextStatus === "completed" ? task.completedAt ?? new Date() : null,
+                sortOrder: (index + 1) * 1000
+              }
+            : {
+                sortOrder: (index + 1) * 1000
+              }
+      });
+    }
+
+    if (statusChanged) {
+      if (task.milestoneId) {
+        await syncMilestoneProgress(tx, task.milestoneId, {
+          taskId: task.id,
+          taskTitle: task.title
+        });
+      } else {
+        await syncGoalProgress(tx, task.goalId, {
+          taskId: task.id,
+          taskTitle: task.title
+        });
+      }
+
+      if (task.projectId) {
+        await syncProjectProgress(tx, task.projectId);
+      }
+    }
+
+    return task.id.toString();
   });
 }
 

@@ -42,6 +42,7 @@ function mapTaskListItem(task: {
   title: string;
   description: string | null;
   status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "PAUSED";
+  sortOrder: number;
   priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
   progressPercentage: number | { toNumber(): number } | null;
   dueAt: Date | null;
@@ -80,6 +81,7 @@ function mapTaskListItem(task: {
     title: task.title,
     description: task.description ?? "",
     status: workStatusFromPrisma[task.status],
+    sortOrder: task.sortOrder,
     priority: goalPriorityFromPrisma[task.priority],
     progress: clampProgress(toNumber(task.progressPercentage)),
     dueAt: task.dueAt?.toISOString() ?? null,
@@ -122,6 +124,7 @@ export async function getTaskFormValuesForUser(
       title: true,
       description: true,
       status: true,
+      sortOrder: true,
       priority: true,
       dueAt: true,
       estimatedMinutes: true,
@@ -177,6 +180,7 @@ export async function getTaskDetailForUser(userId: bigint, taskId: bigint) {
       title: true,
       description: true,
       status: true,
+      sortOrder: true,
       priority: true,
       progressPercentage: true,
       dueAt: true,
@@ -252,6 +256,7 @@ export async function listTasksForUser(userId: bigint) {
       title: true,
       description: true,
       status: true,
+      sortOrder: true,
       priority: true,
       progressPercentage: true,
       dueAt: true,

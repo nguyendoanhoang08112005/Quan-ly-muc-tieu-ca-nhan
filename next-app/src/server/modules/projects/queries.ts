@@ -48,6 +48,7 @@ function mapProjectTask(task: {
   title: string;
   description: string | null;
   status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "PAUSED";
+  sortOrder: number;
   priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
   progressPercentage: number | { toNumber(): number } | null;
   dueAt: Date | null;
@@ -81,6 +82,7 @@ function mapProjectTask(task: {
     title: task.title,
     description: task.description ?? "",
     status: workStatusFromPrisma[task.status],
+    sortOrder: task.sortOrder,
     priority: goalPriorityFromPrisma[task.priority],
     progress: clampProgress(toNumber(task.progressPercentage)),
     dueAt: task.dueAt?.toISOString() ?? null,
@@ -272,6 +274,7 @@ export async function getProjectDetailForUser(userId: bigint, projectId: bigint)
           title: true,
           description: true,
           status: true,
+          sortOrder: true,
           priority: true,
           progressPercentage: true,
           dueAt: true,

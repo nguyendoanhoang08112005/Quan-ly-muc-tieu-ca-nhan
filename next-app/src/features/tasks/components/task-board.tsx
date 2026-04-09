@@ -62,6 +62,7 @@ type TaskApiResource = {
   title: string;
   description: string;
   status: WorkStatus;
+  sort_order: number;
   priority: GoalPriority;
   progress_percentage: number;
   due_at: string | null;
@@ -117,11 +118,13 @@ function toStringId(value: number | string | null | undefined) {
 function buildOptimisticTask({
   draft,
   milestone,
+  sortOrder,
   status,
   taskId
 }: {
   draft: InlineTaskDraft;
   milestone: TaskQuickCreateMilestoneOption;
+  sortOrder: number;
   status: WorkStatus;
   taskId: string;
 }): TaskListItem {
@@ -130,6 +133,7 @@ function buildOptimisticTask({
     title: draft.title.trim(),
     description: "",
     status,
+    sortOrder,
     priority: draft.priority,
     progress: status === "completed" ? 100 : 0,
     dueAt: draft.dueAt ? new Date(draft.dueAt).toISOString() : null,
@@ -157,6 +161,7 @@ function mapTaskApiResourceToTaskListItem(
     title: task.title,
     description: task.description,
     status: task.status,
+    sortOrder: task.sort_order,
     priority: task.priority,
     progress: task.progress_percentage,
     dueAt: task.due_at,
@@ -190,6 +195,18 @@ function mapTaskApiResourceToTaskListItem(
   };
 }
 
+function compareTasksForBoard(left: TaskListItem, right: TaskListItem) {
+  if (left.sortOrder !== right.sortOrder) {
+    return left.sortOrder - right.sortOrder;
+  }
+
+  return left.id.localeCompare(right.id, "vi");
+}
+
+function getOrderedStatusTasks(tasks: TaskListItem[], status: WorkStatus) {
+  return tasks.filter((task) => task.status === status).sort(compareTasksForBoard);
+}
+
 function getTaskStatusFromDndData(
   data: Record<string, unknown> | undefined
 ): WorkStatus | null {
@@ -205,6 +222,87 @@ function getTaskStatusFromDndData(
   }
 
   return null;
+}
+
+function getTaskIdFromDndData(data: Record<string, unknown> | undefined) {
+  const taskId = data?.taskId;
+
+  return typeof taskId === "string" && taskId.trim() ? taskId : null;
+}
+
+function buildReorderedBoardTasks(
+  tasks: TaskListItem[],
+  taskId: string,
+  nextStatus: WorkStatus,
+  overTaskId: string | null
+) {
+  const task = tasks.find((item) => item.id === taskId);
+
+  if (!task) {
+    return null;
+  }
+
+  const destinationTasks = getOrderedStatusTasks(tasks, nextStatus).filter(
+    (item) => item.id !== taskId
+  );
+  const currentOrderedIds = getOrderedStatusTasks(tasks, nextStatus).map((item) => item.id);
+  let insertIndex = destinationTasks.length;
+
+  if (overTaskId) {
+    const overIndex = destinationTasks.findIndex((item) => item.id === overTaskId);
+
+    if (overIndex >= 0) {
+      insertIndex = overIndex;
+    }
+  }
+
+  const movedTask: TaskListItem = {
+    ...task,
+    progress:
+      nextStatus === "completed" ? 100 : task.progress === 100 ? 0 : task.progress,
+    sortOrder: 0,
+    status: nextStatus
+  };
+  const reorderedDestinationTasks = [...destinationTasks];
+
+  reorderedDestinationTasks.splice(insertIndex, 0, movedTask);
+
+  const nextOrderedIds = reorderedDestinationTasks.map((item) => item.id);
+
+  if (
+    task.status === nextStatus &&
+    nextOrderedIds.length === currentOrderedIds.length &&
+    nextOrderedIds.every((value, index) => value === currentOrderedIds[index])
+  ) {
+    return null;
+  }
+
+  const nextSortOrders = new Map<string, number>();
+
+  reorderedDestinationTasks.forEach((item, index) => {
+    nextSortOrders.set(item.id, (index + 1) * 1000);
+  });
+
+  return {
+    nextTasks: tasks.map((item) => {
+      if (item.id === task.id) {
+        return {
+          ...movedTask,
+          sortOrder: nextSortOrders.get(item.id) ?? item.sortOrder
+        };
+      }
+
+      if (item.status === nextStatus && nextSortOrders.has(item.id)) {
+        return {
+          ...item,
+          sortOrder: nextSortOrders.get(item.id) ?? item.sortOrder
+        };
+      }
+
+      return item;
+    }),
+    orderedTaskIds: nextOrderedIds
+  };
 }
 
 function TaskCardContent({
@@ -310,7 +408,7 @@ function TaskBoardCard({
     attributes,
     isDragging,
     listeners,
-    setNodeRef,
+    setNodeRef: setDragNodeRef,
     transform
   } = useDraggable({
     data: {
@@ -321,6 +419,14 @@ function TaskBoardCard({
     disabled: syncing,
     id: `task-${task.id}`
   });
+  const { isOver, setNodeRef: setDropNodeRef } = useDroppable({
+    data: {
+      status: task.status,
+      taskId: task.id,
+      type: "task"
+    },
+    id: `task-drop-${task.id}`
+  });
 
   return (
     <article
@@ -329,9 +435,13 @@ function TaskBoardCard({
       className={cn(
         "ui-card-compact cursor-grab touch-none p-2.5 transition hover:border-stone-300",
         isDragging && "cursor-grabbing opacity-60 shadow-lg",
-        syncing && "ring-1 ring-stone-300"
+        syncing && "ring-1 ring-stone-300",
+        isOver && !isDragging && "border-stone-950"
       )}
-      ref={setNodeRef}
+      ref={(node) => {
+        setDragNodeRef(node);
+        setDropNodeRef(node);
+      }}
       style={{
         transform: transform ? CSS.Translate.toString(transform) : undefined,
         willChange: isDragging ? "transform" : undefined
@@ -653,6 +763,15 @@ export function TaskBoard({
 
     return boardTasks.filter((task) => task.goalId === selectedGoalId);
   }, [boardTasks, selectedGoalId]);
+  const allTasksByStatus = useMemo(() => {
+    const grouped = new Map<WorkStatus, TaskListItem[]>();
+
+    for (const column of taskColumns) {
+      grouped.set(column.status, getOrderedStatusTasks(boardTasks, column.status));
+    }
+
+    return grouped;
+  }, [boardTasks]);
 
   useEffect(() => {
     if (
@@ -693,11 +812,12 @@ export function TaskBoard({
     const grouped = new Map<WorkStatus, TaskListItem[]>();
 
     for (const column of taskColumns) {
-      grouped.set(column.status, []);
-    }
-
-    for (const task of visibleTasks) {
-      grouped.get(task.status)?.push(task);
+      grouped.set(
+        column.status,
+        visibleTasks
+          .filter((task) => task.status === column.status)
+          .sort(compareTasksForBoard)
+      );
     }
 
     return grouped;
@@ -712,33 +832,25 @@ export function TaskBoard({
     setDropTargetStatus(nextStatus);
   }
 
-  function moveTask(taskId: string, nextStatus: WorkStatus) {
-    const currentTask = boardTasks.find((task) => task.id === taskId);
+  function moveTask(
+    taskId: string,
+    nextStatus: WorkStatus,
+    overTaskId: string | null
+  ) {
+    const reordered = buildReorderedBoardTasks(
+      boardTasks,
+      taskId,
+      nextStatus,
+      overTaskId && overTaskId !== taskId ? overTaskId : null
+    );
 
-    if (!currentTask || currentTask.status === nextStatus) {
+    if (!reordered) {
       return;
     }
-
-    const previousStatus = currentTask.status;
-    const previousProgress = currentTask.progress;
+    const previousTasks = boardTasks;
 
     setErrorMessage(null);
-    setBoardTasks((current) =>
-      current.map((task) =>
-        task.id === taskId
-          ? {
-              ...task,
-              progress:
-                nextStatus === "completed"
-                  ? 100
-                  : task.progress === 100
-                    ? 0
-                    : task.progress,
-              status: nextStatus
-            }
-          : task
-      )
-    );
+    setBoardTasks(reordered.nextTasks);
     setSyncingTaskIds((current) =>
       current.includes(taskId) ? current : [...current, taskId]
     );
@@ -747,6 +859,7 @@ export function TaskBoard({
       try {
         const response = await fetch(`/api/v1/tasks/${taskId}`, {
           body: JSON.stringify({
+            ordered_task_ids: reordered.orderedTaskIds,
             status: nextStatus
           }),
           headers: {
@@ -768,31 +881,11 @@ export function TaskBoard({
             // Keep fallback message.
           }
 
-          setBoardTasks((current) =>
-            current.map((task) =>
-              task.id === taskId
-                ? {
-                    ...task,
-                    progress: previousProgress,
-                    status: previousStatus
-                  }
-                : task
-            )
-          );
+          setBoardTasks(previousTasks);
           setErrorMessage(message);
         }
       } catch {
-        setBoardTasks((current) =>
-          current.map((task) =>
-            task.id === taskId
-              ? {
-                  ...task,
-                  progress: previousProgress,
-                  status: previousStatus
-                }
-              : task
-          )
-        );
+        setBoardTasks(previousTasks);
         setErrorMessage("Không thể kết nối để cập nhật trạng thái công việc.");
       }
 
@@ -820,16 +913,19 @@ export function TaskBoard({
       typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
         ? `temp-${crypto.randomUUID()}`
         : `temp-${Date.now()}`;
+    const nextSortOrder =
+      ((allTasksByStatus.get(status)?.at(-1)?.sortOrder ?? 0) || 0) + 1000;
     const optimisticTask = buildOptimisticTask({
       draft,
       milestone: selectedMilestone,
+      sortOrder: nextSortOrder,
       status,
       taskId: tempTaskId
     });
 
     setCreatingStatus(status);
     setErrorMessage(null);
-    setBoardTasks((current) => [optimisticTask, ...current]);
+    setBoardTasks((current) => [...current, optimisticTask]);
 
     try {
       const response = await fetch(
@@ -919,6 +1015,9 @@ export function TaskBoard({
     const nextStatus = getTaskStatusFromDndData(
       event.over?.data.current as Record<string, unknown> | undefined
     );
+    const overTaskId = getTaskIdFromDndData(
+      event.over?.data.current as Record<string, unknown> | undefined
+    );
 
     setActiveTaskId(null);
     setActiveDropTarget(null);
@@ -927,7 +1026,7 @@ export function TaskBoard({
       return;
     }
 
-    moveTask(taskId, nextStatus);
+    moveTask(taskId, nextStatus, overTaskId);
   }
 
   return (

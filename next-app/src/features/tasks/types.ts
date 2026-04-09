@@ -44,6 +44,7 @@ export type TaskListItem = {
   title: string;
   description: string;
   status: WorkStatus;
+  sortOrder: number;
   priority: GoalPriority;
   progress: number;
   dueAt: string | null;
