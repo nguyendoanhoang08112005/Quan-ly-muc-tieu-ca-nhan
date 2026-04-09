@@ -17,21 +17,43 @@ export default async function DashboardPage() {
   ]);
   const openTasks = tasks.filter((task) => task.status !== "completed");
   const focusTasks = openTasks.filter((task) => task.isFocus);
+  const overdueTasks = dashboard.summary.overdueTasks;
+  const referenceNow = new Date().toISOString();
 
   return (
     <div className="flex w-full max-w-none flex-col gap-4">
-      <section className="ui-toolbar-panel px-4 py-3">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-stone-500">
-              Workspace
-            </p>
-            <h1 className="mt-1 text-xl font-black tracking-tight text-stone-950">
+      <section className="ui-toolbar-panel px-3 py-2">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0 space-y-1">
+            <h1 className="text-sm font-semibold tracking-tight text-stone-950">
               Bảng công việc
             </h1>
-            <p className="mt-1 text-sm text-stone-600">
-              Kéo thả để đổi trạng thái. Đây là màn điều phối chính của bạn.
-            </p>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="ui-pill">
+                Đang mở
+                <strong className="font-semibold text-stone-900">{openTasks.length}</strong>
+              </span>
+              <span className="ui-pill">
+                Tập trung
+                <strong className="font-semibold text-stone-900">{focusTasks.length}</strong>
+              </span>
+              <span
+                className={cn(
+                  "ui-pill",
+                  overdueTasks > 0 && "border-rose-200 bg-rose-50 text-rose-700"
+                )}
+              >
+                Quá hạn
+                <strong
+                  className={cn(
+                    "font-semibold",
+                    overdueTasks > 0 ? "text-rose-700" : "text-stone-900"
+                  )}
+                >
+                  {overdueTasks}
+                </strong>
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -40,13 +62,7 @@ export default async function DashboardPage() {
               href="/goals/new"
             >
               <Plus className="h-4 w-4" />
-              Tạo mục tiêu
-            </Link>
-            <Link
-              className={cn(buttonVariants({ size: "sm", variant: "secondary" }), "rounded-full")}
-              href="/tasks"
-            >
-              Mở công việc
+              Mục tiêu mới
             </Link>
             <Link
               className={cn(buttonVariants({ size: "sm", variant: "secondary" }), "rounded-full")}
@@ -56,32 +72,13 @@ export default async function DashboardPage() {
             </Link>
           </div>
         </div>
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          <span className="ui-pill">
-            Đang mở
-            <strong className="font-semibold text-stone-900">{openTasks.length}</strong>
-          </span>
-          <span className="ui-pill">
-            Tập trung
-            <strong className="font-semibold text-stone-900">{focusTasks.length}</strong>
-          </span>
-          <span className="ui-pill">
-            Quá hạn
-            <strong className="font-semibold text-stone-900">
-              {dashboard.summary.overdueTasks}
-            </strong>
-          </span>
-          <span className="ui-pill">
-            Hôm nay
-            <strong className="font-semibold text-stone-900">
-              {dashboard.summary.tasksToday}
-            </strong>
-          </span>
-        </div>
       </section>
 
-      <TaskBoard quickCreateMilestones={quickCreateMilestones} tasks={tasks} />
+      <TaskBoard
+        quickCreateMilestones={quickCreateMilestones}
+        referenceNow={referenceNow}
+        tasks={tasks}
+      />
     </div>
   );
 }

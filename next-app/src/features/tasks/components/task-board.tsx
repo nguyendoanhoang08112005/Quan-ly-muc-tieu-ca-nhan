@@ -202,15 +202,30 @@ function getTaskStatusFromDndData(
 }
 
 function TaskCardContent({
+  referenceNow,
   task
 }: {
+  referenceNow: number;
   task: TaskListItem;
 }) {
+  const contextLabel = task.milestoneSequenceNo
+    ? `Cột mốc ${task.milestoneSequenceNo}`
+    : task.goalTitle;
+  const isOverdue =
+    task.dueAt !== null &&
+    task.status !== "completed" &&
+    new Date(task.dueAt).getTime() < referenceNow;
+
   return (
     <>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1">
+            {isOverdue ? (
+              <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
+                Quá hạn
+              </span>
+            ) : null}
             {task.isFocus ? (
               <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
                 Tập trung
@@ -220,30 +235,52 @@ function TaskCardContent({
               {goalPriorityLabels[task.priority]}
             </span>
           </div>
-          <h3 className="mt-2 line-clamp-2 text-sm font-semibold text-stone-950">
+          <h3 className="mt-1.5 line-clamp-2 text-sm font-semibold leading-5 text-stone-950">
             {task.title}
           </h3>
         </div>
         <GripVertical className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
       </div>
 
-      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-stone-500">
-        <span className="rounded-full bg-stone-100 px-2 py-0.5">
-          {task.goalTitle}
+      <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-stone-500">
+        <span className="rounded-full bg-stone-100 px-2 py-0.5 font-medium text-stone-600">
+          {contextLabel}
         </span>
+        {task.project ? (
+          <span className="rounded-full bg-stone-100 px-2 py-0.5 font-medium text-stone-600">
+            {task.project.name}
+          </span>
+        ) : null}
         {task.dueAt ? (
-          <span className="rounded-full bg-stone-100 px-2 py-0.5">
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 font-medium",
+              isOverdue
+                ? "bg-rose-100 text-rose-700"
+                : "bg-stone-100 text-stone-700"
+            )}
+          >
             {formatDisplayDateTime(task.dueAt)}
           </span>
         ) : null}
       </div>
 
       <div className="mt-2 flex items-center justify-between">
-        <span className="text-[11px] text-stone-500">
-          {task.completedSubtasksCount}/{task.subtasksCount} việc con • {task.progress}%
-        </span>
+        <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-[11px] text-stone-500">
+          {task.subtasksCount > 0 ? (
+            <>
+              <span>
+                {task.completedSubtasksCount}/{task.subtasksCount} việc con
+              </span>
+              <span className="text-stone-300">•</span>
+              <span>{task.progress}% tiến độ</span>
+            </>
+          ) : (
+            <span className="truncate">{task.goalTitle}</span>
+          )}
+        </div>
         <Link
-          className="inline-flex items-center gap-1 text-[11px] font-semibold text-stone-900"
+          className="inline-flex items-center gap-1 text-[11px] font-semibold text-stone-900 transition hover:text-stone-600"
           href={`/goals/${task.goalId}/tasks/${task.id}/edit`}
         >
           Mở
@@ -255,9 +292,11 @@ function TaskCardContent({
 }
 
 function TaskBoardCard({
+  referenceNow,
   syncing,
   task
 }: {
+  referenceNow: number;
   syncing: boolean;
   task: TaskListItem;
 }) {
@@ -292,7 +331,7 @@ function TaskBoardCard({
         willChange: isDragging ? "transform" : undefined
       }}
     >
-      <TaskCardContent task={task} />
+      <TaskCardContent referenceNow={referenceNow} task={task} />
     </article>
   );
 }
@@ -458,7 +497,7 @@ function TaskBoardColumn({
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-stone-600">
                   {quickCreateMilestone
-                    ? `Cột mốc ${quickCreateMilestone.sequenceNo}: ${quickCreateMilestone.title}`
+                    ? `Mốc ${quickCreateMilestone.sequenceNo} · ${quickCreateMilestone.title}`
                     : "Chưa chọn cột mốc"}
                 </span>
 
@@ -520,7 +559,11 @@ function TaskBoardColumn({
             ) : (
               <Plus className="h-4 w-4" />
             )}
-            {creating ? "Đang thêm công việc..." : "Thêm công việc"}
+            {creating
+              ? "Đang thêm công việc..."
+              : quickCreateMilestone
+                ? `Thêm vào mốc ${quickCreateMilestone.sequenceNo}`
+                : "Thêm công việc"}
           </button>
         )}
 
@@ -536,9 +579,11 @@ function TaskBoardColumn({
 
 export function TaskBoard({
   quickCreateMilestones = [],
+  referenceNow,
   tasks
 }: {
   quickCreateMilestones?: TaskQuickCreateMilestoneOption[];
+  referenceNow: string;
   tasks: TaskListItem[];
 }) {
   const [boardTasks, setBoardTasks] = useState(tasks);
@@ -585,6 +630,7 @@ export function TaskBoard({
       null
     );
   }, [quickCreateMilestones, selectedMilestoneId]);
+  const stableNow = useMemo(() => new Date(referenceNow).getTime(), [referenceNow]);
 
   const tasksByStatus = useMemo(() => {
     const grouped = new Map<WorkStatus, TaskListItem[]>();
@@ -828,25 +874,23 @@ export function TaskBoard({
   }
 
   return (
-    <section className="ui-panel p-3">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-3">
-        <div className="flex flex-wrap gap-2">
-          {taskColumns.map((column) => (
-            <span className="ui-pill" key={column.status}>
-              {workStatusLabels[column.status]}
-              <strong className="font-semibold text-stone-900">
-                {(tasksByStatus.get(column.status) ?? []).length}
-              </strong>
-            </span>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
+    <section className="ui-panel p-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-2.5">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-stone-400">
+              Tạo nhanh vào
+            </p>
+            {selectedMilestone ? (
+              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
+                {selectedMilestone.goal.title} · Mốc {selectedMilestone.sequenceNo}
+              </span>
+            ) : null}
+          </div>
           {quickCreateMilestones.length > 0 ? (
-            <label className="flex items-center gap-2 text-xs font-medium text-stone-500">
-              <span>Cột mốc tạo nhanh</span>
+            <label className="mt-1 flex items-center gap-2 text-xs font-medium text-stone-500">
               <select
-                className="h-8 max-w-[18rem] rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+                className="h-8 min-w-[15rem] max-w-[20rem] rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
                 onChange={(event) => setSelectedMilestoneId(event.target.value)}
                 value={selectedMilestoneId}
               >
@@ -858,18 +902,18 @@ export function TaskBoard({
               </select>
             </label>
           ) : (
-            <span className="text-xs font-medium text-amber-700">
+            <p className="mt-1 text-xs font-medium text-amber-700">
               Cần có ít nhất một cột mốc để tạo công việc ngay trên board.
-            </span>
+            </p>
           )}
+        </div>
 
-          <div className="text-xs font-medium text-stone-500">
-            {syncingTaskIds.length > 0
-              ? `Đang lưu ${syncingTaskIds.length} thay đổi`
-              : creatingStatus
-                ? "Đang tạo công việc mới"
-                : "Kéo thả hoặc thêm việc ngay trong cột"}
-          </div>
+        <div className="text-xs font-medium text-stone-500">
+          {syncingTaskIds.length > 0
+            ? `Đang lưu ${syncingTaskIds.length} thay đổi`
+            : creatingStatus
+              ? "Đang tạo công việc mới"
+              : "Kéo thả hoặc thêm việc ngay trong từng cột"}
         </div>
       </div>
 
@@ -887,7 +931,7 @@ export function TaskBoard({
         sensors={sensors}
       >
         <div className="mt-3 overflow-x-auto pb-1">
-          <div className="grid min-w-[68rem] gap-3 xl:grid-cols-4">
+          <div className="grid min-w-[66rem] gap-3 xl:grid-cols-4">
             {taskColumns.map((column) => {
               const columnTasks = tasksByStatus.get(column.status) ?? [];
 
@@ -907,6 +951,7 @@ export function TaskBoard({
                     columnTasks.map((task) => (
                       <TaskBoardCard
                         key={task.id}
+                        referenceNow={stableNow}
                         syncing={syncingTaskIds.includes(task.id)}
                         task={task}
                       />
@@ -924,8 +969,8 @@ export function TaskBoard({
 
         <DragOverlay dropAnimation={null}>
           {activeTask ? (
-            <div className="ui-card-compact w-[17rem] rotate-[1.5deg] p-3 shadow-2xl">
-              <TaskCardContent task={activeTask} />
+            <div className="ui-card-compact w-[16rem] rotate-[1.5deg] p-3 shadow-2xl">
+              <TaskCardContent referenceNow={stableNow} task={activeTask} />
             </div>
           ) : null}
         </DragOverlay>

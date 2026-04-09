@@ -32,7 +32,7 @@ function renderNavigationItem(
       key={item.href}
       className={cn(
         variant === "sidebar"
-          ? "block rounded-xl px-3 py-2.5 text-[13px] font-semibold transition"
+          ? "block rounded-md px-2.5 py-1.5 text-[13px] font-medium transition"
           : "inline-flex min-h-9 items-center justify-center rounded-full border px-3.5 py-2 text-sm font-semibold transition",
         active
           ? variant === "sidebar"
@@ -59,24 +59,23 @@ function renderSecondaryGroup(
   return (
     <details
       className={cn(
-        "rounded-xl border border-stone-200 bg-white",
-        variant === "mobile" ? "bg-white" : ""
+        variant === "sidebar" ? "rounded-md" : "rounded-xl border border-stone-200 bg-white"
       )}
       key={group.id}
       open={hasActiveItem ? true : undefined}
     >
-      <summary className="list-none cursor-pointer px-3 py-3 [&::-webkit-details-marker]:hidden">
+      <summary className="list-none cursor-pointer px-2.5 py-1.5 [&::-webkit-details-marker]:hidden">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-black text-stone-950">{group.label}</p>
+            <p className="text-[13px] font-medium text-stone-700">{group.label}</p>
           </div>
-          <span className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
-            {hasActiveItem ? "Đang mở" : "Mở khi cần"}
+          <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-stone-400">
+            {hasActiveItem ? "Mở" : `${group.items.length} mục`}
           </span>
         </div>
       </summary>
 
-      <div className="space-y-1.5 border-t border-stone-200 px-2.5 py-2.5">
+      <div className="mt-1 space-y-1 pl-2">
         {group.items.map((item) =>
           renderNavigationItem(item, isItemActive(pathname, item.href), variant)
         )}
@@ -111,18 +110,18 @@ export function AppNavigationLinks({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
       {navigationGroups.map((group) => {
         if (group.id === "primary") {
           return (
-            <section className="space-y-1.5" key={group.id}>
-              <div className="px-1">
-                <p className="text-[11px] font-black uppercase tracking-[0.16em] text-stone-400">
+            <section className="space-y-1" key={group.id}>
+              <div className="px-0.5">
+                <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-stone-400">
                   {group.label}
                 </p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 {group.items.map((item) =>
                   renderNavigationItem(
                     item,

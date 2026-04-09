@@ -21,11 +21,11 @@ export default async function AppLayout({
 
   return (
     <AuthSessionProvider session={session}>
-      <div className="flex min-h-screen bg-stone-100" suppressHydrationWarning>
+      <div className="flex min-h-screen bg-stone-50" suppressHydrationWarning>
         <AppSidebar user={session.user} />
         <div className="flex-1">
           <AppMobileNav user={session.user} />
-          <main className="px-3 py-4 lg:px-4 lg:py-4">{children}</main>
+          <main className="px-2.5 py-3 lg:px-3 lg:py-3">{children}</main>
         </div>
       </div>
     </AuthSessionProvider>

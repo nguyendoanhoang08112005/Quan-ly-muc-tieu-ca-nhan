@@ -90,6 +90,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 
   const focusTasks = filteredTasks.filter((task) => task.isFocus);
   const completedTasks = filteredTasks.filter((task) => task.status === "completed");
+  const referenceNow = new Date().toISOString();
 
   return (
     <div className="flex w-full max-w-none flex-col gap-4">
@@ -201,6 +202,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
           ) : null}
           <TaskBoard
             quickCreateMilestones={quickCreateMilestones}
+            referenceNow={referenceNow}
             tasks={filteredTasks}
           />
         </>
