@@ -116,8 +116,12 @@ export async function PATCH(
     parsed.data
   );
 
-  if (!updatedMilestoneId) {
-    return jsonBadRequestResponse("Không thể cập nhật milestone này.");
+  if (!updatedMilestoneId.ok) {
+    if (updatedMilestoneId.code === "not_found") {
+      return jsonNotFoundResponse(updatedMilestoneId.message);
+    }
+
+    return jsonBadRequestResponse(updatedMilestoneId.message);
   }
 
   const updatedMilestone = await getMilestoneDetailForUser(

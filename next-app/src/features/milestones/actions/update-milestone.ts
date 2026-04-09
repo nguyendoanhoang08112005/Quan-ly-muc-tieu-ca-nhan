@@ -50,11 +50,8 @@ export async function updateMilestoneAction(
     parsedValues.data
   );
 
-  if (!updatedMilestoneId) {
-    return buildMilestoneFormErrorState(
-      values,
-      "Cột mốc không tồn tại hoặc đã bị xóa."
-    );
+  if (!updatedMilestoneId.ok) {
+    return buildMilestoneFormErrorState(values, updatedMilestoneId.message);
   }
 
   revalidatePath("/dashboard");

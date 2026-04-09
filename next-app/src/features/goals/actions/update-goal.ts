@@ -43,8 +43,8 @@ export async function updateGoalAction(
     parsedValues.data
   );
 
-  if (!updatedGoalId) {
-    return buildGoalFormErrorState(values, "Mục tiêu không tồn tại hoặc đã bị xóa.");
+  if (!updatedGoalId.ok) {
+    return buildGoalFormErrorState(values, updatedGoalId.message);
   }
 
   revalidatePath("/dashboard");
@@ -52,7 +52,7 @@ export async function updateGoalAction(
   revalidatePath("/categories");
   revalidatePath("/tags");
   revalidatePath("/follows");
-  revalidatePath(`/goals/${updatedGoalId}`);
-  revalidatePath(`/goals/${updatedGoalId}/edit`);
-  redirect(`/goals/${updatedGoalId}`);
+  revalidatePath(`/goals/${updatedGoalId.goalId}`);
+  revalidatePath(`/goals/${updatedGoalId.goalId}/edit`);
+  redirect(`/goals/${updatedGoalId.goalId}`);
 }

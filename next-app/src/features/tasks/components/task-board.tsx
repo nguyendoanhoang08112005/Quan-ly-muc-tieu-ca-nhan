@@ -100,6 +100,12 @@ type InlineTaskDraft = {
   title: string;
 };
 
+type TaskBoardGoalOption = {
+  id: string;
+  milestonesCount: number;
+  title: string;
+};
+
 function toStringId(value: number | string | null | undefined) {
   if (value === null || value === undefined) {
     return null;
@@ -557,10 +563,12 @@ function TaskBoardColumn({
 }
 
 export function TaskBoard({
+  goalOptions = [],
   quickCreateMilestones = [],
   referenceNow,
   tasks
 }: {
+  goalOptions?: TaskBoardGoalOption[];
   quickCreateMilestones?: TaskQuickCreateMilestoneOption[];
   referenceNow: string;
   tasks: TaskListItem[];
@@ -570,6 +578,7 @@ export function TaskBoard({
   const [dropTargetStatus, setDropTargetStatus] = useState<WorkStatus | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [creatingStatus, setCreatingStatus] = useState<WorkStatus | null>(null);
+  const [selectedGoalId, setSelectedGoalId] = useState("all");
   const [selectedMilestoneId, setSelectedMilestoneId] = useState(
     quickCreateMilestones[0]?.id ?? ""
   );
@@ -587,16 +596,85 @@ export function TaskBoard({
     setBoardTasks(tasks);
   }, [tasks]);
 
+  const availableGoals = useMemo(() => {
+    const goalMap = new Map<string, TaskBoardGoalOption>();
+
+    for (const goal of goalOptions) {
+      goalMap.set(goal.id, goal);
+    }
+
+    for (const milestone of quickCreateMilestones) {
+      if (!goalMap.has(milestone.goal.id)) {
+        goalMap.set(milestone.goal.id, {
+          id: milestone.goal.id,
+          milestonesCount: 1,
+          title: milestone.goal.title
+        });
+      }
+    }
+
+    for (const task of tasks) {
+      if (!goalMap.has(task.goalId)) {
+        goalMap.set(task.goalId, {
+          id: task.goalId,
+          milestonesCount: task.milestoneId ? 1 : 0,
+          title: task.goalTitle
+        });
+      }
+    }
+
+    return [...goalMap.values()].sort((left, right) =>
+      left.title.localeCompare(right.title, "vi")
+    );
+  }, [goalOptions, quickCreateMilestones, tasks]);
+
+  const filteredMilestoneOptions = useMemo(() => {
+    if (selectedGoalId === "all") {
+      return quickCreateMilestones;
+    }
+
+    return quickCreateMilestones.filter((milestone) => {
+      return milestone.goal.id === selectedGoalId;
+    });
+  }, [quickCreateMilestones, selectedGoalId]);
+
+  const selectedGoal = useMemo(() => {
+    if (selectedGoalId === "all") {
+      return null;
+    }
+
+    return availableGoals.find((goal) => goal.id === selectedGoalId) ?? null;
+  }, [availableGoals, selectedGoalId]);
+
+  const visibleTasks = useMemo(() => {
+    if (selectedGoalId === "all") {
+      return boardTasks;
+    }
+
+    return boardTasks.filter((task) => task.goalId === selectedGoalId);
+  }, [boardTasks, selectedGoalId]);
+
   useEffect(() => {
     if (
-      selectedMilestoneId &&
-      quickCreateMilestones.some((milestone) => milestone.id === selectedMilestoneId)
+      selectedGoalId === "all" ||
+      availableGoals.some((goal) => goal.id === selectedGoalId)
     ) {
       return;
     }
 
-    setSelectedMilestoneId(quickCreateMilestones[0]?.id ?? "");
-  }, [quickCreateMilestones, selectedMilestoneId]);
+    setSelectedGoalId("all");
+  }, [availableGoals, selectedGoalId]);
+
+  useEffect(() => {
+    if (
+      selectedMilestoneId &&
+      filteredMilestoneOptions.some((milestone) => milestone.id === selectedMilestoneId)
+    ) {
+      return;
+    }
+
+    setSelectedMilestoneId(filteredMilestoneOptions[0]?.id ?? "");
+  }, [filteredMilestoneOptions, selectedMilestoneId]);
 
   const activeTask = useMemo(() => {
     return activeTaskId
@@ -605,10 +683,10 @@ export function TaskBoard({
   }, [activeTaskId, boardTasks]);
   const selectedMilestone = useMemo(() => {
     return (
-      quickCreateMilestones.find((milestone) => milestone.id === selectedMilestoneId) ??
+      filteredMilestoneOptions.find((milestone) => milestone.id === selectedMilestoneId) ??
       null
     );
-  }, [quickCreateMilestones, selectedMilestoneId]);
+  }, [filteredMilestoneOptions, selectedMilestoneId]);
   const stableNow = useMemo(() => new Date(referenceNow).getTime(), [referenceNow]);
 
   const tasksByStatus = useMemo(() => {
@@ -618,12 +696,12 @@ export function TaskBoard({
       grouped.set(column.status, []);
     }
 
-    for (const task of boardTasks) {
+    for (const task of visibleTasks) {
       grouped.get(task.status)?.push(task);
     }
 
     return grouped;
-  }, [boardTasks]);
+  }, [visibleTasks]);
 
   function setActiveDropTarget(nextStatus: WorkStatus | null) {
     if (lastDropTargetRef.current === nextStatus) {
@@ -858,28 +936,54 @@ export function TaskBoard({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-stone-400">
-              Tạo nhanh vào
+              Đang xem
             </p>
+            {selectedGoal ? (
+              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
+                {selectedGoal.title}
+              </span>
+            ) : (
+              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
+                Tất cả mục tiêu
+              </span>
+            )}
             {selectedMilestone ? (
               <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
-                {selectedMilestone.goal.title} · Mốc {selectedMilestone.sequenceNo}
+                Tạo nhanh vào mốc {selectedMilestone.sequenceNo}
               </span>
             ) : null}
           </div>
-          {quickCreateMilestones.length > 0 ? (
-            <label className="mt-1 flex items-center gap-2 text-xs font-medium text-stone-500">
+          {availableGoals.length > 0 ? (
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs font-medium text-stone-500">
               <select
-                className="h-8 min-w-[15rem] max-w-[20rem] rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
-                onChange={(event) => setSelectedMilestoneId(event.target.value)}
-                value={selectedMilestoneId}
+                className="h-8 min-w-[14rem] max-w-[18rem] rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+                onChange={(event) => setSelectedGoalId(event.target.value)}
+                value={selectedGoalId}
               >
-                {quickCreateMilestones.map((milestone) => (
-                  <option key={milestone.id} value={milestone.id}>
-                    {milestone.goal.title} · Cột mốc {milestone.sequenceNo}
+                <option value="all">Tất cả mục tiêu</option>
+                {availableGoals.map((goal) => (
+                  <option key={goal.id} value={goal.id}>
+                    {goal.title}
                   </option>
                 ))}
               </select>
-            </label>
+              <select
+                className="h-8 min-w-[15rem] max-w-[20rem] rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+                disabled={filteredMilestoneOptions.length === 0}
+                onChange={(event) => setSelectedMilestoneId(event.target.value)}
+                value={selectedMilestoneId}
+              >
+                {filteredMilestoneOptions.length > 0 ? (
+                  filteredMilestoneOptions.map((milestone) => (
+                    <option key={milestone.id} value={milestone.id}>
+                      {milestone.goal.title} · Cột mốc {milestone.sequenceNo}
+                    </option>
+                  ))
+                ) : (
+                  <option value="">Mục tiêu này chưa có cột mốc</option>
+                )}
+              </select>
+            </div>
           ) : (
             <p className="mt-1 text-xs font-medium text-amber-700">
               Cần có ít nhất một cột mốc để tạo công việc ngay trên board.
@@ -902,6 +1006,20 @@ export function TaskBoard({
         </div>
       ) : null}
 
+      {selectedGoal && filteredMilestoneOptions.length === 0 ? (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          <span>
+            Mục tiêu này chưa có cột mốc nên chưa thể tạo việc trực tiếp trên board.
+          </span>
+          <Link
+            className="font-semibold text-amber-900 underline-offset-2 hover:underline"
+            href={`/goals/${selectedGoal.id}`}
+          >
+            Mở mục tiêu để thêm cột mốc
+          </Link>
+        </div>
+      ) : null}
+
       <DndContext
         collisionDetection={closestCorners}
         onDragEnd={handleDragEnd}
@@ -917,7 +1035,7 @@ export function TaskBoard({
               return (
                 <TaskBoardColumn
                   active={dropTargetStatus === column.status}
-                  canQuickCreate={quickCreateMilestones.length > 0}
+                  canQuickCreate={filteredMilestoneOptions.length > 0}
                   count={columnTasks.length}
                   creating={creatingStatus === column.status}
                   description={column.description}
