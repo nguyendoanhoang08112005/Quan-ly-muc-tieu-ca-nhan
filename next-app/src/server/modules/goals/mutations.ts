@@ -9,6 +9,17 @@ import {
 } from "@/features/goals/goal-helpers";
 import type { GoalFormInput } from "@/features/goals/schemas/goal-schemas";
 
+export type UpdateGoalResult =
+  | {
+      ok: true;
+      goalId: string;
+    }
+  | {
+      ok: false;
+      code: "not_found" | "invalid_metadata" | "incomplete_dependencies";
+      message: string;
+    };
+
 function slugify(value: string) {
   return value
     .normalize("NFD")
@@ -108,6 +119,51 @@ async function resolveGoalMetadata(
   };
 }
 
+async function getGoalCompletionBlockReason(
+  userId: bigint,
+  goalId: bigint
+) {
+  const prisma = getPrismaClient();
+  const [remainingTasksCount, remainingMilestonesCount] = await Promise.all([
+    prisma.task.count({
+      where: {
+        deletedAt: null,
+        status: {
+          not: "COMPLETED"
+        },
+        milestone: {
+          goalId,
+          goal: {
+            userId,
+            deletedAt: null
+          },
+          deletedAt: null
+        }
+      }
+    }),
+    prisma.milestone.count({
+      where: {
+        goalId,
+        userId,
+        deletedAt: null,
+        status: {
+          not: "COMPLETED"
+        }
+      }
+    })
+  ]);
+
+  if (remainingTasksCount > 0) {
+    return `Chưa thể hoàn thành mục tiêu vì còn ${remainingTasksCount} công việc chưa hoàn thành.`;
+  }
+
+  if (remainingMilestonesCount > 0) {
+    return `Chưa thể hoàn thành mục tiêu vì còn ${remainingMilestonesCount} cột mốc chưa hoàn thành.`;
+  }
+
+  return null;
+}
+
 export async function createGoalForUser(userId: bigint, input: GoalFormInput) {
   const prisma = getPrismaClient();
   const slug = await buildUniqueGoalSlug(userId, input.title);
@@ -157,7 +213,7 @@ export async function updateGoalForUser(
   userId: bigint,
   goalId: bigint,
   input: GoalFormInput
-) {
+): Promise<UpdateGoalResult> {
   const prisma = getPrismaClient();
   const metadata = await resolveGoalMetadata(userId, input);
   const existingGoal = await prisma.goal.findFirst({
@@ -176,16 +232,29 @@ export async function updateGoalForUser(
   });
 
   if (!existingGoal || !metadata) {
-    return null;
+    return {
+      ok: false,
+      code: existingGoal ? "invalid_metadata" : "not_found",
+      message: existingGoal
+        ? "Không thể cập nhật mục tiêu với metadata hiện tại."
+        : "Mục tiêu không tồn tại hoặc đã bị xóa."
+    };
+  }
+
+  if (input.status === "completed") {
+    const completionBlockReason = await getGoalCompletionBlockReason(userId, goalId);
+
+    if (completionBlockReason) {
+      return {
+        ok: false,
+        code: "incomplete_dependencies",
+        message: completionBlockReason
+      };
+    }
   }
 
   const titleChanged = existingGoal.title !== input.title;
-  const nextProgress =
-    input.status === "completed"
-      ? 100
-      : Number(existingGoal.progressPercentage) === 100
-        ? 0
-        : undefined;
+  const nextProgress = input.status === "completed" ? 100 : undefined;
 
   await prisma.$transaction(async (tx) => {
     await tx.goal.update({
@@ -239,7 +308,10 @@ export async function updateGoalForUser(
     }
   });
 
-  return existingGoal.id.toString();
+  return {
+    ok: true,
+    goalId: existingGoal.id.toString()
+  };
 }
 
 export async function softDeleteGoalForUser(userId: bigint, goalId: bigint) {

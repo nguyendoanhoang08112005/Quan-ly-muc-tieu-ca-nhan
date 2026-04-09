@@ -98,6 +98,8 @@ export async function syncGoalProgress(
       id: true,
       userId: true,
       title: true,
+      status: true,
+      completedAt: true,
       progressPercentage: true,
       milestones: {
         where: {
@@ -128,7 +130,13 @@ export async function syncGoalProgress(
       id: goal.id
     },
     data: {
-      progressPercentage: newProgress
+      completedAt:
+        goal.status === "COMPLETED" && newProgress < 100 ? null : undefined,
+      progressPercentage: newProgress,
+      status:
+        goal.status === "COMPLETED" && newProgress < 100
+          ? "IN_PROGRESS"
+          : undefined
     }
   });
 
@@ -166,6 +174,8 @@ export async function syncMilestoneProgress(
           title: true
         }
       },
+      status: true,
+      completedAt: true,
       tasks: {
         where: {
           deletedAt: null
@@ -192,7 +202,13 @@ export async function syncMilestoneProgress(
         id: milestone.id
       },
       data: {
-        progressPercentage: newProgress
+        completedAt:
+          milestone.status === "COMPLETED" && newProgress < 100 ? null : undefined,
+        progressPercentage: newProgress,
+        status:
+          milestone.status === "COMPLETED" && newProgress < 100
+            ? "IN_PROGRESS"
+            : undefined
       }
     });
 

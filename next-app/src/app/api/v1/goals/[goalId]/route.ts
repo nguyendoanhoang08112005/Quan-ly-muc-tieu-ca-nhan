@@ -93,8 +93,12 @@ export async function PATCH(
 
   const updatedGoalId = await updateGoalForUser(auth.userId, parsedGoalId, parsed.data);
 
-  if (!updatedGoalId) {
-    return jsonBadRequestResponse("Không thể cập nhật goal với metadata hiện tại.");
+  if (!updatedGoalId.ok) {
+    if (updatedGoalId.code === "not_found") {
+      return jsonNotFoundResponse(updatedGoalId.message);
+    }
+
+    return jsonBadRequestResponse(updatedGoalId.message);
   }
 
   const updatedGoal = await getGoalDetailForUser(auth.userId, parsedGoalId);

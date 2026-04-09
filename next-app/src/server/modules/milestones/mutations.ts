@@ -6,6 +6,45 @@ import { workStatusToPrisma } from "@/features/goals/goal-helpers";
 import type { MilestoneFormInput } from "@/features/milestones/schemas/milestone-schemas";
 import { syncGoalProgress } from "@/server/modules/goals/progress";
 
+export type UpdateMilestoneResult =
+  | {
+      ok: true;
+      milestoneId: string;
+    }
+  | {
+      ok: false;
+      code: "not_found" | "incomplete_dependencies";
+      message: string;
+    };
+
+async function getMilestoneCompletionBlockReason(
+  userId: bigint,
+  goalId: bigint,
+  milestoneId: bigint
+) {
+  const prisma = getPrismaClient();
+  const remainingTasksCount = await prisma.task.count({
+    where: {
+      milestoneId,
+      deletedAt: null,
+      status: {
+        not: "COMPLETED"
+      },
+      milestone: {
+        goalId,
+        userId,
+        deletedAt: null
+      }
+    }
+  });
+
+  if (remainingTasksCount > 0) {
+    return `Chưa thể hoàn thành cột mốc vì còn ${remainingTasksCount} công việc chưa hoàn thành.`;
+  }
+
+  return null;
+}
+
 export async function createMilestoneForGoal(
   userId: bigint,
   goalId: bigint,
@@ -73,7 +112,7 @@ export async function updateMilestoneForGoal(
   goalId: bigint,
   milestoneId: bigint,
   input: MilestoneFormInput
-) {
+): Promise<UpdateMilestoneResult> {
   const prisma = getPrismaClient();
 
   return prisma.$transaction(async (tx) => {
@@ -93,15 +132,30 @@ export async function updateMilestoneForGoal(
     });
 
     if (!existingMilestone) {
-      return null;
+      return {
+        ok: false,
+        code: "not_found",
+        message: "Cột mốc không tồn tại hoặc đã bị xóa."
+      };
     }
 
-    const nextProgress =
-      input.status === "completed"
-        ? 100
-        : Number(existingMilestone.progressPercentage) === 100
-          ? 0
-          : undefined;
+    if (input.status === "completed") {
+      const completionBlockReason = await getMilestoneCompletionBlockReason(
+        userId,
+        goalId,
+        milestoneId
+      );
+
+      if (completionBlockReason) {
+        return {
+          ok: false,
+          code: "incomplete_dependencies",
+          message: completionBlockReason
+        };
+      }
+    }
+
+    const nextProgress = input.status === "completed" ? 100 : undefined;
 
     await tx.milestone.update({
       where: {
@@ -128,7 +182,10 @@ export async function updateMilestoneForGoal(
       milestoneTitle: input.title
     });
 
-    return existingMilestone.id.toString();
+    return {
+      ok: true,
+      milestoneId: existingMilestone.id.toString()
+    };
   });
 }
 
