@@ -1,6 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  closestCorners,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragOverEvent,
+  type DragStartEvent
+} from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, GripVertical } from "lucide-react";
 import {
@@ -16,24 +31,200 @@ const goalColumns: Array<{
   status: GoalStatus;
   description: string;
 }> = [
-  { status: "not_started", description: "Chưa bắt đầu" },
-  { status: "in_progress", description: "Đang theo đuổi" },
-  { status: "paused", description: "Tạm dừng" },
-  { status: "completed", description: "Đã hoàn thành" },
-  { status: "cancelled", description: "Đã hủy" }
+  { description: "Chưa bắt đầu", status: "not_started" },
+  { description: "Đang theo đuổi", status: "in_progress" },
+  { description: "Tạm dừng", status: "paused" },
+  { description: "Đã hoàn thành", status: "completed" },
+  { description: "Đã hủy", status: "cancelled" }
 ];
+
+function getGoalStatusFromDndData(
+  data: Record<string, unknown> | undefined
+): GoalStatus | null {
+  const status = data?.status;
+
+  if (
+    status === "not_started" ||
+    status === "in_progress" ||
+    status === "paused" ||
+    status === "completed" ||
+    status === "cancelled"
+  ) {
+    return status;
+  }
+
+  return null;
+}
+
+function GoalCardContent({
+  goal
+}: {
+  goal: GoalListItem;
+}) {
+  return (
+    <>
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="flex flex-wrap gap-1.5">
+            <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
+              {goalPriorityLabels[goal.priority]}
+            </span>
+            <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
+              {goal.progress}%
+            </span>
+          </div>
+          <h3 className="mt-2 line-clamp-2 text-sm font-semibold text-stone-950">
+            {goal.title}
+          </h3>
+        </div>
+        <GripVertical className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-stone-500">
+        {goal.category ? (
+          <span className="rounded-full bg-stone-100 px-2 py-0.5">
+            {goal.category.name}
+          </span>
+        ) : null}
+        <span className="rounded-full bg-stone-100 px-2 py-0.5">
+          {formatDisplayDate(goal.targetDate)}
+        </span>
+      </div>
+
+      <div className="mt-2 flex items-center justify-between">
+        <span className="text-[11px] text-stone-500">
+          {goal.milestonesCount} cột mốc • {goal.tasksCount} việc
+        </span>
+        <Link
+          className="inline-flex items-center gap-1 text-[11px] font-semibold text-stone-900"
+          href={`/goals/${goal.id}`}
+        >
+          Mở
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    </>
+  );
+}
+
+function GoalBoardCard({
+  goal,
+  syncing
+}: {
+  goal: GoalListItem;
+  syncing: boolean;
+}) {
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setNodeRef,
+    transform
+  } = useDraggable({
+    data: {
+      goalId: goal.id,
+      status: goal.status,
+      type: "goal"
+    },
+    disabled: syncing,
+    id: `goal-${goal.id}`
+  });
+
+  return (
+    <article
+      {...attributes}
+      {...listeners}
+      className={cn(
+        "ui-card-compact cursor-grab touch-none p-3 transition hover:border-stone-300",
+        isDragging && "cursor-grabbing opacity-60 shadow-lg",
+        syncing && "ring-1 ring-stone-300"
+      )}
+      ref={setNodeRef}
+      style={{
+        transform: transform ? CSS.Translate.toString(transform) : undefined,
+        willChange: isDragging ? "transform" : undefined
+      }}
+    >
+      <GoalCardContent goal={goal} />
+    </article>
+  );
+}
+
+function GoalBoardColumn({
+  active,
+  children,
+  count,
+  description,
+  status
+}: {
+  active: boolean;
+  children: ReactNode;
+  count: number;
+  description: string;
+  status: GoalStatus;
+}) {
+  const { isOver, setNodeRef } = useDroppable({
+    data: {
+      status,
+      type: "column"
+    },
+    id: `goal-column-${status}`
+  });
+
+  return (
+    <section
+      className={cn(
+        "ui-board-column min-h-[calc(100vh-16rem)] p-3 transition-colors",
+        (active || isOver) && "border-stone-950 bg-white"
+      )}
+      ref={setNodeRef}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <span
+            className={cn(
+              "inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold",
+              goalStatusClassNames[status]
+            )}
+          >
+            {goalStatusLabels[status]}
+          </span>
+          <p className="mt-2 text-xs leading-5 text-stone-500">{description}</p>
+        </div>
+        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-stone-500">
+          {count}
+        </span>
+      </div>
+
+      <div className="mt-3 space-y-2.5">{children}</div>
+    </section>
+  );
+}
 
 export function GoalBoard({ goals }: { goals: GoalListItem[] }) {
   const [boardGoals, setBoardGoals] = useState(goals);
-  const [draggedGoalId, setDraggedGoalId] = useState<string | null>(null);
+  const [activeGoalId, setActiveGoalId] = useState<string | null>(null);
   const [dropTargetStatus, setDropTargetStatus] = useState<GoalStatus | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [syncingGoalIds, setSyncingGoalIds] = useState<string[]>([]);
-  const dropTargetStatusRef = useRef<GoalStatus | null>(null);
+  const lastDropTargetRef = useRef<GoalStatus | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 4
+      }
+    })
+  );
 
   useEffect(() => {
     setBoardGoals(goals);
   }, [goals]);
+
+  const activeGoal = useMemo(() => {
+    return activeGoalId
+      ? boardGoals.find((goal) => goal.id === activeGoalId) ?? null
+      : null;
+  }, [activeGoalId, boardGoals]);
 
   const goalsByStatus = useMemo(() => {
     const grouped = new Map<GoalStatus, GoalListItem[]>();
@@ -50,11 +241,11 @@ export function GoalBoard({ goals }: { goals: GoalListItem[] }) {
   }, [boardGoals]);
 
   function setActiveDropTarget(nextStatus: GoalStatus | null) {
-    if (dropTargetStatusRef.current === nextStatus) {
+    if (lastDropTargetRef.current === nextStatus) {
       return;
     }
 
-    dropTargetStatusRef.current = nextStatus;
+    lastDropTargetRef.current = nextStatus;
     setDropTargetStatus(nextStatus);
   }
 
@@ -147,6 +338,36 @@ export function GoalBoard({ goals }: { goals: GoalListItem[] }) {
     })();
   }
 
+  function handleDragStart(event: DragStartEvent) {
+    const goalId = String(event.active.id).replace(/^goal-/, "");
+    setActiveGoalId(goalId);
+    setErrorMessage(null);
+  }
+
+  function handleDragOver(event: DragOverEvent) {
+    const nextStatus = getGoalStatusFromDndData(
+      event.over?.data.current as Record<string, unknown> | undefined
+    );
+
+    setActiveDropTarget(nextStatus);
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    const goalId = String(event.active.id).replace(/^goal-/, "");
+    const nextStatus = getGoalStatusFromDndData(
+      event.over?.data.current as Record<string, unknown> | undefined
+    );
+
+    setActiveGoalId(null);
+    setActiveDropTarget(null);
+
+    if (!nextStatus) {
+      return;
+    }
+
+    moveGoal(goalId, nextStatus);
+  }
+
   return (
     <section className="ui-panel p-3">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-3">
@@ -174,136 +395,53 @@ export function GoalBoard({ goals }: { goals: GoalListItem[] }) {
         </div>
       ) : null}
 
-      <div className="mt-3 overflow-x-auto pb-1">
-        <div className="grid min-w-[74rem] gap-3 xl:grid-cols-5">
-          {goalColumns.map((column) => {
-            const columnGoals = goalsByStatus.get(column.status) ?? [];
-            const isActiveDropZone = dropTargetStatus === column.status;
+      <DndContext
+        collisionDetection={closestCorners}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+        onDragStart={handleDragStart}
+        sensors={sensors}
+      >
+        <div className="mt-3 overflow-x-auto pb-1">
+          <div className="grid min-w-[74rem] gap-3 xl:grid-cols-5">
+            {goalColumns.map((column) => {
+              const columnGoals = goalsByStatus.get(column.status) ?? [];
 
-            return (
-              <section
-                className={cn(
-                  "ui-board-column min-h-[calc(100vh-16rem)] p-3 transition",
-                  isActiveDropZone && "border-stone-950 bg-white"
-                )}
-                key={column.status}
-                onDragLeave={() => {
-                  if (dropTargetStatusRef.current === column.status) {
-                    setActiveDropTarget(null);
-                  }
-                }}
-                onDragOver={(event) => {
-                  event.preventDefault();
-                  setActiveDropTarget(column.status);
-                }}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  setActiveDropTarget(null);
-
-                  const goalId =
-                    draggedGoalId || event.dataTransfer.getData("text/plain");
-
-                  if (!goalId) {
-                    return;
-                  }
-
-                  moveGoal(goalId, column.status);
-                  setDraggedGoalId(null);
-                }}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <span
-                      className={cn(
-                        "inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold",
-                        goalStatusClassNames[column.status]
-                      )}
-                    >
-                      {goalStatusLabels[column.status]}
-                    </span>
-                    <p className="mt-2 text-xs leading-5 text-stone-500">
-                      {column.description}
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-stone-500">
-                    {columnGoals.length}
-                  </span>
-                </div>
-
-                <div className="mt-3 space-y-2.5">
+              return (
+                <GoalBoardColumn
+                  active={dropTargetStatus === column.status}
+                  count={columnGoals.length}
+                  description={column.description}
+                  key={column.status}
+                  status={column.status}
+                >
                   {columnGoals.length > 0 ? (
                     columnGoals.map((goal) => (
-                      <article
-                        className={cn(
-                          "ui-card-compact cursor-grab p-3 transition hover:border-stone-300",
-                          draggedGoalId === goal.id && "opacity-70",
-                          syncingGoalIds.includes(goal.id) && "ring-1 ring-stone-300"
-                        )}
-                        draggable={!syncingGoalIds.includes(goal.id)}
+                      <GoalBoardCard
+                        goal={goal}
                         key={goal.id}
-                        onDragEnd={() => {
-                          setDraggedGoalId(null);
-                          setActiveDropTarget(null);
-                        }}
-                        onDragStart={(event) => {
-                          setDraggedGoalId(goal.id);
-                          event.dataTransfer.effectAllowed = "move";
-                          event.dataTransfer.setData("text/plain", goal.id);
-                        }}
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0">
-                            <div className="flex flex-wrap gap-1.5">
-                              <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
-                                {goalPriorityLabels[goal.priority]}
-                              </span>
-                              <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
-                                {goal.progress}%
-                              </span>
-                            </div>
-                            <h3 className="mt-2 line-clamp-2 text-sm font-semibold text-stone-950">
-                              {goal.title}
-                            </h3>
-                          </div>
-                          <GripVertical className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
-                        </div>
-
-                        <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-stone-500">
-                          {goal.category ? (
-                            <span className="rounded-full bg-stone-100 px-2 py-0.5">
-                              {goal.category.name}
-                            </span>
-                          ) : null}
-                          <span className="rounded-full bg-stone-100 px-2 py-0.5">
-                            {formatDisplayDate(goal.targetDate)}
-                          </span>
-                        </div>
-
-                        <div className="mt-2 flex items-center justify-between">
-                          <span className="text-[11px] text-stone-500">
-                            {goal.milestonesCount} cột mốc • {goal.tasksCount} việc
-                          </span>
-                          <Link
-                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-stone-900"
-                            href={`/goals/${goal.id}`}
-                          >
-                            Mở
-                            <ArrowRight className="h-3.5 w-3.5" />
-                          </Link>
-                        </div>
-                      </article>
+                        syncing={syncingGoalIds.includes(goal.id)}
+                      />
                     ))
                   ) : (
                     <div className="rounded-xl border border-dashed border-stone-300 bg-white px-3 py-6 text-center text-xs leading-5 text-stone-500">
                       Kéo mục tiêu vào đây để đổi trạng thái.
                     </div>
                   )}
-                </div>
-              </section>
-            );
-          })}
+                </GoalBoardColumn>
+              );
+            })}
+          </div>
         </div>
-      </div>
+
+        <DragOverlay dropAnimation={null}>
+          {activeGoal ? (
+            <div className="ui-card-compact w-[16rem] rotate-[1.5deg] p-3 shadow-2xl">
+              <GoalCardContent goal={activeGoal} />
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </section>
   );
 }

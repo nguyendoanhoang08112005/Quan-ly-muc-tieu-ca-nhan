@@ -21,7 +21,7 @@ export default async function AppLayout({
 
   return (
     <AuthSessionProvider session={session}>
-      <div className="flex min-h-screen bg-stone-100">
+      <div className="flex min-h-screen bg-stone-100" suppressHydrationWarning>
         <AppSidebar user={session.user} />
         <div className="flex-1">
           <AppMobileNav user={session.user} />

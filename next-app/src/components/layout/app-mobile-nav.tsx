@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 export function AppMobileNav({ user }: { user: AppSessionUser }) {
   return (
-    <div className="border-b border-stone-200 bg-white lg:hidden">
+    <div className="border-b border-stone-200 bg-white lg:hidden" suppressHydrationWarning>
       <div className="space-y-3 px-3 py-3">
         <div className="flex items-start justify-between gap-4">
           <div>

@@ -21,6 +21,8 @@
     "ops:smoke": "node scripts/staging-smoke.mjs"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
     "@prisma/adapter-mariadb": "^7.6.0",
     "@prisma/client": "latest",
     "bcryptjs": "^3.0.3",

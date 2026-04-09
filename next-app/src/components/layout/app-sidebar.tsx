@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils";
 
 export function AppSidebar({ user }: { user: AppSessionUser }) {
   return (
-    <aside className="sticky top-0 hidden h-screen w-60 shrink-0 overflow-y-auto border-r border-stone-200 bg-stone-50/70 lg:block">
+    <aside
+      className="sticky top-0 hidden h-screen w-60 shrink-0 overflow-y-auto border-r border-stone-200 bg-stone-50/70 lg:block"
+      suppressHydrationWarning
+    >
       <div className="border-b border-stone-200 px-4 py-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-base font-black text-white">
           M
