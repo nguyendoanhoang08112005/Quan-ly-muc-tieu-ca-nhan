@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { Route } from "next";
 import {
   DndContext,
   DragOverlay,
@@ -17,7 +18,8 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, GripVertical } from "lucide-react";
+import { ArrowRight, GripVertical, Plus } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import {
   goalPriorityLabels,
   goalStatusClassNames,
@@ -201,7 +203,13 @@ function GoalBoardColumn({
   );
 }
 
-export function GoalBoard({ goals }: { goals: GoalListItem[] }) {
+export function GoalBoard({
+  createHref = "/goals/new",
+  goals
+}: {
+  createHref?: Route;
+  goals: GoalListItem[];
+}) {
   const [boardGoals, setBoardGoals] = useState(goals);
   const [activeGoalId, setActiveGoalId] = useState<string | null>(null);
   const [dropTargetStatus, setDropTargetStatus] = useState<GoalStatus | null>(null);
@@ -394,6 +402,22 @@ export function GoalBoard({ goals }: { goals: GoalListItem[] }) {
           {errorMessage}
         </div>
       ) : null}
+
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <p className="text-xs font-medium text-stone-500">
+          Kéo thả để đổi trạng thái hoặc tạo mục tiêu mới ngay tại đây.
+        </p>
+        <Link
+          className={cn(
+            buttonVariants({ size: "sm" }),
+            "gap-1.5 rounded-full !text-white"
+          )}
+          href={createHref}
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Tạo mục tiêu
+        </Link>
+      </div>
 
       <DndContext
         collisionDetection={closestCorners}

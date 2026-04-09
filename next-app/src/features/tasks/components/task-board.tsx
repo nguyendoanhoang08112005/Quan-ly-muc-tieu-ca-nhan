@@ -426,30 +426,9 @@ function TaskBoardColumn({
           </span>
           <p className="mt-2 text-xs leading-5 text-stone-500">{description}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-stone-500">
-            {count}
-          </span>
-          <button
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-600 transition hover:border-stone-950 hover:text-stone-950 disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!canQuickCreate}
-            onClick={() => {
-              if (!canQuickCreate) {
-                return;
-              }
-
-              openComposer();
-            }}
-            title={
-              canQuickCreate
-                ? "Thêm công việc ngay trong cột này"
-                : "Cần có ít nhất một cột mốc để tạo công việc"
-            }
-            type="button"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        </div>
+        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-stone-500">
+          {count}
+        </span>
       </div>
 
       <div className="mt-3 space-y-2.5">{children}</div>
@@ -465,7 +444,7 @@ function TaskBoardColumn({
                 className="h-9 rounded-lg border-stone-200 bg-white focus:ring-1 focus:ring-stone-950/10"
                 disabled={!quickCreateMilestone || creating}
                 onChange={(event) => setTitle(event.target.value)}
-                placeholder={`Thêm việc vào cột ${workStatusLabels[status].toLowerCase()}`}
+                placeholder={`Tên việc ở cột ${workStatusLabels[status].toLowerCase()}`}
                 ref={inputRef}
                 value={title}
               />
@@ -518,7 +497,7 @@ function TaskBoardColumn({
 
                 <div className="ml-auto flex items-center gap-2">
                   <Button
-                    className="gap-1.5"
+                    className="gap-1.5 rounded-full"
                     disabled={!quickCreateMilestone || !title.trim() || creating}
                     size="sm"
                     type="submit"
