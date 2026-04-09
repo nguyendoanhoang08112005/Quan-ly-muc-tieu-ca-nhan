@@ -101,13 +101,13 @@ select {
 
 .ui-board-column {
   border: 1px solid var(--border);
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   background: #fafaf8;
 }
 
 .ui-card-compact {
   border: 1px solid var(--border);
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   background: var(--card);
   box-shadow: 0 1px 1px rgba(28, 25, 23, 0.03);
 }

@@ -222,39 +222,39 @@ function TaskCardContent({
         <div className="min-w-0">
           <div className="flex flex-wrap gap-1">
             {isOverdue ? (
-              <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
+              <span className="rounded-full bg-rose-100 px-1.5 py-0.5 text-[9px] font-semibold text-rose-700">
                 Quá hạn
               </span>
             ) : null}
             {task.isFocus ? (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+              <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-semibold text-amber-700">
                 Tập trung
               </span>
             ) : null}
-            <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
+            <span className="rounded-full bg-stone-100 px-1.5 py-0.5 text-[9px] font-semibold text-stone-600">
               {goalPriorityLabels[task.priority]}
             </span>
           </div>
-          <h3 className="mt-1.5 line-clamp-2 text-sm font-semibold leading-5 text-stone-950">
+          <h3 className="mt-1.5 line-clamp-2 text-[13px] font-semibold leading-4.5 text-stone-950">
             {task.title}
           </h3>
         </div>
         <GripVertical className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-stone-500">
-        <span className="rounded-full bg-stone-100 px-2 py-0.5 font-medium text-stone-600">
+      <div className="mt-1.5 flex flex-wrap items-center gap-1 text-[10px] text-stone-500">
+        <span className="rounded-full bg-stone-100 px-1.5 py-0.5 font-medium text-stone-600">
           {contextLabel}
         </span>
         {task.project ? (
-          <span className="rounded-full bg-stone-100 px-2 py-0.5 font-medium text-stone-600">
+          <span className="rounded-full bg-stone-100 px-1.5 py-0.5 font-medium text-stone-600">
             {task.project.name}
           </span>
         ) : null}
         {task.dueAt ? (
           <span
             className={cn(
-              "rounded-full px-2 py-0.5 font-medium",
+              "rounded-full px-1.5 py-0.5 font-medium",
               isOverdue
                 ? "bg-rose-100 text-rose-700"
                 : "bg-stone-100 text-stone-700"
@@ -265,8 +265,8 @@ function TaskCardContent({
         ) : null}
       </div>
 
-      <div className="mt-2 flex items-center justify-between">
-        <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-[11px] text-stone-500">
+      <div className="mt-1.5 flex items-center justify-between">
+        <div className="flex min-w-0 flex-wrap items-center gap-1 text-[10px] text-stone-500">
           {task.subtasksCount > 0 ? (
             <>
               <span>
@@ -280,11 +280,11 @@ function TaskCardContent({
           )}
         </div>
         <Link
-          className="inline-flex items-center gap-1 text-[11px] font-semibold text-stone-900 transition hover:text-stone-600"
+          className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-900 transition hover:text-stone-600"
           href={`/goals/${task.goalId}/tasks/${task.id}/edit`}
         >
           Mở
-          <ArrowRight className="h-3.5 w-3.5" />
+          <ArrowRight className="h-3 w-3" />
         </Link>
       </div>
     </>
@@ -321,7 +321,7 @@ function TaskBoardCard({
       {...attributes}
       {...listeners}
       className={cn(
-        "ui-card-compact cursor-grab touch-none p-3 transition hover:border-stone-300",
+        "ui-card-compact cursor-grab touch-none p-2.5 transition hover:border-stone-300",
         isDragging && "cursor-grabbing opacity-60 shadow-lg",
         syncing && "ring-1 ring-stone-300"
       )}
@@ -409,7 +409,7 @@ function TaskBoardColumn({
   return (
     <section
       className={cn(
-        "ui-board-column min-h-[calc(100vh-15rem)] p-3 transition-colors",
+        "ui-board-column min-h-[calc(100vh-18rem)] p-2.5 transition-colors",
         (active || isOver) && "border-stone-950 bg-white"
       )}
       ref={setNodeRef}
@@ -418,30 +418,30 @@ function TaskBoardColumn({
         <div>
           <span
             className={cn(
-              "inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold",
+              "inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold",
               workStatusClassNames[status]
             )}
           >
             {workStatusLabels[status]}
           </span>
-          <p className="mt-2 text-xs leading-5 text-stone-500">{description}</p>
+          <p className="mt-1.5 text-[11px] leading-4 text-stone-500">{description}</p>
         </div>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-stone-500">
+        <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-stone-500">
           {count}
         </span>
       </div>
 
-      <div className="mt-3 space-y-2.5">{children}</div>
+      <div className="mt-2.5 space-y-2">{children}</div>
 
-      <div className="mt-3">
+      <div className="mt-2.5">
         {isComposerOpen ? (
           <form
-            className="rounded-xl border border-stone-200 bg-stone-50/80 p-3"
+            className="rounded-lg border border-stone-200 bg-stone-50/80 p-2.5"
             onSubmit={handleSubmit}
           >
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <Input
-                className="h-9 rounded-lg border-stone-200 bg-white focus:ring-1 focus:ring-stone-950/10"
+                className="h-8 rounded-lg border-stone-200 bg-white text-sm focus:ring-1 focus:ring-stone-950/10"
                 disabled={!quickCreateMilestone || creating}
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder={`Tên việc ở cột ${workStatusLabels[status].toLowerCase()}`}
@@ -449,9 +449,9 @@ function TaskBoardColumn({
                 value={title}
               />
 
-              <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_9rem]">
+              <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_8rem]">
                 <Input
-                  className="h-8 rounded-lg border-stone-200 bg-white text-xs focus:ring-1 focus:ring-stone-950/10"
+                  className="h-8 rounded-lg border-stone-200 bg-white text-[11px] focus:ring-1 focus:ring-stone-950/10"
                   disabled={!quickCreateMilestone || creating}
                   onChange={(event) => setDueAt(event.target.value)}
                   type="datetime-local"
@@ -524,7 +524,7 @@ function TaskBoardColumn({
         ) : (
           <button
             className={cn(
-              "flex w-full items-center justify-center gap-2 rounded-xl border border-dashed px-3 py-2.5 text-sm font-medium transition",
+              "flex w-full items-center justify-center gap-2 rounded-lg border border-dashed px-3 py-2 text-[13px] font-medium transition",
               canQuickCreate
                 ? "border-stone-300 bg-stone-50 text-stone-700 hover:border-stone-950 hover:bg-white hover:text-stone-950"
                 : "cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400"
@@ -910,7 +910,7 @@ export function TaskBoard({
         sensors={sensors}
       >
         <div className="mt-3 overflow-x-auto pb-1">
-          <div className="grid min-w-[66rem] gap-3 xl:grid-cols-4">
+          <div className="grid min-w-[58rem] gap-2.5 xl:grid-cols-4">
             {taskColumns.map((column) => {
               const columnTasks = tasksByStatus.get(column.status) ?? [];
 
@@ -948,7 +948,7 @@ export function TaskBoard({
 
         <DragOverlay dropAnimation={null}>
           {activeTask ? (
-            <div className="ui-card-compact w-[16rem] rotate-[1.5deg] p-3 shadow-2xl">
+            <div className="ui-card-compact w-[14rem] rotate-[1.5deg] p-2.5 shadow-2xl">
               <TaskCardContent referenceNow={stableNow} task={activeTask} />
             </div>
           ) : null}

@@ -67,42 +67,42 @@ function GoalCardContent({
     <>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <div className="flex flex-wrap gap-1.5">
-            <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
+          <div className="flex flex-wrap gap-1">
+            <span className="rounded-full bg-stone-100 px-1.5 py-0.5 text-[9px] font-semibold text-stone-600">
               {goalPriorityLabels[goal.priority]}
             </span>
-            <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
+            <span className="rounded-full bg-stone-100 px-1.5 py-0.5 text-[9px] font-semibold text-stone-600">
               {goal.progress}%
             </span>
           </div>
-          <h3 className="mt-2 line-clamp-2 text-sm font-semibold text-stone-950">
+          <h3 className="mt-1.5 line-clamp-2 text-[13px] font-semibold leading-4.5 text-stone-950">
             {goal.title}
           </h3>
         </div>
         <GripVertical className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
       </div>
 
-      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-stone-500">
+      <div className="mt-1.5 flex flex-wrap gap-1 text-[10px] text-stone-500">
         {goal.category ? (
-          <span className="rounded-full bg-stone-100 px-2 py-0.5">
+          <span className="rounded-full bg-stone-100 px-1.5 py-0.5">
             {goal.category.name}
           </span>
         ) : null}
-        <span className="rounded-full bg-stone-100 px-2 py-0.5">
+        <span className="rounded-full bg-stone-100 px-1.5 py-0.5">
           {formatDisplayDate(goal.targetDate)}
         </span>
       </div>
 
-      <div className="mt-2 flex items-center justify-between">
-        <span className="text-[11px] text-stone-500">
+      <div className="mt-1.5 flex items-center justify-between">
+        <span className="text-[10px] text-stone-500">
           {goal.milestonesCount} cột mốc • {goal.tasksCount} việc
         </span>
         <Link
-          className="inline-flex items-center gap-1 text-[11px] font-semibold text-stone-900"
+          className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-900"
           href={`/goals/${goal.id}`}
         >
           Mở
-          <ArrowRight className="h-3.5 w-3.5" />
+          <ArrowRight className="h-3 w-3" />
         </Link>
       </div>
     </>
@@ -137,7 +137,7 @@ function GoalBoardCard({
       {...attributes}
       {...listeners}
       className={cn(
-        "ui-card-compact cursor-grab touch-none p-3 transition hover:border-stone-300",
+        "ui-card-compact cursor-grab touch-none p-2.5 transition hover:border-stone-300",
         isDragging && "cursor-grabbing opacity-60 shadow-lg",
         syncing && "ring-1 ring-stone-300"
       )}
@@ -176,7 +176,7 @@ function GoalBoardColumn({
   return (
     <section
       className={cn(
-        "ui-board-column min-h-[calc(100vh-16rem)] p-3 transition-colors",
+        "ui-board-column min-h-[calc(100vh-18rem)] p-2.5 transition-colors",
         (active || isOver) && "border-stone-950 bg-white"
       )}
       ref={setNodeRef}
@@ -185,20 +185,20 @@ function GoalBoardColumn({
         <div>
           <span
             className={cn(
-              "inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold",
+              "inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold",
               goalStatusClassNames[status]
             )}
           >
             {goalStatusLabels[status]}
           </span>
-          <p className="mt-2 text-xs leading-5 text-stone-500">{description}</p>
+          <p className="mt-1.5 text-[11px] leading-4 text-stone-500">{description}</p>
         </div>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-stone-500">
+        <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-stone-500">
           {count}
         </span>
       </div>
 
-      <div className="mt-3 space-y-2.5">{children}</div>
+      <div className="mt-2.5 space-y-2">{children}</div>
     </section>
   );
 }
@@ -377,8 +377,8 @@ export function GoalBoard({
   }
 
   return (
-    <section className="ui-panel p-3">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-3">
+    <section className="ui-panel p-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-2.5">
         <div className="flex flex-wrap gap-2">
           {goalColumns.map((column) => (
             <span className="ui-pill" key={column.status}>
@@ -427,7 +427,7 @@ export function GoalBoard({
         sensors={sensors}
       >
         <div className="mt-3 overflow-x-auto pb-1">
-          <div className="grid min-w-[74rem] gap-3 xl:grid-cols-5">
+          <div className="grid min-w-[66rem] gap-2.5 xl:grid-cols-5">
             {goalColumns.map((column) => {
               const columnGoals = goalsByStatus.get(column.status) ?? [];
 
@@ -460,7 +460,7 @@ export function GoalBoard({
 
         <DragOverlay dropAnimation={null}>
           {activeGoal ? (
-            <div className="ui-card-compact w-[16rem] rotate-[1.5deg] p-3 shadow-2xl">
+            <div className="ui-card-compact w-[14rem] rotate-[1.5deg] p-2.5 shadow-2xl">
               <GoalCardContent goal={activeGoal} />
             </div>
           ) : null}
