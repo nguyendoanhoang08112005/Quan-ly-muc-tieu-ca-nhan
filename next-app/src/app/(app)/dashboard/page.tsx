@@ -26,8 +26,11 @@ export default async function DashboardPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0 space-y-1">
             <h1 className="text-sm font-semibold tracking-tight text-stone-950">
-              Bảng công việc
+              Không gian làm việc
             </h1>
+            <p className="text-xs text-stone-500">
+              Đây là nơi duy nhất để kéo thả và đổi trạng thái công việc.
+            </p>
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="ui-pill">
                 Đang mở

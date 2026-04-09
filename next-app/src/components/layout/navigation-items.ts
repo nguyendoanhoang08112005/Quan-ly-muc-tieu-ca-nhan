@@ -14,9 +14,9 @@ export type NavigationGroup = {
 };
 
 export const primaryNavigationItems = [
-  { href: "/dashboard" as Route, label: "Trang chủ" },
+  { href: "/dashboard" as Route, label: "Làm việc" },
   { href: "/goals" as Route, label: "Mục tiêu" },
-  { href: "/tasks" as Route, label: "Công việc" },
+  { href: "/tasks" as Route, label: "Danh sách việc" },
   { href: "/habits" as Route, label: "Thói quen" }
 ] as const satisfies readonly NavigationItem[];
 

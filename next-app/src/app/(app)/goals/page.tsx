@@ -2,8 +2,6 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
-import { WorkspaceViewTabs } from "@/components/shared/workspace-view-tabs";
-import { GoalBoard } from "@/features/goals/components/goal-board";
 import { EmptyGoalsState } from "@/features/goals/components/empty-goals-state";
 import { GoalCard } from "@/features/goals/components/goal-card";
 import { goalStatusLabels } from "@/features/goals/goal-helpers";
@@ -17,37 +15,8 @@ type GoalsPageProps = {
   searchParams?: Promise<{
     q?: string | string[];
     status?: string | string[];
-    view?: string | string[];
   }>;
 };
-
-function buildGoalsHref({
-  q,
-  status,
-  view
-}: {
-  q: string;
-  status: string;
-  view: "board" | "list";
-}) {
-  const params = new URLSearchParams();
-
-  if (q) {
-    params.set("q", q);
-  }
-
-  if (status !== "all") {
-    params.set("status", status);
-  }
-
-  if (view !== "board") {
-    params.set("view", view);
-  }
-
-  const query = params.toString();
-
-  return query ? `/goals?${query}` : "/goals";
-}
 
 export default async function GoalsPage({ searchParams }: GoalsPageProps) {
   const userId = await requireAuthenticatedUserId();
@@ -55,7 +24,6 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
   const goals = await listGoalsForUser(userId);
   const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
   const statusFilter = getSingleSearchParam(resolvedSearchParams?.status) || "all";
-  const view = getSingleSearchParam(resolvedSearchParams?.view) === "list" ? "list" : "board";
 
   const filteredGoals = goals.filter((goal) => {
     const matchesStatus = statusFilter === "all" || goal.status === statusFilter;
@@ -97,30 +65,24 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
               Mục tiêu
             </p>
             <h1 className="mt-1 text-xl font-black tracking-tight text-stone-950">
-              Workspace mục tiêu
+              Kế hoạch mục tiêu
             </h1>
             <p className="mt-1 text-sm text-stone-600">
-              Chuyển giữa bảng và danh sách để điều phối mục tiêu theo cách gọn hơn.
+              Trang này dùng để lên kế hoạch và theo dõi tiến độ. Kéo thả công việc
+              tập trung ở Trang chủ.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <WorkspaceViewTabs
-              tabs={[
-                {
-                  active: view === "board",
-                  count: filteredGoals.length,
-                  href: buildGoalsHref({ q: query, status: statusFilter, view: "board" }),
-                  label: "Bảng"
-                },
-                {
-                  active: view === "list",
-                  count: filteredGoals.length,
-                  href: buildGoalsHref({ q: query, status: statusFilter, view: "list" }),
-                  label: "Danh sách"
-                }
-              ]}
-            />
+            <Link
+              className={cn(
+                buttonVariants({ size: "sm", variant: "secondary" }),
+                "rounded-full"
+              )}
+              href="/dashboard"
+            >
+              Mở bảng công việc
+            </Link>
             <Link
               className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full !text-white")}
               href="/goals/new"
@@ -168,23 +130,18 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
             value: statusFilter
           }
         ]}
-        hiddenFields={view === "list" ? [{ name: "view", value: "list" }] : []}
-        resetHref={view === "list" ? "/goals?view=list" : "/goals"}
+        resetHref="/goals"
         resultLabel={`Đang hiển thị ${filteredGoals.length}/${goals.length} mục tiêu.`}
         searchPlaceholder="Tìm theo tên, mô tả, danh mục hoặc thẻ"
         searchValue={query}
       />
 
       {filteredGoals.length > 0 ? (
-        view === "board" ? (
-          <GoalBoard goals={filteredGoals} />
-        ) : (
-          <section className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
-            {filteredGoals.map((goal) => (
-              <GoalCard goal={goal} key={goal.id} />
-            ))}
-          </section>
-        )
+        <section className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+          {filteredGoals.map((goal) => (
+            <GoalCard goal={goal} key={goal.id} />
+          ))}
+        </section>
       ) : goals.length > 0 ? (
         <section className="ui-panel border-dashed px-6 py-10 text-center">
           <h2 className="text-xl font-black text-stone-950">

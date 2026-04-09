@@ -99,16 +99,16 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
 
       <div className="mt-3 flex items-center justify-between border-t border-stone-200 pt-3">
         <span className="text-[11px] font-medium text-stone-500">
-          Mục tiêu đang được theo dõi
+          Xem chi tiết để quản lý cột mốc và tiến độ
         </span>
         <Link
           className={cn(
-            buttonVariants({ size: "sm" }),
-            "gap-1.5 rounded-full !text-white"
+            buttonVariants({ size: "sm", variant: "secondary" }),
+            "gap-1.5 rounded-full"
           )}
           href={`/goals/${goal.id}`}
         >
-          Mở
+          Xem
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>

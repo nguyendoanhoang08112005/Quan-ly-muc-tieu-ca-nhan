@@ -2,16 +2,13 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
-import { WorkspaceViewTabs } from "@/components/shared/workspace-view-tabs";
 import { goalPriorityLabels, workStatusClassNames, workStatusLabels } from "@/features/goals/goal-helpers";
 import { CompleteTaskForm } from "@/features/tasks/components/complete-task-form";
 import { DeleteTaskForm } from "@/features/tasks/components/delete-task-form";
-import { TaskBoard } from "@/features/tasks/components/task-board";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDateTime } from "@/lib/dates";
 import { getSingleSearchParam, matchesSearchTerm } from "@/lib/search-params";
 import { cn } from "@/lib/utils";
-import { listMilestoneQuickCreateOptionsForUser } from "@/server/modules/milestones/queries";
 import { listTasksForUser } from "@/server/modules/tasks/queries";
 
 type TasksPageProps = {
@@ -19,55 +16,16 @@ type TasksPageProps = {
     focus?: string | string[];
     q?: string | string[];
     status?: string | string[];
-    view?: string | string[];
   }>;
 };
-
-function buildTasksHref({
-  focus,
-  q,
-  status,
-  view
-}: {
-  focus: string;
-  q: string;
-  status: string;
-  view: "board" | "list";
-}) {
-  const params = new URLSearchParams();
-
-  if (q) {
-    params.set("q", q);
-  }
-
-  if (status !== "all") {
-    params.set("status", status);
-  }
-
-  if (focus !== "all") {
-    params.set("focus", focus);
-  }
-
-  if (view !== "board") {
-    params.set("view", view);
-  }
-
-  const query = params.toString();
-
-  return query ? `/tasks?${query}` : "/tasks";
-}
 
 export default async function TasksPage({ searchParams }: TasksPageProps) {
   const userId = await requireAuthenticatedUserId();
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const [tasks, quickCreateMilestones] = await Promise.all([
-    listTasksForUser(userId),
-    listMilestoneQuickCreateOptionsForUser(userId, 20)
-  ]);
+  const tasks = await listTasksForUser(userId);
   const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
   const statusFilter = getSingleSearchParam(resolvedSearchParams?.status) || "all";
   const focusFilter = getSingleSearchParam(resolvedSearchParams?.focus) || "all";
-  const view = getSingleSearchParam(resolvedSearchParams?.view) === "list" ? "list" : "board";
 
   const filteredTasks = tasks.filter((task) => {
     const matchesStatus = statusFilter === "all" || task.status === statusFilter;
@@ -90,7 +48,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 
   const focusTasks = filteredTasks.filter((task) => task.isFocus);
   const completedTasks = filteredTasks.filter((task) => task.status === "completed");
-  const referenceNow = new Date().toISOString();
+  const openTasks = filteredTasks.filter((task) => task.status !== "completed");
 
   return (
     <div className="flex w-full max-w-none flex-col gap-4">
@@ -101,47 +59,40 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               Công việc
             </p>
             <h1 className="mt-1 text-xl font-black tracking-tight text-stone-950">
-              Workspace công việc
+              Danh sách công việc
             </h1>
             <p className="mt-1 text-sm text-stone-600">
-              Tạo, kéo thả và kiểm soát công việc ngay trong cùng một màn hình.
+              Trang này dùng để rà soát và chỉnh chi tiết. Kéo thả trạng thái tập
+              trung ở Trang chủ.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <WorkspaceViewTabs
-              tabs={[
-                {
-                  active: view === "board",
-                  count: filteredTasks.length,
-                  href: buildTasksHref({
-                    focus: focusFilter,
-                    q: query,
-                    status: statusFilter,
-                    view: "board"
-                  }),
-                  label: "Bảng"
-                },
-                {
-                  active: view === "list",
-                  count: filteredTasks.length,
-                  href: buildTasksHref({
-                    focus: focusFilter,
-                    q: query,
-                    status: statusFilter,
-                    view: "list"
-                  }),
-                  label: "Danh sách"
-                }
-              ]}
-            />
+            <Link
+              className={cn(
+                buttonVariants({ size: "sm" }),
+                "rounded-full !text-white"
+              )}
+              href="/dashboard"
+            >
+              Mở bảng công việc
+            </Link>
+            <Link
+              className={cn(
+                buttonVariants({ size: "sm", variant: "secondary" }),
+                "rounded-full"
+              )}
+              href="/goals"
+            >
+              Mở mục tiêu
+            </Link>
           </div>
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">
           <span className="ui-pill">
-            Tổng việc
-            <strong className="font-semibold text-stone-900">{filteredTasks.length}</strong>
+            Đang mở
+            <strong className="font-semibold text-stone-900">{openTasks.length}</strong>
           </span>
           <span className="ui-pill">
             Tập trung
@@ -152,10 +103,8 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             <strong className="font-semibold text-stone-900">{completedTasks.length}</strong>
           </span>
           <span className="ui-pill">
-            Cột mốc sẵn sàng
-            <strong className="font-semibold text-stone-900">
-              {quickCreateMilestones.length}
-            </strong>
+            Tổng việc
+            <strong className="font-semibold text-stone-900">{filteredTasks.length}</strong>
           </span>
         </div>
       </section>
@@ -185,28 +134,13 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             value: focusFilter
           }
         ]}
-        hiddenFields={view === "list" ? [{ name: "view", value: "list" }] : []}
-        resetHref={view === "list" ? "/tasks?view=list" : "/tasks"}
+        resetHref="/tasks"
         resultLabel={`Đang hiển thị ${filteredTasks.length}/${tasks.length} công việc.`}
         searchPlaceholder="Tìm theo tên việc, mục tiêu, cột mốc hoặc dự án"
         searchValue={query}
       />
 
-      {view === "board" ? (
-        <>
-          {filteredTasks.length === 0 ? (
-            <section className="ui-panel border-dashed px-4 py-3 text-sm text-stone-600">
-              Không có công việc nào khớp bộ lọc hiện tại. Bạn vẫn có thể tạo
-              việc mới ngay trong từng cột nếu đã chọn cột mốc ở thanh trên.
-            </section>
-          ) : null}
-          <TaskBoard
-            quickCreateMilestones={quickCreateMilestones}
-            referenceNow={referenceNow}
-            tasks={filteredTasks}
-          />
-        </>
-      ) : filteredTasks.length > 0 ? (
+      {filteredTasks.length > 0 ? (
           <section className="ui-panel divide-y divide-stone-200 overflow-hidden">
             {filteredTasks.map((task) => (
               <article
@@ -308,25 +242,26 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             Chưa có công việc nào
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-stone-600">
-            Chuyển sang chế độ bảng để tạo việc ngay trong từng cột, hoặc tạo
-            cột mốc trước nếu mục tiêu của bạn chưa có nơi để gắn việc.
+            Hãy bắt đầu ở Trang chủ để tạo và kéo thả công việc trong một bảng duy
+            nhất, rồi quay lại đây khi cần rà soát chi tiết.
           </p>
-          {quickCreateMilestones.length > 0 ? (
-            <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {quickCreateMilestones.slice(0, 4).map((milestone) => (
-                <Link
-                  className={cn(
-                    buttonVariants({ size: "sm", variant: "secondary" }),
-                    "rounded-full"
-                  )}
-                  href={`/goals/${milestone.goal.id}/milestones/${milestone.id}/tasks/new`}
-                  key={milestone.id}
-                >
-                  {milestone.goal.title} · {milestone.sequenceNo}
-                </Link>
-              ))}
-            </div>
-          ) : null}
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            <Link
+              className={cn(buttonVariants({ size: "sm" }), "rounded-full !text-white")}
+              href="/dashboard"
+            >
+              Mở bảng công việc
+            </Link>
+            <Link
+              className={cn(
+                buttonVariants({ size: "sm", variant: "secondary" }),
+                "rounded-full"
+              )}
+              href="/goals"
+            >
+              Tạo mục tiêu trước
+            </Link>
+          </div>
         </section>
       )}
     </div>
