@@ -7,6 +7,8 @@ import {
   ListTodo,
   Target
 } from "lucide-react";
+import { SignOutButton } from "@/components/layout/sign-out-button";
+import { getServerAuthSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
   title: "Trang chủ",
@@ -151,7 +153,10 @@ function WorkspacePreview() {
   );
 }
 
-export default function PublicHomePage() {
+export default async function PublicHomePage() {
+  const session = await getServerAuthSession();
+  const isAuthenticated = Boolean(session?.user?.id);
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#ffffff_0%,#fafaf9_55%,#f5f5f4_100%)]">
       <div className="mx-auto max-w-7xl px-5 py-5 sm:px-6 lg:px-8">
@@ -172,18 +177,35 @@ export default function PublicHomePage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <Link
-                className="rounded-full px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
-                href="/login"
-              >
-                Đăng nhập
-              </Link>
-              <Link
-                className="ui-dark-cta rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold !text-white transition hover:bg-stone-800"
-                href="/register"
-              >
-                Bắt đầu ngay
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    className="rounded-full px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
+                    href="/dashboard"
+                  >
+                    Vào dashboard
+                  </Link>
+                  <SignOutButton
+                    className="!w-auto rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold !text-white hover:bg-stone-800"
+                    variant="default"
+                  />
+                </>
+              ) : (
+                <>
+                  <Link
+                    className="rounded-full px-4 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
+                    href="/login"
+                  >
+                    Đăng nhập
+                  </Link>
+                  <Link
+                    className="ui-dark-cta rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold !text-white transition hover:bg-stone-800"
+                    href="/register"
+                  >
+                    Bắt đầu ngay
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </header>
@@ -203,19 +225,37 @@ export default function PublicHomePage() {
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link
-                className="ui-dark-cta inline-flex items-center gap-2 rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800"
-                href="/register"
-              >
-                Tạo tài khoản
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-900 transition hover:border-stone-950 hover:bg-stone-50"
-                href="/login"
-              >
-                Tôi đã có tài khoản
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    className="ui-dark-cta inline-flex items-center gap-2 rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800"
+                    href="/dashboard"
+                  >
+                    Vào không gian làm việc
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <SignOutButton
+                    className="!w-auto rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold !text-stone-900 hover:border-stone-950 hover:bg-stone-50"
+                    variant="secondary"
+                  />
+                </>
+              ) : (
+                <>
+                  <Link
+                    className="ui-dark-cta inline-flex items-center gap-2 rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800"
+                    href="/register"
+                  >
+                    Tạo tài khoản
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-900 transition hover:border-stone-950 hover:bg-stone-50"
+                    href="/login"
+                  >
+                    Tôi đã có tài khoản
+                  </Link>
+                </>
+              )}
             </div>
 
             <div className="mt-7 grid gap-2 sm:grid-cols-2">
@@ -303,18 +343,35 @@ export default function PublicHomePage() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <Link
-                  className="ui-dark-cta rounded-full bg-white px-5 py-3 text-sm font-semibold !text-stone-950 transition hover:bg-stone-200"
-                  href="/register"
-                >
-                  Tạo tài khoản
-                </Link>
-                <Link
-                  className="rounded-full border border-stone-700 px-5 py-3 text-sm font-semibold text-white transition hover:border-stone-500 hover:bg-stone-900"
-                  href="/login"
-                >
-                  Đăng nhập
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link
+                      className="ui-dark-cta rounded-full bg-white px-5 py-3 text-sm font-semibold !text-stone-950 transition hover:bg-stone-200"
+                      href="/dashboard"
+                    >
+                      Vào dashboard
+                    </Link>
+                    <SignOutButton
+                      className="!w-auto rounded-full border border-stone-700 px-5 py-3 text-sm font-semibold !text-white hover:border-stone-500 hover:bg-stone-900"
+                      variant="ghost"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      className="ui-dark-cta rounded-full bg-white px-5 py-3 text-sm font-semibold !text-stone-950 transition hover:bg-stone-200"
+                      href="/register"
+                    >
+                      Tạo tài khoản
+                    </Link>
+                    <Link
+                      className="rounded-full border border-stone-700 px-5 py-3 text-sm font-semibold text-white transition hover:border-stone-500 hover:bg-stone-900"
+                      href="/login"
+                    >
+                      Đăng nhập
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
