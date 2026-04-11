@@ -15,7 +15,7 @@ import {
   type DragStartEvent
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import type { ReactNode } from "react";
+import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -123,6 +123,8 @@ type TaskBoardGoalOption = {
   title: string;
 };
 
+type TaskQuickFilter = "all" | "completed" | "focus" | "overdue";
+
 function padDateTimePart(value: number) {
   return `${value}`.padStart(2, "0");
 }
@@ -219,6 +221,22 @@ function buildOptimisticTask({
   };
 }
 
+function buildMilestoneFallbackFromTask(
+  task: TaskListItem
+): TaskQuickCreateMilestoneOption {
+  return {
+    id: task.milestoneId ?? "",
+    sequenceNo: task.milestoneSequenceNo ?? 0,
+    targetDate: "",
+    tasksCount: 0,
+    title: task.milestoneTitle ?? task.goalTitle,
+    goal: {
+      id: task.goalId,
+      title: task.goalTitle
+    }
+  };
+}
+
 function mapTaskApiResourceToTaskListItem(
   task: TaskApiResource,
   fallbackMilestone: TaskQuickCreateMilestoneOption
@@ -268,6 +286,14 @@ function compareTasksForBoard(left: TaskListItem, right: TaskListItem) {
   }
 
   return left.id.localeCompare(right.id, "vi");
+}
+
+function isTaskOverdue(task: TaskListItem, referenceNow: number) {
+  return (
+    task.dueAt !== null &&
+    task.status !== "completed" &&
+    new Date(task.dueAt).getTime() < referenceNow
+  );
 }
 
 function getOrderedStatusTasks(tasks: TaskListItem[], status: WorkStatus) {
@@ -386,19 +412,35 @@ function buildReorderedBoardTasks(
 }
 
 function TaskCardContent({
+  onQuickMarkDone,
+  onQuickStart,
+  onQuickToggleFocus,
   referenceNow,
+  syncing,
   task
 }: {
+  onQuickMarkDone: (taskId: string) => void;
+  onQuickStart: (taskId: string) => void;
+  onQuickToggleFocus: (taskId: string) => void;
   referenceNow: number;
+  syncing: boolean;
   task: TaskListItem;
 }) {
   const contextLabel = task.milestoneSequenceNo
     ? `Cột mốc ${task.milestoneSequenceNo}`
     : task.goalTitle;
-  const isOverdue =
-    task.dueAt !== null &&
-    task.status !== "completed" &&
-    new Date(task.dueAt).getTime() < referenceNow;
+  const isOverdue = isTaskOverdue(task, referenceNow);
+  const statusActionLabel =
+    task.status === "in_progress"
+      ? "Hoàn thành"
+      : task.status === "paused"
+        ? "Tiếp tục"
+        : task.status === "not_started"
+          ? "Bắt đầu"
+          : null;
+  const stopCardDrag = (event: ReactPointerEvent<HTMLElement>) => {
+    event.stopPropagation();
+  };
 
   return (
     <>
@@ -423,7 +465,11 @@ function TaskCardContent({
             {task.title}
           </h3>
         </div>
-        <GripVertical className="mt-0.5 h-4 w-4 shrink-0 text-stone-400" />
+
+        <span className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-stone-400">
+          <GripVertical className="h-3 w-3" />
+          Kéo
+        </span>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] text-stone-500">
@@ -449,41 +495,95 @@ function TaskCardContent({
         ) : null}
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-2">
-        <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-stone-500">
-          {task.subtasksCount > 0 ? (
-            <>
-              <span className="inline-flex items-center gap-1">
-                <Layers3 className="h-3 w-3" />
-                {task.completedSubtasksCount}/{task.subtasksCount} việc con
-              </span>
-              <span className="text-stone-300">•</span>
-              <span className="inline-flex items-center gap-1">
-                <CircleDot className="h-3 w-3" />
-                {task.progress}% tiến độ
-              </span>
-            </>
-          ) : (
-            <span className="truncate">{task.goalTitle}</span>
-          )}
+      <div className="mt-3 flex min-w-0 flex-wrap items-center gap-1.5 text-[10px] text-stone-500">
+        {task.subtasksCount > 0 ? (
+          <>
+            <span className="inline-flex items-center gap-1">
+              <Layers3 className="h-3 w-3" />
+              {task.completedSubtasksCount}/{task.subtasksCount} việc con
+            </span>
+            <span className="text-stone-300">•</span>
+            <span className="inline-flex items-center gap-1">
+              <CircleDot className="h-3 w-3" />
+              {task.progress}% tiến độ
+            </span>
+          </>
+        ) : (
+          <span className="truncate">{task.goalTitle}</span>
+        )}
+      </div>
+
+      <div
+        className="mt-3 flex items-center justify-between gap-2 border-t border-stone-200 pt-2.5"
+        onPointerDown={stopCardDrag}
+      >
+        <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+          {statusActionLabel ? (
+            <button
+              className="rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-stone-700 transition hover:border-stone-950 hover:text-stone-950"
+              disabled={syncing}
+              onClick={() => {
+                if (task.status === "in_progress") {
+                  onQuickMarkDone(task.id);
+                  return;
+                }
+
+                onQuickStart(task.id);
+              }}
+              type="button"
+            >
+              {statusActionLabel}
+            </button>
+          ) : null}
+          {task.status !== "completed" ? (
+            <button
+              className={cn(
+                "rounded-full px-2.5 py-1 text-[10px] font-semibold transition",
+                task.isFocus
+                  ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                  : "border border-stone-200 bg-white text-stone-700 hover:border-stone-950 hover:text-stone-950"
+              )}
+              disabled={syncing}
+              onClick={() => onQuickToggleFocus(task.id)}
+              type="button"
+            >
+              {task.isFocus ? "Bỏ ưu tiên" : "Ưu tiên"}
+            </button>
+          ) : null}
         </div>
-        <Link
-          className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-900 transition hover:text-stone-600"
-          href={`/goals/${task.goalId}/tasks/${task.id}/edit`}
-        >
-          Mở
-          <ArrowRight className="h-3 w-3" />
-        </Link>
+
+        <div className="flex items-center gap-2">
+          {syncing ? (
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-stone-500">
+              <LoaderCircle className="h-3 w-3 animate-spin" />
+              Đang lưu
+            </span>
+          ) : null}
+          <Link
+            className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-900 transition hover:text-stone-600"
+            href={`/goals/${task.goalId}/tasks/${task.id}/edit`}
+            onPointerDown={stopCardDrag}
+          >
+            Mở
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
       </div>
     </>
   );
 }
 
 function TaskBoardCard({
+  onQuickMarkDone,
+  onQuickStart,
+  onQuickToggleFocus,
   referenceNow,
   syncing,
   task
 }: {
+  onQuickMarkDone: (taskId: string) => void;
+  onQuickStart: (taskId: string) => void;
+  onQuickToggleFocus: (taskId: string) => void;
   referenceNow: number;
   syncing: boolean;
   task: TaskListItem;
@@ -531,7 +631,14 @@ function TaskBoardCard({
         willChange: isDragging ? "transform" : undefined
       }}
     >
-      <TaskCardContent referenceNow={referenceNow} task={task} />
+      <TaskCardContent
+        onQuickMarkDone={onQuickMarkDone}
+        onQuickStart={onQuickStart}
+        onQuickToggleFocus={onQuickToggleFocus}
+        referenceNow={referenceNow}
+        syncing={syncing}
+        task={task}
+      />
     </article>
   );
 }
@@ -544,7 +651,10 @@ function TaskBoardColumn({
   creating,
   count,
   description,
+  dragging,
+  focusCount,
   onQuickCreate,
+  overdueCount,
   quickCreateMilestone,
   status,
   totalVisibleTasks
@@ -556,10 +666,13 @@ function TaskBoardColumn({
   creating: boolean;
   count: number;
   description: string;
+  dragging: boolean;
+  focusCount: number;
   onQuickCreate: (
     status: WorkStatus,
     draft: InlineTaskDraft
   ) => Promise<boolean>;
+  overdueCount: number;
   quickCreateMilestone: TaskQuickCreateMilestoneOption | null;
   status: WorkStatus;
   totalVisibleTasks: number;
@@ -580,7 +693,7 @@ function TaskBoardColumn({
   const [isFocus, setIsFocus] = useState(status === "in_progress");
   const [showDetailedDueAt, setShowDetailedDueAt] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const ratio = totalVisibleTasks > 0 ? Math.round((count / totalVisibleTasks) * 100) : 0;
+  const isDropHighlighted = dragging && (active || isOver);
 
   function openComposer() {
     setIsComposerOpen(true);
@@ -629,230 +742,251 @@ function TaskBoardColumn({
   return (
     <section
       className={cn(
-        "ui-board-column min-h-[calc(100vh-18rem)] overflow-hidden p-3 transition-colors",
-        (active || isOver) && "border-stone-950 bg-white shadow-md"
+        "ui-board-column relative min-h-[calc(100vh-18rem)] overflow-hidden p-3 transition-all duration-150",
+        isDropHighlighted &&
+          "border-stone-950 bg-[linear-gradient(180deg,#ffffff_0%,#f6f5f1_100%)] shadow-[0_26px_50px_-34px_rgba(28,25,23,0.42)] ring-2 ring-stone-950/10"
       )}
       ref={setNodeRef}
     >
-      <div className={cn("rounded-[1.25rem] bg-gradient-to-b p-3", accentClassName)}>
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-2 rounded-[1.5rem] border-2 border-dashed transition-all duration-150",
+          isDropHighlighted
+            ? "border-stone-950/40 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.95),rgba(244,243,239,0.86))] opacity-100"
+            : "border-transparent opacity-0"
+        )}
+      />
+
+      <div className="relative z-10">
+        <div className={cn("rounded-[1.25rem] bg-gradient-to-b p-3", accentClassName)}>
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-500">
               {description}
             </p>
-          <span
-            className={cn(
-              "mt-1 inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold",
-              workStatusClassNames[status]
-            )}
-          >
-            {workStatusLabels[status]}
-          </span>
+            <span
+              className={cn(
+                "mt-1 inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold",
+                workStatusClassNames[status]
+              )}
+            >
+              {workStatusLabels[status]}
+            </span>
           </div>
           <span className="rounded-full border border-white/70 bg-white/80 px-2.5 py-1 text-[10px] font-semibold text-stone-600">
             {count}
           </span>
         </div>
-        <div className="mt-3">
-          <div className="h-1.5 overflow-hidden rounded-full bg-white/80">
-            <div
-              className="h-full rounded-full bg-stone-900/70 transition-all"
-              style={{ width: `${ratio}%` }}
-            />
-          </div>
-          <p className="mt-1.5 text-[10px] font-medium text-stone-500">
-            {totalVisibleTasks > 0 ? `${ratio}% số việc đang hiển thị` : "Chưa có việc nào"}
-          </p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          <span className="rounded-full bg-white/85 px-2 py-1 text-[10px] font-medium text-stone-600">
+            {totalVisibleTasks > 0 ? `${count}/${totalVisibleTasks} việc` : "Chưa có việc"}
+          </span>
+          {focusCount > 0 ? (
+            <span className="rounded-full bg-amber-100 px-2 py-1 text-[10px] font-medium text-amber-700">
+              {focusCount} ưu tiên
+            </span>
+          ) : null}
+          {overdueCount > 0 ? (
+            <span className="rounded-full bg-rose-100 px-2 py-1 text-[10px] font-medium text-rose-700">
+              {overdueCount} quá hạn
+            </span>
+          ) : null}
+          {isDropHighlighted ? (
+            <span className="rounded-full bg-stone-950 px-2.5 py-1 text-[10px] font-semibold text-white shadow-sm">
+              Thả vào cột này
+            </span>
+          ) : null}
         </div>
       </div>
 
-      <div className="mt-3 space-y-2.5">{children}</div>
+        <div
+          className={cn(
+            "mt-3 space-y-2.5 transition-transform duration-150",
+            isDropHighlighted && "scale-[1.01]"
+          )}
+        >
+          {children}
+        </div>
 
-      <div className="mt-3">
+        <div className="mt-3">
         {isComposerOpen ? (
           <form
-            className="rounded-[1.5rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#f7f5f1_100%)] p-3.5 shadow-sm"
+            className="rounded-[1.5rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8f7f3_100%)] p-3.5 shadow-sm"
             onSubmit={handleSubmit}
           >
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <div className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-600 shadow-sm">
                   <Sparkles className="h-3 w-3" />
                   Thêm nhanh
                 </div>
-                <span className="text-[10px] font-medium text-stone-400">
-                  {workStatusLabels[status]}
-                </span>
+                {quickCreateMilestone ? (
+                  <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-medium text-stone-600">
+                    Mốc {quickCreateMilestone.sequenceNo}
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-medium text-stone-400">
+                    {workStatusLabels[status]}
+                  </span>
+                )}
               </div>
 
               <Input
                 className="h-11 rounded-2xl border-stone-200 bg-white text-sm shadow-sm focus:ring-1 focus:ring-stone-950/10"
                 disabled={!quickCreateMilestone || creating}
                 onChange={(event) => setTitle(event.target.value)}
-                placeholder="Tên việc cần làm tiếp theo"
+                placeholder="Nhập tên việc rồi nhấn thêm"
                 ref={inputRef}
                 value={title}
               />
 
-              <div className="grid gap-3">
-                <div className="rounded-[1.25rem] border border-stone-200 bg-white/85 p-3 shadow-sm">
-                  <div className="mb-2 flex items-center justify-between gap-2">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">
-                      Hạn hoàn thành
-                    </p>
-                    <p className="text-[11px] font-medium text-stone-500">
-                      {dueAt ? formatDisplayDateTime(new Date(dueAt)) : "Không đặt hạn"}
-                    </p>
-                  </div>
+              <div className="space-y-3 rounded-[1.25rem] border border-stone-200 bg-white/85 p-3 shadow-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">
+                    Hạn hoàn thành
+                  </p>
+                  <p className="text-[11px] font-medium text-stone-500">
+                    {dueAt ? formatDisplayDateTime(new Date(dueAt)) : "Không đặt hạn"}
+                  </p>
+                </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    {[
-                      { label: "Không hạn", value: "" },
-                      { label: "Hôm nay", value: buildQuickDueAt(0, 18) },
-                      { label: "Ngày mai", value: buildQuickDueAt(1, 9) },
-                      { label: "7 ngày", value: buildQuickDueAt(7, 9) }
-                    ].map((option) => {
-                      const isActive = dueAt === option.value;
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: "Không hạn", value: "" },
+                    { label: "Hôm nay", value: buildQuickDueAt(0, 18) },
+                    { label: "Ngày mai", value: buildQuickDueAt(1, 9) },
+                    { label: "7 ngày", value: buildQuickDueAt(7, 9) }
+                  ].map((option) => {
+                    const isActive = dueAt === option.value;
 
-                      return (
-                        <button
-                          key={option.label}
-                          aria-pressed={isActive}
-                          className={cn(
-                            "rounded-2xl px-3 py-2 text-[12px] font-semibold transition",
-                            isActive
-                              ? "bg-stone-950 text-white shadow-sm"
-                              : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
-                          )}
-                          disabled={!quickCreateMilestone || creating}
-                          onClick={() => {
-                            updateDueAt(option.value);
-                            setShowDetailedDueAt(false);
-                          }}
-                          type="button"
-                        >
-                          {option.label}
-                        </button>
-                      );
-                    })}
-                    <button
-                      aria-pressed={showDetailedDueAt}
-                      className={cn(
-                        "rounded-2xl px-3 py-2 text-[12px] font-semibold transition col-span-2",
-                        showDetailedDueAt
-                          ? "bg-stone-950 text-white shadow-sm"
-                          : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
-                      )}
-                      disabled={!quickCreateMilestone || creating}
-                      onClick={() => {
-                        const nextOpen = !showDetailedDueAt;
-
-                        setShowDetailedDueAt(nextOpen);
-
-                        if (nextOpen && !dueDate) {
-                          const nextDate = getTodayDateValue();
-
-                          setDueDate(nextDate);
-                          setDueAt(joinDateAndTimeParts(nextDate, dueTime));
-                        }
-                      }}
-                      type="button"
-                    >
-                      Hạn chi tiết
-                    </button>
-                  </div>
-
-                  {showDetailedDueAt ? (
-                    <div className="mt-3 space-y-2">
-                      <Input
-                        className="h-10 rounded-2xl border-stone-200 bg-white text-[11px] shadow-sm focus:ring-1 focus:ring-stone-950/10"
+                    return (
+                      <button
+                        key={option.label}
+                        aria-pressed={isActive}
+                        className={cn(
+                          "rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
+                          isActive
+                            ? "bg-stone-950 text-white shadow-sm"
+                            : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                        )}
                         disabled={!quickCreateMilestone || creating}
-                        onChange={(event) => {
-                          const nextDate = event.target.value;
-
-                          setDueDate(nextDate);
-                          setDueAt(joinDateAndTimeParts(nextDate, dueTime));
+                        onClick={() => {
+                          updateDueAt(option.value);
+                          setShowDetailedDueAt(false);
                         }}
-                        type="date"
-                        value={dueDate}
-                      />
-                      <div className="grid grid-cols-2 gap-2">
-                        {["09:00", "12:00", "18:00", "21:00"].map((timeValue) => {
-                          const isActive = dueTime === timeValue;
+                        type="button"
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                  <button
+                    aria-pressed={showDetailedDueAt}
+                    className={cn(
+                      "rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
+                      showDetailedDueAt
+                        ? "bg-stone-950 text-white shadow-sm"
+                        : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                    )}
+                    disabled={!quickCreateMilestone || creating}
+                    onClick={() => {
+                      const nextOpen = !showDetailedDueAt;
 
-                          return (
-                            <button
-                              key={timeValue}
-                              aria-pressed={isActive}
-                              className={cn(
-                                "rounded-2xl px-3 py-2 text-[12px] font-semibold transition",
-                                isActive
-                                  ? "bg-stone-950 text-white shadow-sm"
-                                  : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
-                              )}
-                              disabled={!quickCreateMilestone || creating}
-                              onClick={() => {
-                                setDueTime(timeValue);
-                                setDueAt(joinDateAndTimeParts(dueDate, timeValue));
-                              }}
-                              type="button"
-                            >
-                              {timeValue}
-                            </button>
-                          );
-                        })}
-                      </div>
+                      setShowDetailedDueAt(nextOpen);
+
+                      if (nextOpen && !dueDate) {
+                        const nextDate = getTodayDateValue();
+
+                        setDueDate(nextDate);
+                        setDueAt(joinDateAndTimeParts(nextDate, dueTime));
+                      }
+                    }}
+                    type="button"
+                  >
+                    {showDetailedDueAt ? "Ẩn chi tiết" : "Hạn chi tiết"}
+                  </button>
+                </div>
+
+                {showDetailedDueAt ? (
+                  <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+                    <Input
+                      className="h-10 rounded-2xl border-stone-200 bg-white text-[12px] shadow-sm focus:ring-1 focus:ring-stone-950/10"
+                      disabled={!quickCreateMilestone || creating}
+                      onChange={(event) => {
+                        const nextDate = event.target.value;
+
+                        setDueDate(nextDate);
+                        setDueAt(joinDateAndTimeParts(nextDate, dueTime));
+                      }}
+                      type="date"
+                      value={dueDate}
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      {["09:00", "12:00", "18:00", "21:00"].map((timeValue) => {
+                        const isActive = dueTime === timeValue;
+
+                        return (
+                          <button
+                            key={timeValue}
+                            aria-pressed={isActive}
+                            className={cn(
+                              "rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
+                              isActive
+                                ? "bg-stone-950 text-white shadow-sm"
+                                : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                            )}
+                            disabled={!quickCreateMilestone || creating}
+                            onClick={() => {
+                              setDueTime(timeValue);
+                              setDueAt(joinDateAndTimeParts(dueDate, timeValue));
+                            }}
+                            type="button"
+                          >
+                            {timeValue}
+                          </button>
+                        );
+                      })}
                     </div>
+                  </div>
+                ) : null}
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <select
+                    className="h-9 rounded-full border border-stone-200 bg-white px-3 text-[12px] font-medium text-stone-950 outline-none transition focus:border-stone-950 focus:ring-1 focus:ring-stone-950/10"
+                    disabled={!quickCreateMilestone || creating}
+                    onChange={(event) =>
+                      setPriority(event.target.value as GoalPriority)
+                    }
+                    value={priority}
+                  >
+                    {Object.entries(goalPriorityLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        Ưu tiên {label}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    aria-pressed={isFocus}
+                    className={cn(
+                      "rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
+                      isFocus
+                        ? "bg-amber-100 text-amber-700"
+                        : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                    )}
+                    disabled={!quickCreateMilestone || creating}
+                    onClick={() => setIsFocus((current) => !current)}
+                    type="button"
+                  >
+                    {isFocus ? "Đang ưu tiên" : "Đánh dấu ưu tiên"}
+                  </button>
+
+                  {quickCreateMilestone ? (
+                    <span className="rounded-full bg-stone-100 px-3 py-1.5 text-[11px] font-medium text-stone-600">
+                      {quickCreateMilestone.title}
+                    </span>
                   ) : null}
                 </div>
-
-                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_10rem]">
-                  <div className="rounded-[1.25rem] border border-stone-200 bg-white/85 p-3 shadow-sm">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">
-                      Cột mốc
-                    </p>
-                    <p className="mt-1 text-sm font-semibold text-stone-800">
-                      {quickCreateMilestone
-                        ? `Mốc ${quickCreateMilestone.sequenceNo} · ${quickCreateMilestone.title}`
-                        : "Chưa chọn cột mốc"}
-                    </p>
-                  </div>
-
-                  <div className="rounded-[1.25rem] border border-stone-200 bg-white/85 p-3 shadow-sm">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">
-                      Độ ưu tiên
-                    </p>
-                    <select
-                      className="mt-2 h-10 w-full rounded-2xl border border-stone-200 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-1 focus:ring-stone-950/10"
-                      disabled={!quickCreateMilestone || creating}
-                      onChange={(event) =>
-                        setPriority(event.target.value as GoalPriority)
-                      }
-                      value={priority}
-                    >
-                      {Object.entries(goalPriorityLabels).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <button
-                  aria-pressed={isFocus}
-                  className={cn(
-                    "w-full rounded-2xl px-3 py-2.5 text-[12px] font-semibold transition",
-                    isFocus
-                      ? "bg-amber-100 text-amber-700 shadow-sm"
-                      : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-900"
-                  )}
-                  disabled={!quickCreateMilestone || creating}
-                  onClick={() => setIsFocus((current) => !current)}
-                  type="button"
-                >
-                  {isFocus ? "Đang đánh dấu ưu tiên" : "Đánh dấu là việc ưu tiên"}
-                </button>
               </div>
 
               <div className="flex items-center justify-end gap-2 border-t border-stone-200 pt-2">
@@ -919,6 +1053,7 @@ function TaskBoardColumn({
             Hãy tạo ít nhất một cột mốc trước khi thêm công việc.
           </p>
         ) : null}
+        </div>
       </div>
     </section>
   );
@@ -944,6 +1079,7 @@ export function TaskBoard({
   const [selectedMilestoneId, setSelectedMilestoneId] = useState(
     quickCreateMilestones[0]?.id ?? ""
   );
+  const [quickFilter, setQuickFilter] = useState<TaskQuickFilter>("all");
   const [syncingTaskIds, setSyncingTaskIds] = useState<string[]>([]);
   const lastDropTargetRef = useRef<WorkStatus | null>(null);
   const sensors = useSensors(
@@ -1008,7 +1144,7 @@ export function TaskBoard({
     return availableGoals.find((goal) => goal.id === selectedGoalId) ?? null;
   }, [availableGoals, selectedGoalId]);
 
-  const visibleTasks = useMemo(() => {
+  const goalFilteredTasks = useMemo(() => {
     if (selectedGoalId === "all") {
       return boardTasks;
     }
@@ -1059,21 +1195,32 @@ export function TaskBoard({
     );
   }, [filteredMilestoneOptions, selectedMilestoneId]);
   const stableNow = useMemo(() => new Date(referenceNow).getTime(), [referenceNow]);
+  const visibleTasks = useMemo(() => {
+    switch (quickFilter) {
+      case "focus":
+        return goalFilteredTasks.filter(
+          (task) => task.isFocus && task.status !== "completed"
+        );
+      case "overdue":
+        return goalFilteredTasks.filter((task) => isTaskOverdue(task, stableNow));
+      case "completed":
+        return goalFilteredTasks.filter((task) => task.status === "completed");
+      case "all":
+      default:
+        return goalFilteredTasks;
+    }
+  }, [goalFilteredTasks, quickFilter, stableNow]);
   const overdueVisibleTasks = useMemo(() => {
-    return visibleTasks.filter((task) => {
-      return (
-        task.dueAt !== null &&
-        task.status !== "completed" &&
-        new Date(task.dueAt).getTime() < stableNow
-      );
-    }).length;
-  }, [stableNow, visibleTasks]);
+    return goalFilteredTasks.filter((task) => isTaskOverdue(task, stableNow)).length;
+  }, [goalFilteredTasks, stableNow]);
   const focusVisibleTasks = useMemo(() => {
-    return visibleTasks.filter((task) => task.isFocus).length;
-  }, [visibleTasks]);
+    return goalFilteredTasks.filter(
+      (task) => task.isFocus && task.status !== "completed"
+    ).length;
+  }, [goalFilteredTasks]);
   const completedVisibleTasks = useMemo(() => {
-    return visibleTasks.filter((task) => task.status === "completed").length;
-  }, [visibleTasks]);
+    return goalFilteredTasks.filter((task) => task.status === "completed").length;
+  }, [goalFilteredTasks]);
 
   const tasksByStatus = useMemo(() => {
     const grouped = new Map<WorkStatus, TaskListItem[]>();
@@ -1089,6 +1236,108 @@ export function TaskBoard({
 
     return grouped;
   }, [visibleTasks]);
+  const quickFilterOptions = useMemo(
+    () => [
+      {
+        count: goalFilteredTasks.length,
+        label: "Tất cả",
+        value: "all" as const
+      },
+      {
+        count: focusVisibleTasks,
+        label: "Tập trung",
+        value: "focus" as const
+      },
+      {
+        count: overdueVisibleTasks,
+        label: "Quá hạn",
+        value: "overdue" as const
+      },
+      {
+        count: completedVisibleTasks,
+        label: "Hoàn thành",
+        value: "completed" as const
+      }
+    ],
+    [completedVisibleTasks, focusVisibleTasks, goalFilteredTasks.length, overdueVisibleTasks]
+  );
+
+  async function patchTaskInline(
+    taskId: string,
+    payload: Record<string, unknown>,
+    optimisticUpdater: (task: TaskListItem) => TaskListItem,
+    fallbackMessage: string
+  ) {
+    const previousTasks = boardTasks;
+    const previousTask = boardTasks.find((task) => task.id === taskId);
+
+    if (!previousTask) {
+      return;
+    }
+
+    setErrorMessage(null);
+    setSyncingTaskIds((current) =>
+      current.includes(taskId) ? current : [...current, taskId]
+    );
+    setBoardTasks((current) =>
+      current.map((task) => (task.id === taskId ? optimisticUpdater(task) : task))
+    );
+
+    try {
+      const response = await fetch(`/api/v1/tasks/${taskId}`, {
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json"
+        },
+        method: "PATCH"
+      });
+
+      if (!response.ok) {
+        let message = fallbackMessage;
+
+        try {
+          const responsePayload = (await response.json()) as { message?: string };
+
+          if (
+            typeof responsePayload.message === "string" &&
+            responsePayload.message.trim()
+          ) {
+            message = responsePayload.message;
+          }
+        } catch {
+          // Keep fallback message.
+        }
+
+        setBoardTasks(previousTasks);
+        setErrorMessage(message);
+        return;
+      }
+
+      const responsePayload = (await response.json()) as {
+        data?: TaskApiResource;
+      };
+
+      if (!responsePayload.data) {
+        setBoardTasks(previousTasks);
+        setErrorMessage("Đã cập nhật công việc nhưng không đọc được dữ liệu trả về.");
+        return;
+      }
+
+      const nextTask = mapTaskApiResourceToTaskListItem(
+        responsePayload.data,
+        buildMilestoneFallbackFromTask(previousTask)
+      );
+
+      setBoardTasks((current) =>
+        current.map((task) => (task.id === taskId ? nextTask : task))
+      );
+    } catch {
+      setBoardTasks(previousTasks);
+      setErrorMessage("Không thể kết nối để cập nhật công việc.");
+    } finally {
+      setSyncingTaskIds((current) => current.filter((id) => id !== taskId));
+    }
+  }
 
   function setActiveDropTarget(nextStatus: WorkStatus | null) {
     if (lastDropTargetRef.current === nextStatus) {
@@ -1158,6 +1407,34 @@ export function TaskBoard({
 
       setSyncingTaskIds((current) => current.filter((id) => id !== taskId));
     })();
+  }
+
+  function handleQuickStart(taskId: string) {
+    moveTask(taskId, "in_progress", null);
+  }
+
+  function handleQuickMarkDone(taskId: string) {
+    moveTask(taskId, "completed", null);
+  }
+
+  function handleQuickToggleFocus(taskId: string) {
+    const task = boardTasks.find((item) => item.id === taskId);
+
+    if (!task) {
+      return;
+    }
+
+    void patchTaskInline(
+      taskId,
+      {
+        is_focus: !task.isFocus
+      },
+      (currentTask) => ({
+        ...currentTask,
+        isFocus: !currentTask.isFocus
+      }),
+      "Không thể cập nhật trạng thái ưu tiên của công việc."
+    );
   }
 
   async function createTaskInColumn(
@@ -1323,30 +1600,42 @@ export function TaskBoard({
                   Tạo nhanh vào mốc {selectedMilestone.sequenceNo}
                 </span>
               ) : null}
+              {quickFilter !== "all" ? (
+                <span className="rounded-full bg-stone-950 px-2.5 py-1 text-[11px] font-medium text-white">
+                  Đang lọc {quickFilterOptions.find((option) => option.value === quickFilter)?.label}
+                </span>
+              ) : null}
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-3">
-              <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2.5">
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
-                  <Target className="h-3.5 w-3.5" />
-                  Tập trung
-                </div>
-                <p className="mt-1.5 text-lg font-black text-stone-950">{focusVisibleTasks}</p>
-              </div>
-              <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2.5">
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
-                  <CalendarDays className="h-3.5 w-3.5" />
-                  Quá hạn
-                </div>
-                <p className="mt-1.5 text-lg font-black text-stone-950">{overdueVisibleTasks}</p>
-              </div>
-              <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2.5">
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
-                  <CircleDot className="h-3.5 w-3.5" />
-                  Hoàn thành
-                </div>
-                <p className="mt-1.5 text-lg font-black text-stone-950">{completedVisibleTasks}</p>
-              </div>
+            <div className="flex flex-wrap gap-2">
+              {quickFilterOptions.map((option) => {
+                const isActive = quickFilter === option.value;
+
+                return (
+                  <button
+                    key={option.value}
+                    aria-pressed={isActive}
+                    className={cn(
+                      "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
+                      isActive
+                        ? "bg-stone-950 text-white shadow-sm"
+                        : "border border-stone-200 bg-white text-stone-700 hover:border-stone-950 hover:text-stone-950"
+                    )}
+                    onClick={() => setQuickFilter(option.value)}
+                    type="button"
+                  >
+                    {option.label}
+                    <span
+                      className={cn(
+                        "rounded-full px-1.5 py-0.5 text-[10px]",
+                        isActive ? "bg-white/15 text-white" : "bg-stone-100 text-stone-600"
+                      )}
+                    >
+                      {option.count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             {availableGoals.length > 0 ? (
@@ -1399,7 +1688,7 @@ export function TaskBoard({
             )}
           </div>
 
-          <div className="rounded-[1.25rem] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-600 shadow-sm">
+          <div className="rounded-[1.25rem] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-600 shadow-sm lg:max-w-[16rem]">
             <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
               <Clock3 className="h-3.5 w-3.5" />
               Trạng thái hệ thống
@@ -1443,9 +1732,15 @@ export function TaskBoard({
         sensors={sensors}
       >
         <div className="mt-3 overflow-x-auto pb-1">
-          <div className="grid min-w-[58rem] gap-2.5 xl:grid-cols-4">
+          <div className="grid min-w-[52rem] gap-2.5 xl:grid-cols-4">
             {taskColumns.map((column) => {
               const columnTasks = tasksByStatus.get(column.status) ?? [];
+              const columnFocusCount = columnTasks.filter(
+                (task) => task.isFocus && task.status !== "completed"
+              ).length;
+              const columnOverdueCount = columnTasks.filter((task) =>
+                isTaskOverdue(task, stableNow)
+              ).length;
 
               return (
                 <TaskBoardColumn
@@ -1455,8 +1750,11 @@ export function TaskBoard({
                   count={columnTasks.length}
                   creating={creatingStatus === column.status}
                   description={column.description}
+                  dragging={activeTaskId !== null}
+                  focusCount={columnFocusCount}
                   key={column.status}
                   onQuickCreate={createTaskInColumn}
+                  overdueCount={columnOverdueCount}
                   quickCreateMilestone={selectedMilestone}
                   status={column.status}
                   totalVisibleTasks={visibleTasks.length}
@@ -1465,6 +1763,9 @@ export function TaskBoard({
                     columnTasks.map((task) => (
                       <TaskBoardCard
                         key={task.id}
+                        onQuickMarkDone={handleQuickMarkDone}
+                        onQuickStart={handleQuickStart}
+                        onQuickToggleFocus={handleQuickToggleFocus}
                         referenceNow={stableNow}
                         syncing={syncingTaskIds.includes(task.id)}
                         task={task}
@@ -1484,7 +1785,14 @@ export function TaskBoard({
         <DragOverlay dropAnimation={null}>
           {activeTask ? (
             <div className="ui-card-compact w-[14rem] rotate-[1.5deg] p-2.5 shadow-2xl">
-              <TaskCardContent referenceNow={stableNow} task={activeTask} />
+              <TaskCardContent
+                onQuickMarkDone={handleQuickMarkDone}
+                onQuickStart={handleQuickStart}
+                onQuickToggleFocus={handleQuickToggleFocus}
+                referenceNow={stableNow}
+                syncing={false}
+                task={activeTask}
+              />
             </div>
           ) : null}
         </DragOverlay>
