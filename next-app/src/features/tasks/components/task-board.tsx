@@ -123,6 +123,57 @@ type TaskBoardGoalOption = {
   title: string;
 };
 
+function padDateTimePart(value: number) {
+  return `${value}`.padStart(2, "0");
+}
+
+function formatDateTimeLocalValue(date: Date) {
+  return [
+    date.getFullYear(),
+    padDateTimePart(date.getMonth() + 1),
+    padDateTimePart(date.getDate())
+  ].join("-") + `T${padDateTimePart(date.getHours())}:${padDateTimePart(date.getMinutes())}`;
+}
+
+function buildQuickDueAt(daysToAdd: number, hours: number, minutes = 0) {
+  const date = new Date();
+
+  date.setDate(date.getDate() + daysToAdd);
+  date.setHours(hours, minutes, 0, 0);
+
+  return formatDateTimeLocalValue(date);
+}
+
+function getTodayDateValue() {
+  const date = new Date();
+
+  return [
+    date.getFullYear(),
+    padDateTimePart(date.getMonth() + 1),
+    padDateTimePart(date.getDate())
+  ].join("-");
+}
+
+function getDatePartFromDateTimeLocalValue(value: string) {
+  const [datePart] = value.split("T");
+
+  return datePart ?? "";
+}
+
+function getTimePartFromDateTimeLocalValue(value: string) {
+  const [, timePart] = value.split("T");
+
+  return timePart ?? "09:00";
+}
+
+function joinDateAndTimeParts(datePart: string, timePart: string) {
+  if (!datePart) {
+    return "";
+  }
+
+  return `${datePart}T${timePart || "09:00"}`;
+}
+
 function toStringId(value: number | string | null | undefined) {
   if (value === null || value === undefined) {
     return null;
@@ -523,8 +574,11 @@ function TaskBoardColumn({
   const [isComposerOpen, setIsComposerOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [dueAt, setDueAt] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("09:00");
   const [priority, setPriority] = useState<GoalPriority>("medium");
   const [isFocus, setIsFocus] = useState(status === "in_progress");
+  const [showDetailedDueAt, setShowDetailedDueAt] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const ratio = totalVisibleTasks > 0 ? Math.round((count / totalVisibleTasks) * 100) : 0;
 
@@ -533,12 +587,21 @@ function TaskBoardColumn({
     setTimeout(() => inputRef.current?.focus(), 0);
   }
 
+  function updateDueAt(nextDueAt: string) {
+    setDueAt(nextDueAt);
+    setDueDate(getDatePartFromDateTimeLocalValue(nextDueAt));
+    setDueTime(getTimePartFromDateTimeLocalValue(nextDueAt));
+  }
+
   function closeComposer() {
     setIsComposerOpen(false);
     setTitle("");
     setDueAt("");
+    setDueDate("");
+    setDueTime("09:00");
     setPriority("medium");
     setIsFocus(status === "in_progress");
+    setShowDetailedDueAt(false);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -554,8 +617,11 @@ function TaskBoardColumn({
     if (success) {
       setTitle("");
       setDueAt("");
+      setDueDate("");
+      setDueTime("09:00");
       setPriority("medium");
       setIsFocus(status === "in_progress");
+      setShowDetailedDueAt(false);
       setTimeout(() => inputRef.current?.focus(), 0);
     }
   }
@@ -605,12 +671,12 @@ function TaskBoardColumn({
       <div className="mt-3">
         {isComposerOpen ? (
           <form
-            className="rounded-[1.25rem] border border-stone-200 bg-white/90 p-3 shadow-sm"
+            className="rounded-[1.5rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#f7f5f1_100%)] p-3.5 shadow-sm"
             onSubmit={handleSubmit}
           >
-            <div className="space-y-2.5">
+            <div className="space-y-3.5">
               <div className="flex items-center justify-between gap-2">
-                <div className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-600">
+                <div className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-600 shadow-sm">
                   <Sparkles className="h-3 w-3" />
                   Thêm nhanh
                 </div>
@@ -618,91 +684,206 @@ function TaskBoardColumn({
                   {workStatusLabels[status]}
                 </span>
               </div>
+
               <Input
-                className="h-9 rounded-xl border-stone-200 bg-white text-sm focus:ring-1 focus:ring-stone-950/10"
+                className="h-11 rounded-2xl border-stone-200 bg-white text-sm shadow-sm focus:ring-1 focus:ring-stone-950/10"
                 disabled={!quickCreateMilestone || creating}
                 onChange={(event) => setTitle(event.target.value)}
-                placeholder={`Tên việc ở cột ${workStatusLabels[status].toLowerCase()}`}
+                placeholder="Tên việc cần làm tiếp theo"
                 ref={inputRef}
                 value={title}
               />
 
-              <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_8rem]">
-                <Input
-                  className="h-9 rounded-xl border-stone-200 bg-white text-[11px] focus:ring-1 focus:ring-stone-950/10"
-                  disabled={!quickCreateMilestone || creating}
-                  onChange={(event) => setDueAt(event.target.value)}
-                  type="datetime-local"
-                  value={dueAt}
-                />
-                <select
-                  className="h-9 rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-1 focus:ring-stone-950/10"
-                  disabled={!quickCreateMilestone || creating}
-                  onChange={(event) =>
-                    setPriority(event.target.value as GoalPriority)
-                  }
-                  value={priority}
-                >
-                  {Object.entries(goalPriorityLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <div className="grid gap-3">
+                <div className="rounded-[1.25rem] border border-stone-200 bg-white/85 p-3 shadow-sm">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">
+                      Hạn hoàn thành
+                    </p>
+                    <p className="text-[11px] font-medium text-stone-500">
+                      {dueAt ? formatDisplayDateTime(new Date(dueAt)) : "Không đặt hạn"}
+                    </p>
+                  </div>
 
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-medium text-stone-600">
-                  {quickCreateMilestone
-                    ? `Mốc ${quickCreateMilestone.sequenceNo} · ${quickCreateMilestone.title}`
-                    : "Chưa chọn cột mốc"}
-                </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { label: "Không hạn", value: "" },
+                      { label: "Hôm nay", value: buildQuickDueAt(0, 18) },
+                      { label: "Ngày mai", value: buildQuickDueAt(1, 9) },
+                      { label: "7 ngày", value: buildQuickDueAt(7, 9) }
+                    ].map((option) => {
+                      const isActive = dueAt === option.value;
+
+                      return (
+                        <button
+                          key={option.label}
+                          aria-pressed={isActive}
+                          className={cn(
+                            "rounded-2xl px-3 py-2 text-[12px] font-semibold transition",
+                            isActive
+                              ? "bg-stone-950 text-white shadow-sm"
+                              : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                          )}
+                          disabled={!quickCreateMilestone || creating}
+                          onClick={() => {
+                            updateDueAt(option.value);
+                            setShowDetailedDueAt(false);
+                          }}
+                          type="button"
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                    <button
+                      aria-pressed={showDetailedDueAt}
+                      className={cn(
+                        "rounded-2xl px-3 py-2 text-[12px] font-semibold transition col-span-2",
+                        showDetailedDueAt
+                          ? "bg-stone-950 text-white shadow-sm"
+                          : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                      )}
+                      disabled={!quickCreateMilestone || creating}
+                      onClick={() => {
+                        const nextOpen = !showDetailedDueAt;
+
+                        setShowDetailedDueAt(nextOpen);
+
+                        if (nextOpen && !dueDate) {
+                          const nextDate = getTodayDateValue();
+
+                          setDueDate(nextDate);
+                          setDueAt(joinDateAndTimeParts(nextDate, dueTime));
+                        }
+                      }}
+                      type="button"
+                    >
+                      Hạn chi tiết
+                    </button>
+                  </div>
+
+                  {showDetailedDueAt ? (
+                    <div className="mt-3 space-y-2">
+                      <Input
+                        className="h-10 rounded-2xl border-stone-200 bg-white text-[11px] shadow-sm focus:ring-1 focus:ring-stone-950/10"
+                        disabled={!quickCreateMilestone || creating}
+                        onChange={(event) => {
+                          const nextDate = event.target.value;
+
+                          setDueDate(nextDate);
+                          setDueAt(joinDateAndTimeParts(nextDate, dueTime));
+                        }}
+                        type="date"
+                        value={dueDate}
+                      />
+                      <div className="grid grid-cols-2 gap-2">
+                        {["09:00", "12:00", "18:00", "21:00"].map((timeValue) => {
+                          const isActive = dueTime === timeValue;
+
+                          return (
+                            <button
+                              key={timeValue}
+                              aria-pressed={isActive}
+                              className={cn(
+                                "rounded-2xl px-3 py-2 text-[12px] font-semibold transition",
+                                isActive
+                                  ? "bg-stone-950 text-white shadow-sm"
+                                  : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                              )}
+                              disabled={!quickCreateMilestone || creating}
+                              onClick={() => {
+                                setDueTime(timeValue);
+                                setDueAt(joinDateAndTimeParts(dueDate, timeValue));
+                              }}
+                              type="button"
+                            >
+                              {timeValue}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_10rem]">
+                  <div className="rounded-[1.25rem] border border-stone-200 bg-white/85 p-3 shadow-sm">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">
+                      Cột mốc
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-stone-800">
+                      {quickCreateMilestone
+                        ? `Mốc ${quickCreateMilestone.sequenceNo} · ${quickCreateMilestone.title}`
+                        : "Chưa chọn cột mốc"}
+                    </p>
+                  </div>
+
+                  <div className="rounded-[1.25rem] border border-stone-200 bg-white/85 p-3 shadow-sm">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">
+                      Độ ưu tiên
+                    </p>
+                    <select
+                      className="mt-2 h-10 w-full rounded-2xl border border-stone-200 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-1 focus:ring-stone-950/10"
+                      disabled={!quickCreateMilestone || creating}
+                      onChange={(event) =>
+                        setPriority(event.target.value as GoalPriority)
+                      }
+                      value={priority}
+                    >
+                      {Object.entries(goalPriorityLabels).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
                 <button
                   aria-pressed={isFocus}
                   className={cn(
-                    "rounded-full px-2.5 py-1 text-[11px] font-semibold transition",
+                    "w-full rounded-2xl px-3 py-2.5 text-[12px] font-semibold transition",
                     isFocus
-                      ? "bg-amber-100 text-amber-700"
-                      : "bg-white text-stone-500 hover:bg-stone-100 hover:text-stone-900"
+                      ? "bg-amber-100 text-amber-700 shadow-sm"
+                      : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-900"
                   )}
                   disabled={!quickCreateMilestone || creating}
                   onClick={() => setIsFocus((current) => !current)}
                   type="button"
                 >
-                  {isFocus ? "Đang ưu tiên" : "Đánh dấu ưu tiên"}
+                  {isFocus ? "Đang đánh dấu ưu tiên" : "Đánh dấu là việc ưu tiên"}
                 </button>
+              </div>
 
-                <div className="ml-auto flex items-center gap-2">
-                  <Button
-                    className="gap-1.5 rounded-full"
-                    disabled={!quickCreateMilestone || !title.trim() || creating}
-                    size="sm"
-                    type="submit"
-                  >
-                    {creating ? (
-                      <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Plus className="h-3.5 w-3.5" />
-                    )}
-                    Thêm
-                  </Button>
-                  <button
-                    className="rounded-full px-2 py-1 text-xs font-medium text-stone-500 transition hover:bg-stone-100 hover:text-stone-900"
-                    disabled={creating}
-                    onClick={closeComposer}
-                    type="button"
-                  >
-                    Hủy
-                  </button>
-                </div>
+              <div className="flex items-center justify-end gap-2 border-t border-stone-200 pt-2">
+                <button
+                  className="rounded-full px-3 py-2 text-xs font-medium text-stone-500 transition hover:bg-stone-100 hover:text-stone-900"
+                  disabled={creating}
+                  onClick={closeComposer}
+                  type="button"
+                >
+                  Hủy
+                </button>
+                <Button
+                  className="gap-1.5 rounded-full"
+                  disabled={!quickCreateMilestone || !title.trim() || creating}
+                  size="sm"
+                  type="submit"
+                >
+                  {creating ? (
+                    <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Plus className="h-3.5 w-3.5" />
+                  )}
+                  Thêm việc
+                </Button>
               </div>
             </div>
           </form>
         ) : (
           <button
             className={cn(
-              "flex w-full items-center justify-center gap-2 rounded-[1.1rem] border border-dashed px-3 py-3 text-[13px] font-medium transition",
+              "flex w-full items-center justify-between gap-3 rounded-[1.25rem] border border-dashed px-3.5 py-3 text-[13px] font-medium transition",
               canQuickCreate
                 ? "border-stone-300 bg-white/70 text-stone-700 hover:border-stone-950 hover:bg-white hover:text-stone-950"
                 : "cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400"
@@ -711,16 +892,25 @@ function TaskBoardColumn({
             onClick={openComposer}
             type="button"
           >
-            {creating ? (
-              <LoaderCircle className="h-4 w-4 animate-spin" />
-            ) : (
-              <Plus className="h-4 w-4" />
-            )}
-            {creating
-              ? "Đang thêm công việc..."
-              : quickCreateMilestone
-                ? `Thêm vào mốc ${quickCreateMilestone.sequenceNo}`
-                : "Thêm công việc"}
+            <span className="inline-flex items-center gap-2">
+              {creating ? (
+                <LoaderCircle className="h-4 w-4 animate-spin" />
+              ) : (
+                <Plus className="h-4 w-4" />
+              )}
+              <span className="text-left">
+                {creating
+                  ? "Đang thêm công việc..."
+                  : quickCreateMilestone
+                    ? "Thêm công việc mới"
+                    : "Thêm công việc"}
+              </span>
+            </span>
+            {quickCreateMilestone ? (
+              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
+                Mốc {quickCreateMilestone.sequenceNo}
+              </span>
+            ) : null}
           </button>
         )}
 
@@ -1281,7 +1471,7 @@ export function TaskBoard({
                       />
                     ))
                   ) : (
-                    <div className="rounded-[1.25rem] border border-dashed border-stone-300 bg-white/80 px-4 py-7 text-center text-xs leading-5 text-stone-500">
+                    <div className="rounded-[1.25rem] border border-dashed border-stone-300 bg-white/80 px-4 py-5 text-center text-xs leading-5 text-stone-500">
                       {getEmptyColumnMessage(column.status)}
                     </div>
                   )}
