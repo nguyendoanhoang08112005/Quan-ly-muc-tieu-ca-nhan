@@ -29,6 +29,7 @@ import {
   Sparkles,
   Target
 } from "lucide-react";
+import { PawTrail } from "@/components/ornaments/paw-trail";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -1589,7 +1590,7 @@ export function TaskBoard({
       <div className="pointer-events-none absolute -right-10 top-0 h-28 w-28 rounded-full bg-[#fff1e9] blur-3xl" />
       <div className="pointer-events-none absolute left-1/4 top-0 h-24 w-24 rounded-full bg-[#faf7f2] blur-3xl" />
 
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_17rem]">
         <div className="min-w-0 space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#f2d8cc] bg-[#fff6f1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b8694d]">
@@ -1608,22 +1609,6 @@ export function TaskBoard({
             <p className="mt-1 text-sm text-stone-600">
               Kéo thả hoặc thêm nhanh vào đúng mốc.
             </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
-              {selectedGoal ? selectedGoal.title : "Tất cả mục tiêu"}
-            </span>
-            {selectedMilestone ? (
-              <span className="rounded-full border border-[#f2d8cc] bg-[#fff6f1] px-2.5 py-1 text-[11px] font-medium text-[#b8694d]">
-                Tạo nhanh vào mốc {selectedMilestone.sequenceNo}
-              </span>
-            ) : null}
-            {quickFilter !== "all" ? (
-              <span className="rounded-full bg-stone-950 px-2.5 py-1 text-[11px] font-medium text-white">
-                {quickFilterOptions.find((option) => option.value === quickFilter)?.label}
-              </span>
-            ) : null}
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -1709,24 +1694,29 @@ export function TaskBoard({
           )}
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-2 xl:w-[18rem] xl:grid-cols-1">
-          <div className="rounded-[1.25rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-3 shadow-sm">
-            <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-              <Clock3 className="h-3.5 w-3.5" />
-              Nhịp board
-            </div>
-            <p className="mt-2 text-sm font-semibold text-stone-900">{boardStateLabel}</p>
+        <div className="relative rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+          <PawTrail className="right-2 top-3 h-16 w-[10rem]" variant="stone" />
+          <div className="relative z-10 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+            <Clock3 className="h-3.5 w-3.5" />
+            Nhịp board
           </div>
-
-          <div className="rounded-[1.25rem] border border-[#eadfd4] bg-white px-4 py-3 shadow-sm">
-            <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-              Quick add
+          <div className="relative z-10 mt-3 space-y-2 text-sm">
+            <div className="flex items-center justify-between gap-3 text-stone-700">
+              <span>Trạng thái</span>
+              <span className="font-semibold text-stone-950">{boardStateLabel}</span>
             </div>
-            <p className="mt-2 text-sm font-semibold text-stone-900">
-              {selectedMilestone
-                ? `Mốc ${selectedMilestone.sequenceNo}`
-                : "Chưa chọn mốc"}
-            </p>
+            <div className="flex items-center justify-between gap-3 text-stone-700">
+              <span>Mục tiêu</span>
+              <span className="truncate font-semibold text-stone-950">
+                {selectedGoal ? selectedGoal.title : "Tất cả"}
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-3 text-stone-700">
+              <span>Quick add</span>
+              <span className="font-semibold text-stone-950">
+                {selectedMilestone ? `Mốc ${selectedMilestone.sequenceNo}` : "Chưa chọn"}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -1758,6 +1748,8 @@ export function TaskBoard({
         onDragStart={handleDragStart}
         sensors={sensors}
       >
+        <PawTrail className="right-[18rem] top-6 h-24 w-[15rem]" variant="mixed" />
+
         <div className="mt-3 overflow-x-auto pb-1">
           <div className="grid min-w-[52rem] gap-2.5 xl:grid-cols-4">
             {taskColumns.map((column) => {
@@ -1801,6 +1793,7 @@ export function TaskBoard({
                     ))
                   ) : (
                     <div className="rounded-[1.25rem] border border-dashed border-stone-300 bg-white/80 px-4 py-5 text-center text-xs leading-5 text-stone-500">
+                      <PawPrint className="mx-auto mb-2 h-5 w-5 text-[#d8b8a3]" />
                       {getEmptyColumnMessage(column.status)}
                     </div>
                   )}

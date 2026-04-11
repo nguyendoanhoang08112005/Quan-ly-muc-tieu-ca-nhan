@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Compass, PawPrint, Plus, Sparkles, Target } from "lucide-react";
+import { PawTrail } from "@/components/ornaments/paw-trail";
 import { buttonVariants } from "@/components/ui/button";
 import { TaskBoard } from "@/features/tasks/components/task-board";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
@@ -21,14 +22,16 @@ export default async function DashboardPage() {
   const focusTasks = openTasks.filter((task) => task.isFocus);
   const overdueTasks = dashboard.summary.overdueTasks;
   const referenceNow = new Date().toISOString();
+  const quickCreateMilestone = quickCreateMilestones[0] ?? null;
 
   return (
     <div className="flex w-full max-w-none flex-col gap-4">
       <section className="relative overflow-hidden rounded-[2.1rem] border border-[#e8dfd5] bg-white px-5 py-5 shadow-[0_20px_50px_-40px_rgba(28,25,23,0.22)]">
         <div className="pointer-events-none absolute -right-10 top-0 h-28 w-28 rounded-full bg-[#fff0e7] blur-3xl" />
         <div className="pointer-events-none absolute left-1/4 top-0 h-24 w-24 rounded-full bg-[#f3f8ee] blur-3xl" />
+        <PawTrail className="right-20 top-16 h-24 w-[14rem]" variant="mixed" />
 
-        <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_18rem]">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600">
@@ -93,26 +96,51 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 xl:justify-end">
-            <Link
-              className={cn(
-                buttonVariants({ size: "sm" }),
-                "gap-2 rounded-full !text-white shadow-[0_12px_24px_-18px_rgba(28,25,23,0.3)]"
-              )}
-              href="/goals?create=1"
-            >
-              <Plus className="h-4 w-4" />
-              Mục tiêu mới
-            </Link>
-            <Link
-              className={cn(
-                buttonVariants({ size: "sm", variant: "secondary" }),
-                "rounded-full border-[#e5dbd0] bg-white"
-              )}
-              href="/goals"
-            >
-              Mở mục tiêu
-            </Link>
+          <div className="flex flex-col gap-3 xl:items-stretch">
+            <div className="flex flex-wrap gap-2 xl:justify-end">
+              <Link
+                className={cn(
+                  buttonVariants({ size: "sm" }),
+                  "gap-2 rounded-full !text-white shadow-[0_12px_24px_-18px_rgba(28,25,23,0.3)]"
+                )}
+                href="/goals?create=1"
+              >
+                <Plus className="h-4 w-4" />
+                Mục tiêu mới
+              </Link>
+              <Link
+                className={cn(
+                  buttonVariants({ size: "sm", variant: "secondary" }),
+                  "rounded-full border-[#e5dbd0] bg-white"
+                )}
+                href="/goals"
+              >
+                Mở mục tiêu
+              </Link>
+            </div>
+
+            <div className="rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+              <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+                <PawPrint className="h-3.5 w-3.5" />
+                Hôm nay
+              </div>
+              <div className="mt-3 space-y-2 text-sm text-stone-700">
+                <div className="flex items-center justify-between gap-3">
+                  <span>Board</span>
+                  <span className="font-semibold text-stone-950">Sẵn sàng</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Quick add</span>
+                  <span className="font-semibold text-stone-950">
+                    {quickCreateMilestone ? `Mốc ${quickCreateMilestone.sequenceNo}` : "Chưa có"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Tập trung</span>
+                  <span className="font-semibold text-stone-950">{focusTasks.length}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
