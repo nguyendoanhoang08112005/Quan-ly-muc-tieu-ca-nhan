@@ -28,7 +28,7 @@ export function AppMobileNav({ user }: { user: AppSessionUser }) {
               buttonVariants({ size: "sm" }),
               "rounded-full !text-white"
             )}
-            href="/goals/new"
+            href="/goals?create=1"
           >
             Tạo mục tiêu
           </Link>

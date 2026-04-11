@@ -204,7 +204,7 @@ function GoalBoardColumn({
 }
 
 export function GoalBoard({
-  createHref = "/goals/new",
+  createHref = "/goals?create=1",
   goals
 }: {
   createHref?: Route;

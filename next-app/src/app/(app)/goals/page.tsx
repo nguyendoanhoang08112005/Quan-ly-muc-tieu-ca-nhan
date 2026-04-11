@@ -2,17 +2,22 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
-import { EmptyGoalsState } from "@/features/goals/components/empty-goals-state";
 import { GoalCard } from "@/features/goals/components/goal-card";
+import { GoalsInlineCreatePanel } from "@/features/goals/components/goals-inline-create-panel";
 import { goalStatusLabels } from "@/features/goals/goal-helpers";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDate } from "@/lib/dates";
 import { getSingleSearchParam, matchesSearchTerm } from "@/lib/search-params";
 import { cn } from "@/lib/utils";
-import { listGoalsForUser } from "@/server/modules/goals/queries";
+import {
+  listGoalMetadataOptions,
+  listGoalsForUser
+} from "@/server/modules/goals/queries";
 
 type GoalsPageProps = {
   searchParams?: Promise<{
+    create?: string | string[];
+    created?: string | string[];
     q?: string | string[];
     status?: string | string[];
   }>;
@@ -21,9 +26,15 @@ type GoalsPageProps = {
 export default async function GoalsPage({ searchParams }: GoalsPageProps) {
   const userId = await requireAuthenticatedUserId();
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const goals = await listGoalsForUser(userId);
+  const [goals, options] = await Promise.all([
+    listGoalsForUser(userId),
+    listGoalMetadataOptions(userId)
+  ]);
   const query = getSingleSearchParam(resolvedSearchParams?.q).trim();
   const statusFilter = getSingleSearchParam(resolvedSearchParams?.status) || "all";
+  const shouldOpenCreatePanel =
+    getSingleSearchParam(resolvedSearchParams?.create) === "1" || goals.length === 0;
+  const wasJustCreated = getSingleSearchParam(resolvedSearchParams?.created) === "1";
 
   const filteredGoals = goals.filter((goal) => {
     const matchesStatus = statusFilter === "all" || goal.status === statusFilter;
@@ -68,8 +79,7 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
               Kế hoạch mục tiêu
             </h1>
             <p className="mt-1 text-sm text-stone-600">
-              Trang này dùng để lên kế hoạch và theo dõi tiến độ. Kéo thả công việc
-              tập trung ở Trang chủ.
+              Tạo mới và theo dõi mục tiêu trong cùng một màn hình.
             </p>
           </div>
 
@@ -85,7 +95,7 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
             </Link>
             <Link
               className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full !text-white")}
-              href="/goals/new"
+              href="/goals?create=1"
             >
               <Plus className="h-4 w-4" />
               Tạo mục tiêu
@@ -114,6 +124,13 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
           </span>
         </div>
       </section>
+
+      <GoalsInlineCreatePanel
+        categories={options.categories}
+        initialOpen={shouldOpenCreatePanel}
+        tags={options.tags}
+        wasJustCreated={wasJustCreated}
+      />
 
       <PageFilterForm
         filters={[
@@ -152,7 +169,13 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
           </p>
         </section>
       ) : (
-        <EmptyGoalsState />
+        <section className="ui-panel border-dashed px-6 py-10 text-center">
+          <h2 className="text-xl font-black text-stone-950">Chưa có mục tiêu nào</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-stone-600">
+            Biểu mẫu tạo mục tiêu đã được mở ngay phía trên. Tạo xong, mục tiêu sẽ xuất
+            hiện trong danh sách này để bạn kiểm tra và tiếp tục chỉnh chi tiết nếu cần.
+          </p>
+        </section>
       )}
     </div>
   );

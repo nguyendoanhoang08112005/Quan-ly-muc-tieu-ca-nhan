@@ -1,9 +1,14 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { Target } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function EmptyGoalsState() {
+export function EmptyGoalsState({
+  createHref = "/goals?create=1"
+}: {
+  createHref?: Route;
+}) {
   return (
     <div className="ui-panel border-dashed px-6 py-10 text-center">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-stone-100">
@@ -21,7 +26,7 @@ export function EmptyGoalsState() {
             buttonVariants({ size: "sm" }),
             "rounded-full !text-white"
           )}
-          href="/goals/new"
+          href={createHref}
         >
           Tạo mục tiêu đầu tiên
         </Link>

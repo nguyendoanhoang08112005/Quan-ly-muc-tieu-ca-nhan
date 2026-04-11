@@ -1,5 +1,6 @@
 "use server";
 
+import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
@@ -41,5 +42,11 @@ export async function createGoalAction(
   revalidatePath("/categories");
   revalidatePath("/tags");
   revalidatePath("/follows");
-  redirect(`/goals/${goalId}`);
+  const redirectTo = formData.get("redirectTo");
+  const nextPath =
+    typeof redirectTo === "string" && redirectTo.startsWith("/")
+      ? redirectTo
+      : `/goals/${goalId}`;
+
+  redirect(nextPath as Route);
 }

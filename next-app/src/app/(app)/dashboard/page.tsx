@@ -64,7 +64,7 @@ export default async function DashboardPage() {
           <div className="flex flex-wrap gap-2">
             <Link
               className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full !text-white")}
-              href="/goals/new"
+              href="/goals?create=1"
             >
               <Plus className="h-4 w-4" />
               Mục tiêu mới
