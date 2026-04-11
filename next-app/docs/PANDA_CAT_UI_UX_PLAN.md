@@ -2,32 +2,29 @@
 
 ## 1. Mục tiêu tổng thể
 
-Biến sản phẩm từ một ứng dụng quản lý mục tiêu kiểu "dashboard nghiêm túc" thành một sản phẩm:
+Biến sản phẩm từ một ứng dụng quản lý mục tiêu khô và nặng thành một sản phẩm:
 
-- vui hơn
-- hóm hỉnh hơn
-- có cá tính riêng
-- vẫn gọn, rõ, dễ dùng hằng ngày
+- gọn hơn
+- sáng hơn
+- thú vị hơn
+- vẫn đủ trưởng thành để dùng mỗi ngày
 
-Tinh thần chính:
+Hướng mới của toàn bộ UI:
 
-- `Gấu trúc` đại diện cho sự bình tĩnh, tập trung, làm việc sâu, nhịp chậm mà chắc
-- `Mèo` đại diện cho sự lanh lợi, tinh nghịch, quick win, thao tác nhanh, nhắc nhẹ
-- `Thỏ` đại diện cho sự khởi đầu mới, thói quen nhỏ, sự trở lại mềm mại sau những ngày hụt nhịp
+- `white-first UI`
+- nền trắng là mặc định
+- màu chỉ dùng để nhấn
+- mascot chỉ dùng để tạo trải nghiệm, không dùng để phủ giao diện
 
-Mục tiêu không phải làm giao diện thành "app cho trẻ em". Mục tiêu là tạo một hệ visual đáng yêu nhưng vẫn đủ trưởng thành để người dùng muốn mở lên mỗi ngày.
+## 2. Tinh thần sản phẩm
 
-## 2. Tuyên ngôn thiết kế
+### 2.1. 5 cảm giác chính
 
-### 2.1. Tính cách sản phẩm
-
-Sản phẩm nên mang 5 cảm giác:
-
-- `ấm`: nền sáng, chất liệu mềm, ít góc cạnh hung hăng
-- `thú vị`: có mascot, microcopy, trạng thái vui mắt
-- `nhẹ đầu`: form và dashboard không tạo áp lực thị giác
-- `có nhịp`: mỗi màn có một điểm nhấn, không phải toàn card trắng giống nhau
-- `có hy vọng`: kể cả khi người dùng trễ việc hay đứt streak, UI vẫn kéo họ quay lại nhẹ nhàng
+- `sạch`: nhìn vào là thấy thoáng
+- `nhẹ`: không có cảm giác bức tường card và form
+- `ấm`: không lạnh như admin panel
+- `vui vừa đủ`: có duyên nhưng không sến
+- `có hy vọng`: lỗi, hụt nhịp, overdue đều được kéo lại nhẹ nhàng
 
 ### 2.2. Vai trò của 3 mascot
 
@@ -35,87 +32,81 @@ Sản phẩm nên mang 5 cảm giác:
 
 Dùng cho:
 
-- màn cần tập trung
-- goal planning
-- progress overview
-- deep work
+- mục tiêu
+- tiến độ
+- focus
 - pomodoro
-- trạng thái "đang đi đúng hướng"
+- deep work
 
-Tính cách:
+Vai trò:
 
-- điềm tĩnh
+- bình tĩnh
 - đáng tin
-- hơi lười một cách duyên
-- làm ít nhưng ra việc
-
-Ngôn ngữ hình ảnh:
-
-- ngồi ôm tre
-- nằm đọc checklist
-- uống trà khi đang focus
-- đeo kính khi vào màn sâu như dashboard, goal detail, pomodoro
+- giữ nhịp
 
 #### Mèo
 
 Dùng cho:
 
-- quick add
 - task board
+- quick add
 - empty state
 - notification
-- success toast
-- các màn cần năng lượng và nhắc nhẹ
+- success state
 
-Tính cách:
+Vai trò:
 
 - lanh
-- hơi nghịch
-- tạo động lực kiểu trêu đùa
-- linh hoạt, lướt nhanh
-
-Ngôn ngữ hình ảnh:
-
-- mèo vồ task
-- mèo chồm lên chip filter
-- mèo nằm trong hộp empty state
-- mèo giơ chân báo "xong rồi"
+- nhanh
+- tạo động lực nhẹ
 
 #### Thỏ
 
 Dùng cho:
 
 - onboarding
-- đăng ký
-- habit streak
+- habits
+- comeback state
 - first-use experience
-- empty state mang tính khích lệ
-- trạng thái "bắt đầu lại cũng được"
 
-Tính cách:
+Vai trò:
 
-- nhanh nhưng không áp lực
-- trong trẻo
-- tử tế
-- kéo người dùng quay lại bằng cảm giác nhẹ nhàng
-
-Ngôn ngữ hình ảnh:
-
-- thỏ nhảy qua từng ô streak
-- thỏ cầm cà rốt checklist
-- thỏ ló đầu ở màn chào mừng
-- thỏ kéo người dùng trở lại khi bỏ lỡ một ngày
+- khởi đầu lại
+- kéo người dùng quay lại
+- giảm cảm giác bị phán xét
 
 ## 3. Hệ visual chung
 
-### 3.1. Bảng màu chính
+### 3.1. Nguyên tắc nền
 
-#### Panda base
+Nền tổng thể nên:
 
-- `Panda Ink`: `#1F1B18`
+- là trắng hoặc trắng ngà
+- không phủ gradient màu lớn lên cả màn
+- chỉ dùng glow nhẹ ở hero hoặc block nhấn
+
+Rule:
+
+- `#FFFFFF` được phép là nền chính
+- card chính vẫn có thể là trắng
+- sự khác biệt đến từ spacing, hierarchy, border, shadow, accent, mascot
+
+### 3.2. Bảng màu
+
+#### Foundation
+
+- `Paper White`: `#FFFFFF`
+- `Warm White`: `#FCFAF7`
+- `Soft Stone`: `#E9E1D7`
+- `Stone Line`: `#DCCFC2`
+- `Muted Text`: `#7C746D`
+- `Ink`: `#1F1B18`
+
+#### Panda accent
+
 - `Bamboo Mist`: `#DDE8D4`
-- `Rice Cream`: `#F8F5EE`
-- `Stone Milk`: `#EFEAE0`
+- `Bamboo Soft`: `#EDF5E8`
+- `Leaf Deep`: `#7FA865`
 
 #### Cat accent
 
@@ -127,396 +118,271 @@ Ngôn ngữ hình ảnh:
 #### Rabbit accent
 
 - `Rabbit Milk`: `#FFF7FB`
-- `Carrot Pop`: `#F29A52`
 - `Blush Ear`: `#F5D7E7`
+- `Carrot Pop`: `#F29A52`
 - `Meadow Mint`: `#DFF3E7`
 
 #### Functional colors
 
-- focus: amber vàng mềm
-- in progress: xanh trời sáng
-- completed: xanh lá bamboo
-- paused: cam sữa
-- comeback: hồng phấn pha đào, dùng cho streak và empty state khích lệ
-- destructive: đỏ dâu nhạt, không đỏ gắt
+- focus: vàng ấm
+- in progress: xanh dương nhạt
+- completed: xanh lá nhạt
+- paused: vàng kem
+- comeback: hồng rất nhạt
+- destructive: đỏ dâu ấm
 
-### 3.2. Chất liệu
+### 3.3. Chất liệu
 
-- nền không phẳng 100%, nên có gradient nhẹ như giấy, kem, trà sữa
-- card bo lớn, bóng mềm, tránh kiểu admin panel góc cứng
-- icon hoặc mascot có thể dùng như watermark rất nhẹ ở hero card
-- border mềm màu stone thay vì xám đậm
-- các module khác nhau dùng cùng chất liệu, chỉ đổi accent theo mascot chính
-
-### 3.3. Hình khối
-
-- ưu tiên bo tròn lớn: `20px - 32px`
-- button dạng viên thuốc
-- card chính như "khay", "bảng gỗ sáng" hoặc "tấm note mềm"
-- badge nhỏ như nhãn dán
-- chip filter có cảm giác như sticker sưu tầm
+- card trắng, viền stone mềm
+- shadow mờ, thấp, không nặng
+- bo góc lớn `20px - 32px`
+- input trắng, border mềm
+- button đa số trắng hoặc ink
+- mascot chỉ là accent, không phải background texture
 
 ### 3.4. Typography
 
-Hướng chữ:
+Định hướng:
 
-- heading đậm, vui, có cá tính
-- body text dễ đọc, không quá nghiêm
-- label ngắn, giảm văn phong tài liệu
+- heading vui nhưng không trẻ con
+- body trung tính, dễ đọc lâu
+- label ngắn
 
 Đề xuất:
 
-- heading: `Baloo 2`, `Nunito`, hoặc `Quicksand`
-- body: `Be Vietnam Pro`, `Plus Jakarta Sans`, hoặc `Manrope`
+- heading: `Baloo 2` hoặc `Nunito`
+- body: `Plus Jakarta Sans`, `Be Vietnam Pro`, hoặc `Manrope`
 
-Lưu ý:
+### 3.5. Layer system
 
-- không dùng quá nhiều font
-- heading vui, body phải gọn và ổn định
-- tone chữ thay đổi bằng copy và spacing, không lạm dụng màu mè
+- `App background`: trắng
+- `Surface 1`: card trắng
+- `Surface 2`: card con trắng pha stone rất nhẹ
+- `Surface 3`: input/chip/button trắng hoặc warm white
 
-### 3.5. Hệ nền và layer
+Khi cần tạo mood:
 
-Không đi theo kiểu:
-
-- nền trắng
-- card trắng
-- input trắng
-- button đen
-
-Hướng đúng là nền nhiều lớp nhưng vẫn nhẹ mắt:
-
-- `App background`: gradient kem sáng pha tre, đào và blush rất nhẹ
-- `Surface level 1`: card chính dùng `Rice Cream` pha tint theo module
-- `Surface level 2`: card con dùng nền nhạt hơn, có viền stone mềm
-- `Surface level 3`: input, chip, mini panel dùng nền tinted glass nhẹ
-
-Ví dụ:
-
-- dashboard: nền `Rice Cream` pha `Bamboo Mist`
-- tasks: nền kem pha `Whisker Pink` và `Toy Yellow` rất nhẹ
-- habits: nền `Rabbit Milk` pha `Meadow Mint`
-- goal detail: nền kem pha tre xanh nhạt
-
-Rule:
-
-- không dùng `#FFFFFF` làm nền chủ đạo cho cả màn
-- chỉ dùng trắng gần thuần cho điểm highlight nhỏ hoặc content sheet bên trong
-- mỗi màn phải có ít nhất một lớp nền hoặc glow giúp nhìn ra mood riêng
+- chỉ tint một góc
+- chỉ tint một block
+- không tint toàn trang
 
 ### 3.6. Button system
 
-Button phải có thứ bậc thị giác và gắn mood mascot, không thể để tất cả trắng hoặc đen.
+#### Primary
 
-#### Primary CTA
+- mặc định dùng `Ink`
+- một số màn có thể dùng accent, nhưng chỉ một màu
+- không lạm dụng gradient
 
-Dùng cho hành động chính của màn:
+#### Secondary
 
-- goals: gradient tre xanh đậm sang ink mềm
-- tasks: coral pha đào hoặc ink đậm với viền ấm
-- habits: carrot pop pha blush ear
+- nền trắng
+- viền stone
+- text ink
 
-Style:
+#### Ghost
 
-- bo tròn lớn
-- padding dày
-- shadow mềm màu cùng tông
-- hover nâng nhẹ, không scale lố
-
-#### Secondary button
-
-- nền tinted theo module
-- viền stone rõ nhưng mềm
-- text màu ink
-- dùng cho `Xem thêm`, `Mở`, `Cập nhật`, `Quay lại`
-
-#### Ghost / subtle
-
-- không trong suốt hoàn toàn
-- nên có nền sữa rất nhạt để tránh cảm giác text trôi
-- dùng cho action phụ hoặc filter toolbar
+- gần như trắng trong
+- active mới có accent
 
 #### Destructive
 
-- không dùng đỏ gắt kiểu lỗi hệ thống
-- dùng đỏ dâu hoặc hồng đỏ ấm
-- chỉ lên full màu khi hover hoặc confirm state
+- đỏ dâu ấm
+- không đỏ chói
 
-### 3.7. Input, select, textarea, chip
+### 3.7. Form controls
 
-Form controls phải có cảm giác "đang thao tác trên một công cụ được chăm chút", không phải HTML mặc định bọc card.
+#### Input / select
 
-#### Input và select
-
-- nền kem pha tint theo module
-- border stone mềm, dày hơn mặc định một chút
-- focus ring có màu mascot chính của màn
-- placeholder dùng màu muted ấm, không xám lạnh
+- nền trắng
+- border stone mềm
+- focus ring nhẹ
+- placeholder muted ấm
 
 #### Textarea
 
-- dùng như giấy note mềm
-- chiều cao vừa đủ, không kéo dài vô nghĩa
-- có thể có hint line hoặc corner glow nhẹ
+- trắng hoặc warm white
+- không cần hiệu ứng trang trí nếu không giúp đọc
 
 #### Chip / filter
 
-- inactive: nền sữa tinted
-- active: full accent color hoặc accent + ink
-- chip mèo: đào, vàng đồ chơi
-- chip gấu trúc: tre xanh, ink
-- chip thỏ: carrot, blush
-
-#### Toggle / checkbox / radio
-
-- checkbox ưu tiên nên có icon riêng như `paw`, `leaf`, `carrot seed`
-- trạng thái on có animation rất ngắn, không giật
+- inactive: trắng, viền stone
+- active: dùng accent
+- trong một hàng filter chỉ nên có vài điểm màu
 
 ### 3.8. Card system
 
-Card không được chỉ là "hộp trắng có shadow".
-
 #### Hero card
 
-- có gradient nội bộ
-- có glow mascot nhẹ
-- có khu vực highlight số liệu hoặc CTA
+- nền trắng
+- có thể có glow nhẹ ở một góc
+- có 1 khu vực nhấn
 
 #### Data card
 
-- nền cream tinted
-- viền stone + inset highlight nhẹ
-- số liệu to, text phụ ngắn
+- nền trắng
+- số liệu to
+- text phụ ngắn
 
 #### Form card
 
-- nền ấm hơn background một nấc
+- nền trắng
 - chia section rõ
-- action footer có line phân tách nhẹ
+- footer action tách nhẹ
 
 #### Empty state card
 
-- minh họa mascot nhỏ
-- một câu rõ việc nên làm tiếp
-- một CTA nổi bật
+- có mascot nhỏ
+- một câu hướng dẫn
+- một CTA
 
-### 3.9. Mapping màu theo module
+### 3.9. Mapping theo module
 
-- `Dashboard / Goals / Pomodoro`: tre xanh + ink + cream
-- `Tasks / Quick actions / Notifications`: đào, coral, vàng đồ chơi
-- `Habits / Onboarding / Comeback`: carrot, blush, meadow mint
-- `Notes`: pastel paper, hồng be, cream
-- `Projects`: neutral ấm pha accent theo project
+- `Dashboard / Goals / Pomodoro`: trắng + bamboo accent
+- `Tasks / Quick actions / Notifications`: trắng + cat peach/coral accent
+- `Habits / Onboarding / Comeback`: trắng + blush/carrot accent
+- `Notes`: trắng + stone ấm
+- `Projects`: trắng + neutral accent
 
 ## 4. Nguyên tắc UX
 
-### 4.1. Ít áp lực hơn
+### 4.1. Một màn chỉ có một trọng tâm
 
-Người dùng mở app không nên thấy một bức tường form trắng. Mỗi màn cần có:
+Mỗi màn cần có:
 
 - một điểm nhìn chính
 - một hành động chính
-- một lớp thông tin phụ có thể thu gọn
+- một lớp thông tin phụ
 
-### 4.2. Mascot là hướng dẫn, không phải đồ trang trí vô nghĩa
+### 4.2. Mascot phải phục vụ UX
 
-Ví dụ:
+Mascot chỉ nên xuất hiện ở:
 
-- empty state goals: mèo ngồi trên tờ note và nhắc tạo mục tiêu đầu tiên
-- dashboard focus: gấu trúc ôm tre với dòng "Hôm nay làm ít nhưng trúng việc"
-- overdue tasks: mèo cau mày, nhưng theo kiểu dễ thương chứ không dọa
-- streak hụt: thỏ nghiêng đầu với dòng "Không sao, mình nhảy lại từ hôm nay"
+- hero nhỏ
+- empty state
+- success state
+- reminder nhẹ
+- onboarding
+- ornament treo góc
 
-### 4.3. Microcopy phải có duyên
+Không nên:
 
-Ví dụ nên dùng:
+- nhét 3 mascot vào giữa cùng một block
+- để mascot tranh chỗ với form hoặc dữ liệu
+- dùng mascot ở mọi card
+
+### 4.3. Microcopy phải ngắn
+
+Nên dùng:
 
 - "Mèo đang chờ việc mới."
 - "Gấu trúc bảo việc này đáng ưu tiên."
-- "Thỏ nói hôm nay bắt đầu lại vẫn tính là tiến lên."
-- "Chưa có gì trong góc này. Có muốn thả một việc vào không?"
+- "Thỏ nói hôm nay quay lại vẫn tính là tiến lên."
 
-Không nên dùng:
+Không nên:
 
-- câu quá dài
-- giọng quá kỹ thuật
-- văn phong quá đáng yêu đến mức trẻ con
+- giải thích dài
+- mô tả một thứ ai cũng nhìn ra
+- cute hóa quá đà
 
-### 4.4. Trải nghiệm phải có phần thưởng
+### 4.4. Phản hồi phải vui nhưng nhanh
 
 Khi người dùng:
 
 - hoàn thành việc
 - kéo thả đúng cột
 - tạo mục tiêu đầu tiên
-- streak habit tăng
+- tăng streak
 
-thì giao diện nên có phản hồi vui:
+thì UI nên phản hồi bằng:
 
-- toast có mascot
+- toast ngắn
 - icon chuyển động nhẹ
-- badge thành tựu nhỏ
-- lời nhắc quay lại mềm khi người dùng hụt nhịp
+- mascot nhỏ
+- badge gọn
 
-## 5. Kế hoạch từ trang chủ đến dashboard
+## 5. Định hướng từ trang chủ đến dashboard
 
 ## 5.1. Trang chủ `(public)/page.tsx`
 
-### Vai trò
+### Mục tiêu
 
-Trang chủ phải bán được cảm giác:
+Trang chủ phải cho thấy:
 
-- quản lý cuộc sống nhưng không khô
-- đây là sản phẩm có cá tính
-- app này làm việc nghiêm túc theo cách dễ thương
+- sản phẩm này sạch
+- có cá tính
+- không quá màu mè
 
-### Bố cục đề xuất
+### Hướng giao diện
 
-#### Hero
+- nền trắng
+- hero card trắng lớn
+- mascot ở dạng minh họa hoặc ornament nhỏ
+- CTA chính rõ, CTA phụ trắng
 
-- bên trái: headline mạnh
-- bên phải: minh họa gấu trúc, mèo và thỏ cùng đứng quanh một bảng kế hoạch
+### Rule
 
-Nội dung:
-
-- headline: "Làm việc có mục tiêu, nhưng đừng làm cuộc sống thành bảng tính."
-- subheadline: "Một không gian quản lý mục tiêu, việc làm và thói quen với gấu trúc giữ nhịp, mèo kéo hành động, thỏ giữ động lực khởi đầu."
-- CTA chính: `Bắt đầu cùng bộ ba`
-- CTA phụ: `Xem không gian mẫu`
-
-### Section tiếp theo
-
-- `Goal planning` với gấu trúc
-- `Task board` với mèo
-- `Habit streak` với thỏ
-- `Pomodoro` với gấu trúc uống trà
-
-### Phong cách
-
-- nền sáng ngà
-- mảng màu tre xanh, cam cà rốt và hồng đào rất nhẹ
-- có vài shape như paw print, lá tre, tai mèo, tai thỏ nhưng dùng tiết chế
-
-### Màu và CTA
-
-- hero background không trắng, mà là gradient `Rice Cream -> Bamboo Mist -> Rabbit Milk`
-- CTA chính dùng gradient tre xanh pha ink, có icon nhỏ của bộ 3 mascot
-- CTA phụ là secondary button nền sữa pha hồng đào
-- các section phía dưới xen kẽ nền kem, blush, bamboo để tránh cảm giác landing page trắng kéo dài
+- không phủ màu toàn hero
+- màu chỉ ở CTA, badge, icon, mascot
 
 ## 5.2. Đăng nhập / đăng ký `(auth)/login`, `(auth)/register`
 
 ### Mục tiêu
 
-Đỡ nhàm chán, đỡ "điền form xong thôi".
+- gọn
+- bớt nhàm
+- không giống form hệ thống mặc định
 
 ### Hướng thiết kế
 
-- layout 2 cột trên desktop
-- trái: form ngắn gọn
-- phải: mascot illustration + lời nhắn ngắn
+- layout rõ
+- form card trắng
+- mascot là điểm nhấn duy nhất
+- với login có thể dùng mèo peekaboo
 
-Ví dụ:
+### Rule
 
-- login: mèo đang ngó vào màn hình "Lâu rồi mới gặp."
-- register: thỏ cầm cà rốt checklist "Bắt đầu nhẹ thôi, mình nhảy từng bước."
-- return user sau vài ngày vắng mặt: gấu trúc và thỏ cùng chào "Mình nối lại nhịp từ hôm nay."
-
-### UX
-
-- bỏ mô tả dài dòng
-- lỗi form nên hiển thị ngắn gọn, thân thiện
-- CTA rõ, không dùng nhiều text phụ
-
-### Màu và form
-
-- auth form card dùng nền kem pha blush hoặc bamboo tùy ngữ cảnh
-- input không để trắng thuần, dùng nền sữa ấm
-- submit button:
-  - login: mèo, coral hoặc ink ấm
-  - register: thỏ, carrot pop pha blush
-- khu vực minh họa bên phải có gradient và mascot lớn hơn, không để trống
+- input trắng
+- button đa số trắng hoặc ink
+- chỉ mascot mới mang cảm giác vui
 
 ## 5.3. App shell, sidebar, mobile nav
 
 ### Sidebar
 
-Nên biến sidebar thành một "góc trú" của sản phẩm:
+- nền trắng hoặc stone rất nhạt
+- item active dùng accent nhỏ
+- icon rõ, text ngắn
 
-- logo là đầu mèo hoặc đầu gấu trúc tối giản, có phiên bản đủ bộ 3 mascot cho brand page
-- top area có mascot avatar luân phiên theo section
-- navigation item active có shape như sticker, không phải chỉ là nền đen
-
-### Màu và trạng thái
-
-- sidebar không dùng nền trắng phẳng, mà là nền cream pha stone
-- item active:
-  - dashboard/goals: bamboo chip
-  - tasks: peach-coral chip
-  - habits: blush-carrot chip
-- hover state là tint rất nhẹ, không phải đổ nền đen
-- badge đếm nên là mini capsule đồng màu với module
-
-### Mapping mascot theo module
+### Mapping mascot
 
 - Dashboard: gấu trúc
-- Làm việc / tasks: mèo
-- Mục tiêu: gấu trúc
-- Thói quen: thỏ
-- Pomodoro: gấu trúc
-- Ghi chú: mèo nằm lên giấy note
-- Onboarding / getting started: thỏ
-
-### Mobile nav
-
-- icon bo tròn hơn
-- active item có nền như jelly capsule
-- có thể dùng paw dot cho notification, carrot dot cho streak, bamboo dot cho focus
+- Tasks: mèo
+- Goals: gấu trúc
+- Habits: thỏ
 
 ## 5.4. Dashboard `(app)/dashboard/page.tsx`
 
 ### Mục tiêu
 
-Dashboard phải giống "trạm điều khiển vui vẻ" thay vì một cụm thống kê vô hồn.
+Dashboard phải là một trạm điều khiển sạch:
 
-### Bố cục đề xuất
+- nhìn nhanh
+- hiểu nhanh
+- có cá tính vừa đủ
 
-#### Hero card
+### Bố cục
 
-- gấu trúc ngồi thư giãn
-- câu chào theo thời điểm trong ngày
-- tóm tắt: hôm nay có bao nhiêu việc focus, bao nhiêu việc quá hạn, streak habit
+- hero trắng lớn
+- 3 stat card trắng
+- một mascot chính hoặc ornament ở góc
+- phần việc quan trọng nổi bật hơn phần còn lại
 
-Ví dụ text:
+### Rule
 
-- "Hôm nay gấu trúc khuyên bạn chốt 1 việc quan trọng trước."
-
-#### 3 khối chính
-
-- `Việc cần chú ý ngay`
-- `Tiến độ mục tiêu`
-- `Thói quen hôm nay`
-
-#### Khối phụ
-
-- quick add dạng mèo nhảy vào khay
-- habit streak mini có thỏ
-- pomodoro mini
-- nhật ký gần đây
-
-### UX
-
-- không nhồi tất cả card cùng trọng số
-- có một card hero lớn
-- còn lại chia 2-3 cột rõ nhịp
-
-### Màu và component
-
-- hero card dùng gradient tre + cream, có glow xanh nhạt
-- khối `Việc cần chú ý ngay` dùng accent mèo pha đào
-- khối `Thói quen hôm nay` dùng accent thỏ pha carrot và meadow mint
-- các stat card không đồng màu, nhưng phải cùng hệ chất liệu
-- quick add trên dashboard không dùng white sheet, mà dùng composer coral-blush nhẹ
+- không nhồi mascot vào giữa hero
+- mascot nên treo góc hoặc đứng cạnh một block
+- text hero ngắn
 
 ## 6. Kế hoạch các màn chính sau dashboard
 
@@ -524,41 +390,31 @@ Ví dụ text:
 
 ### Goals list
 
-- hero: gấu trúc ôm ống tre mục tiêu
-- inline create panel: như tờ note dán, không phải form admin
-- empty state: "Gấu trúc chưa có mục tiêu để canh giữ."
+- hero trắng
+- accent bamboo
+- gấu trúc là mascot chính
 
 ### Goal detail
 
-- milestone là các "chặng tre"
-- mỗi cột mốc như một trạm dừng trên đường đi
-- task trong goal nên gọn hơn, ít card lồng nhau
-- log timeline có icon mèo, gấu trúc hoặc thỏ nhỏ tùy loại event
-
-### Màu và cấu trúc
-
-- hero detail dùng nền tre xanh sáng pha kem, không phải card trắng lớn
-- progress card dùng ink + bamboo glow
-- milestone card dùng surface tinted xanh nhạt, task bên trong sáng hơn một nấc
-- nút `Thêm cột mốc` là primary bamboo
-- action nguy hiểm tách ra và dùng đỏ dâu ấm
+- progress card dùng bamboo accent nhỏ
+- milestone card trắng
+- log dùng icon nhỏ
 
 ### Goal edit
 
-- card tổng quan bên phải
-- form chính bên trái
-- text ngắn, hướng dẫn theo kiểu coach mềm
+- form trắng
+- summary card trắng
+- copy ngắn
 
 ## 6.2. Làm việc `(app)/tasks/page.tsx`
 
 ### Board concept
 
-Board nên là sân chơi của mèo:
+Board là sân của mèo, nhưng chỉ theo cách tiết chế:
 
-- cột có accent màu riêng
-- khi kéo thả, cột sáng lên như hiện đang "mở miệng đón task"
-- task card có quick action rất rõ
-- filter nhanh là các chip như đồ chơi mèo
+- board tổng vẫn trắng
+- accent mèo chỉ ở chip, quick add, drop state, reminder
+- cột không đổ màu mạnh
 
 ### Empty state
 
@@ -567,101 +423,32 @@ Board nên là sân chơi của mèo:
 
 ### Quick add
 
-- cảm giác như "viết một mẩu giấy rồi thả vào cột"
+- giống một composer sạch
 - không giống mini admin form
-
-### Màu và thao tác
-
-- mỗi cột có accent riêng nhưng vẫn cùng hệ mèo
-- composer thêm nhanh dùng nền peach/whisker tint, không phải white card
-- due chip active dùng coral hoặc ink ấm
-- card drag state sáng lên rõ bằng glow cùng màu cột
-- quick action button trên card là pill có nền tint, không phải button trắng mặc định
+- nền trắng, accent chỉ ở các chip active
 
 ## 6.3. Dự án `(app)/projects/*`
 
-### Theme
-
-Dự án là "ngôi nhà lớn", các task là đồ vật bên trong.
-
-### Hướng UI
-
-- project card có bìa màu nhẹ
-- project detail có header như bảng ghim
-- task gắn project có icon mèo cắp đồ, gấu trúc giữ nhịp hoặc thỏ báo tiến độ khởi đầu
+- trắng là nền chính
+- accent theo project
+- mascot rất nhẹ
 
 ## 6.4. Thói quen `(app)/habits/*`
 
-### Theme
-
-Thỏ phải là mascot chính của habit vì tạo cảm giác nhịp nhỏ mỗi ngày và tinh thần "hụt một hôm không sao".
-
-### Ý tưởng
-
-- streak dùng nhịp bước nhảy hoặc dấu chân thỏ thay vì dấu chân mèo
-- habit completion tạo phản hồi như thỏ nhảy lên một nấc
-- bad days dùng microcopy nhẹ nhàng, không tạo cảm giác thất bại
-
-### Màu và phản hồi
-
-- habits page dùng nền rabbit milk pha meadow mint
-- streak card dùng carrot pop làm màu điểm nhưng không phủ toàn màn
-- CTA check-in là nút carrot gradient
-- missed day banner dùng blush nhẹ, tránh đỏ cảnh báo
-
-Ví dụ:
-
-- "Hôm nay thỏ chưa thấy bạn check-in."
-- "Ổn rồi, mai nhảy tiếp."
-- "Bỏ lỡ một ngày không làm đường chạy biến mất."
+- trắng là nền chính
+- thỏ là mascot chính
+- streak là nơi dùng carrot/blush
 
 ## 6.5. Ghi chú `(app)/notes/*`
 
-### Theme
-
-Mèo nằm trên giấy note hoặc đẩy bút.
-
-### Hướng UI
-
-- note card như sticky note mềm
-- màu nhạt pastel
-- edit view giống sổ tay hơn là form CRUD
+- trắng + stone ấm
+- mèo chỉ nên là accent nhỏ
 
 ## 6.6. Pomodoro `(app)/pomodoro/page.tsx`
 
-### Theme
-
-Đây là màn rất hợp cho gấu trúc.
-
-### Hướng UI
-
-- timer trung tâm lớn
-- gấu trúc uống trà hoặc ngồi thiền
-- chế độ focus và break có 2 mood khác nhau
-
-Ví dụ:
-
-- focus: gấu trúc ngồi nghiêm túc
-- break: mèo lăn ra chơi
-- comeback sau break dài: thỏ nhắc quay lại bằng microcopy ngắn
-
-## 6.7. Notifications, follows, settings
-
-### Notifications
-
-- icon chuông đi cùng biểu cảm mèo
-- phân loại thông báo bằng sticker nhỏ
-
-### Follows
-
-- như "vườn mục tiêu" có nhiều mục tiêu theo dõi
-- mascot nhẹ hơn, không tranh với nội dung
-
-### Settings profile
-
-- tối giản hơn các màn khác
-- có góc chọn `mood mascot`: panda, cat, rabbit, mixed
-- có thể chọn `độ tinh nghịch của microcopy`: nhẹ, vừa, rõ ràng tối giản
+- trắng + bamboo
+- gấu trúc là mascot chính
+- focus và break khác nhau bằng trạng thái, không cần đổ màu cả màn
 
 ## 7. Component system cần làm
 
@@ -671,132 +458,96 @@ Cần chuẩn bị:
 
 - panda hero
 - panda focus
-- panda success
 - cat quick-add
-- cat empty state
-- cat warning nhẹ
+- cat success
 - rabbit onboarding
 - rabbit streak
 - rabbit comeback
-- sticker icon nhỏ: paw, bamboo, fish, yarn ball, bell, carrot, hop trail
 
 Ưu tiên:
 
-- SVG đơn giản
-- cùng một style illustration
-- ít màu, dễ tái dùng
+- SVG hoặc PNG rõ ràng
+- cùng một style
+- dùng như accent, không dùng như background
 
 ## 7.2. New UI components
 
-- `MascotHeroCard`
+- `MascotOrnament`
 - `MoodEmptyState`
-- `PawBadge`
-- `BambooStatCard`
+- `StickerChip`
 - `CuteQuickComposer`
 - `MascotToast`
-- `MoodSectionHeader`
-- `StickerChip`
-- `RabbitStreakCard`
-- `ComebackBanner`
-- `TintedInput`
-- `MascotPrimaryButton`
 - `ModuleSurfaceCard`
-- `GradientActionBar`
+- `TintedActiveChip`
 
-## 7.3. Design tokens nên chốt
+## 7.3. Design tokens
 
 - `--bg-app`
 - `--bg-surface-1`
 - `--bg-surface-2`
-- `--bg-muted`
 - `--border-soft`
 - `--shadow-soft`
-- `--shadow-glow`
 - `--accent-panda`
 - `--accent-cat`
 - `--accent-rabbit`
-- `--accent-danger`
 - `--text-strong`
 - `--text-soft`
 
 ## 7.4. Motion
 
-Motion nên nhẹ và hữu ích:
-
-- mascot nháy mắt hoặc lắc nhẹ khi load
+- ornament mascot đung đưa rất nhẹ
 - task drop có pulse nhẹ
 - complete action có sparkle rất ngắn
-- streak tăng có hop animation rất nhanh của thỏ
-- không dùng animation quá dài hoặc quá nhiều
+- streak tăng có hop animation nhanh
+- không dùng animation dài
 
 ## 8. Copywriting system
 
-## 8.1. Giọng điệu
+### Giọng điệu
 
 - ngắn
 - hóm hỉnh
-- không nói quá nhiều
-- không "cute hóa" mọi thứ
+- không lạm dụng thú vật trong mọi câu
 
-### Công thức microcopy
-
-- một phần hữu ích
-- một phần dí dỏm
-
-Ví dụ:
+### Ví dụ
 
 - "Chưa có việc nào ở đây. Mèo đang chiếm chỗ."
-- "Mục tiêu này đang ngủ đông. Có muốn đánh thức nó không?"
-- "Hôm nay tiến độ hơi chậm, nhưng gấu trúc vẫn tin bạn."
+- "Mục tiêu này đang ngủ đông."
+- "Hôm nay tiến độ hơi chậm, nhưng gấu trúc vẫn canh."
 - "Không sao, thỏ giữ sẵn chỗ để bạn quay lại."
 
-## 8.2. Success states
+### Error states
 
-- "Xong rồi. Mèo duyệt."
-- "Đã lưu. Gấu trúc ghi nhận."
-- "Thả việc thành công."
-- "Streak vẫn sống. Thỏ vừa nhảy thêm một ô."
-
-## 8.3. Error states
-
-- vẫn rõ nguyên nhân
-- chỉ thêm một chút duyên, không làm mơ hồ
-
-Ví dụ:
-
-- "Tên công việc còn thiếu."
-- "Hạn công việc chưa hợp lệ."
-- "Mèo tìm mãi chưa thấy dữ liệu này."
-- "Thỏ chưa thấy lịch hợp lệ để nhảy tới."
+- phải rõ nguyên nhân trước
+- duyên chỉ là phần phụ
 
 ## 9. Nguyên tắc tránh bị sến hoặc rối
 
+- nền trắng là mặc định
+- màu không phủ cả màn nếu không có lý do rõ ràng
 - mascot không xuất hiện ở mọi ngóc ngách
-- một màn chỉ nên có một điểm nhấn mascot chính
-- không dùng quá nhiều icon động vật cùng lúc
-- không biến mọi button thành hình tai mèo
+- một màn chỉ nên có một mascot chính
+- nếu có mascot phụ, chỉ nên ở mức ornament góc
 - ưu tiên usability trước trang trí
 
 Rule quan trọng:
 
-- `70% clean product UI`
-- `20% mascot personality`
-- `10% surprise delight`
+- `85% clean product UI`
+- `10% mascot personality`
+- `5% surprise delight`
 
-## 10. Kế hoạch triển khai theo giai đoạn
+## 10. Kế hoạch triển khai
 
 ## Phase 1. Foundation
 
-- chốt palette panda + cat + rabbit
+- chốt token trắng + accent
 - chốt typography
-- chốt bộ bo góc, shadow, chip, button
-- chốt style illustration
+- chốt border, radius, shadow, button
 
 ## Phase 2. Public and shell
 
 - homepage
 - login/register
-- onboarding
 - sidebar
 - mobile nav
 
@@ -817,81 +568,33 @@ Rule quan trọng:
 ## Phase 5. Delight layer
 
 - mascot toast
-- empty state riêng theo page
-- comeback banner cho streak hoặc overdue recovery
-- seasonal theme nhẹ
-- achievements và streak celebration
+- ornament góc
+- comeback banner
+- celebration nhỏ
 
-## 11. Ưu tiên thực thi nếu làm ngay trong codebase này
-
-Thứ tự nên làm:
+## 11. Thứ tự nên làm ngay trong codebase này
 
 1. `globals.css`
-2. app shell: sidebar + mobile nav
-3. homepage `(public)/page.tsx`
+2. app shell
+3. homepage
 4. dashboard
 5. goals
 6. tasks board
 7. task edit/create
 8. habits
 
-Lý do:
+## 12. Kết luận
 
-- những chỗ này quyết định cảm nhận thương hiệu nhanh nhất
-- sửa ít nhưng nhìn ra phong cách rõ ngay
-- thỏ chỉ thực sự phát huy nếu habits và onboarding được làm đúng
+Hướng đúng cho sản phẩm này không phải là phủ màu hay nhét mascot khắp nơi.
 
-## 12. Deliverables nên có
+Hướng đúng là:
 
-- bộ token màu
-- bộ mascot SVG
-- 1 file copy guideline
-- 1 file component guideline
-- 1 file mascot behavior guideline
-- 1 file `design-tokens.md` cho màu, button, input, card, chip
-- 1 file `page-mood-map.md` để map module nào dùng mascot và accent nào
-- mockup cho:
-  - homepage
-  - dashboard
-  - goals list
-  - task board
-  - task edit
-  - habits
+- nền trắng để dễ dùng lâu
+- accent màu để phân vai
+- mascot để tạo cảm xúc đúng lúc
 
-## 13. Kết luận
-
-Hướng `gấu trúc + mèo + thỏ` hợp với sản phẩm này hơn mô hình 2 mascot, vì mỗi con vật gánh một nhóm cảm xúc và hành vi rõ ràng.
-
-Gấu trúc cho phần:
-
-- mục tiêu
-- tiến độ
-- focus
-- pomodoro
-
-Mèo cho phần:
-
-- task board
-- quick add
-- empty state
-- notification
-
-Thỏ cho phần:
-
-- onboarding
-- habits
-- first-use
-- comeback moments
-
-Nếu triển khai đúng, sản phẩm sẽ:
-
-- khác biệt hơn
-- vui hơn
-- giữ người dùng tốt hơn
-- bớt cảm giác "app quản lý công việc khô và nặng đầu"
-
-Điểm mấu chốt là:
+Điểm mấu chốt:
 
 - mascot phải phục vụ UX
-- sự hóm hỉnh phải đi cùng tính rõ ràng
-- đáng yêu nhưng không làm mất tính chuyên nghiệp
+- trắng là nền để mọi thứ còn thở
+- hóm hỉnh phải đi cùng rõ ràng

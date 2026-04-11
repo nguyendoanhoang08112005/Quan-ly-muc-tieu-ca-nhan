@@ -19,12 +19,12 @@ import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
-  CalendarDays,
   CircleDot,
   Clock3,
   GripVertical,
   Layers3,
   LoaderCircle,
+  PawPrint,
   Plus,
   Sparkles,
   Target
@@ -33,7 +33,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   goalPriorityLabels,
-  workStatusClassNames,
   workStatusLabels
 } from "@/features/goals/goal-helpers";
 import type { GoalPriority, WorkStatus } from "@/features/goals/types";
@@ -48,25 +47,30 @@ const taskColumns: Array<{
   accentClassName: string;
   status: WorkStatus;
   description: string;
+  dotClassName: string;
 }> = [
   {
-    accentClassName: "from-stone-100 to-white",
+    accentClassName: "from-[#fbfaf8] to-white",
     description: "Chưa bắt đầu",
+    dotClassName: "bg-stone-400",
     status: "not_started"
   },
   {
-    accentClassName: "from-sky-100 to-white",
+    accentClassName: "from-[#fff3ec] to-white",
     description: "Đang làm",
+    dotClassName: "bg-[#e69675]",
     status: "in_progress"
   },
   {
-    accentClassName: "from-amber-100 to-white",
+    accentClassName: "from-[#fff9ee] to-white",
     description: "Tạm dừng",
+    dotClassName: "bg-[#d8a64f]",
     status: "paused"
   },
   {
-    accentClassName: "from-emerald-100 to-white",
+    accentClassName: "from-[#f0f8f2] to-white",
     description: "Đã xong",
+    dotClassName: "bg-[#78a36a]",
     status: "completed"
   }
 ];
@@ -326,13 +330,31 @@ function getTaskIdFromDndData(data: Record<string, unknown> | undefined) {
 function getEmptyColumnMessage(status: WorkStatus) {
   switch (status) {
     case "not_started":
-      return "Chưa có việc chờ bắt đầu. Tạo nhanh một việc để lên kế hoạch rõ hơn.";
+      return "Chưa có việc mới.";
     case "in_progress":
-      return "Chưa có việc đang làm. Kéo một việc sang đây khi bạn bắt đầu xử lý.";
+      return "Chưa có việc đang làm.";
     case "paused":
-      return "Không có việc đang tạm dừng. Cột này dùng cho các việc cần quay lại sau.";
+      return "Không có việc tạm dừng.";
     case "completed":
-      return "Chưa có việc hoàn thành. Khi xong, kéo việc sang đây để chốt trạng thái.";
+      return "Chưa có việc hoàn thành.";
+  }
+}
+
+function getQuickFilterButtonClass(value: TaskQuickFilter, active: boolean) {
+  if (!active) {
+    return "border border-stone-200 bg-white text-stone-700 hover:border-stone-950 hover:text-stone-950";
+  }
+
+  switch (value) {
+    case "focus":
+      return "border border-[#f0d6a2] bg-[#fff4d8] text-[#8f5a11]";
+    case "overdue":
+      return "border border-rose-200 bg-rose-50 text-rose-700";
+    case "completed":
+      return "border border-emerald-200 bg-emerald-50 text-emerald-700";
+    case "all":
+    default:
+      return "border border-stone-900 bg-stone-900 text-white";
   }
 }
 
@@ -427,16 +449,16 @@ function TaskCardContent({
   task: TaskListItem;
 }) {
   const contextLabel = task.milestoneSequenceNo
-    ? `Cột mốc ${task.milestoneSequenceNo}`
+    ? `Mốc ${task.milestoneSequenceNo}`
     : task.goalTitle;
   const isOverdue = isTaskOverdue(task, referenceNow);
   const statusActionLabel =
     task.status === "in_progress"
-      ? "Hoàn thành"
+      ? "Xong"
       : task.status === "paused"
-        ? "Tiếp tục"
+        ? "Tiếp"
         : task.status === "not_started"
-          ? "Bắt đầu"
+          ? "Làm"
           : null;
   const stopCardDrag = (event: ReactPointerEvent<HTMLElement>) => {
     event.stopPropagation();
@@ -466,9 +488,8 @@ function TaskCardContent({
           </h3>
         </div>
 
-        <span className="inline-flex items-center gap-1 rounded-full border border-stone-200 bg-white px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-stone-400">
-          <GripVertical className="h-3 w-3" />
-          Kéo
+        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-400 shadow-sm">
+          <GripVertical className="h-3.5 w-3.5" />
         </span>
       </div>
 
@@ -540,14 +561,14 @@ function TaskCardContent({
               className={cn(
                 "rounded-full px-2.5 py-1 text-[10px] font-semibold transition",
                 task.isFocus
-                  ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                  ? "bg-[#fff0cf] text-[#925a10] hover:bg-[#fde7b2]"
                   : "border border-stone-200 bg-white text-stone-700 hover:border-stone-950 hover:text-stone-950"
               )}
               disabled={syncing}
               onClick={() => onQuickToggleFocus(task.id)}
               type="button"
             >
-              {task.isFocus ? "Bỏ ưu tiên" : "Ưu tiên"}
+              {task.isFocus ? "Đang ưu tiên" : "Ưu tiên"}
             </button>
           ) : null}
         </div>
@@ -564,7 +585,7 @@ function TaskCardContent({
             href={`/goals/${task.goalId}/tasks/${task.id}/edit`}
             onPointerDown={stopCardDrag}
           >
-            Mở
+            Chi tiết
             <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
@@ -617,10 +638,10 @@ function TaskBoardCard({
       {...attributes}
       {...listeners}
       className={cn(
-        "ui-card-compact cursor-grab touch-none p-3 transition hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md",
+        "cursor-grab touch-none rounded-[1.35rem] border border-[#eadfd4] bg-white p-3 transition hover:-translate-y-0.5 hover:border-[#d9c9ba] hover:shadow-[0_16px_30px_-24px_rgba(28,25,23,0.32)]",
         isDragging && "cursor-grabbing opacity-60 shadow-lg",
         syncing && "ring-1 ring-stone-300",
-        isOver && !isDragging && "border-stone-950"
+        isOver && !isDragging && "border-[#e8a887] shadow-[0_18px_32px_-24px_rgba(232,168,135,0.55)]"
       )}
       ref={(node) => {
         setDragNodeRef(node);
@@ -651,6 +672,7 @@ function TaskBoardColumn({
   creating,
   count,
   description,
+  dotClassName,
   dragging,
   focusCount,
   onQuickCreate,
@@ -666,6 +688,7 @@ function TaskBoardColumn({
   creating: boolean;
   count: number;
   description: string;
+  dotClassName: string;
   dragging: boolean;
   focusCount: number;
   onQuickCreate: (
@@ -742,9 +765,9 @@ function TaskBoardColumn({
   return (
     <section
       className={cn(
-        "ui-board-column relative min-h-[calc(100vh-18rem)] overflow-hidden p-3 transition-all duration-150",
+        "relative min-h-[calc(100vh-18rem)] overflow-hidden rounded-[1.6rem] border border-[#eadfd4] bg-white p-3 transition-all duration-150",
         isDropHighlighted &&
-          "border-stone-950 bg-[linear-gradient(180deg,#ffffff_0%,#f6f5f1_100%)] shadow-[0_26px_50px_-34px_rgba(28,25,23,0.42)] ring-2 ring-stone-950/10"
+          "border-[#e8a887] bg-[linear-gradient(180deg,#fffdfa_0%,#fff5ef_100%)] shadow-[0_26px_50px_-34px_rgba(232,168,135,0.4)] ring-2 ring-[#f6d9cb]"
       )}
       ref={setNodeRef}
     >
@@ -752,52 +775,47 @@ function TaskBoardColumn({
         className={cn(
           "pointer-events-none absolute inset-2 rounded-[1.5rem] border-2 border-dashed transition-all duration-150",
           isDropHighlighted
-            ? "border-stone-950/40 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.95),rgba(244,243,239,0.86))] opacity-100"
+            ? "border-[#e9b79f] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.95),rgba(255,243,235,0.9))] opacity-100"
             : "border-transparent opacity-0"
         )}
       />
 
       <div className="relative z-10">
-        <div className={cn("rounded-[1.25rem] bg-gradient-to-b p-3", accentClassName)}>
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-500">
-              {description}
-            </p>
-            <span
-              className={cn(
-                "mt-1 inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold",
-                workStatusClassNames[status]
-              )}
-            >
-              {workStatusLabels[status]}
+        <div className={cn("rounded-[1.3rem] border border-[#efe6dd] bg-gradient-to-b p-3", accentClassName)}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className={cn("h-2.5 w-2.5 rounded-full", dotClassName)} />
+                <p className="text-sm font-bold text-stone-900">{workStatusLabels[status]}</p>
+              </div>
+              <p className="mt-1 text-[11px] font-medium text-stone-500">{description}</p>
+            </div>
+            <span className="rounded-full border border-[#eadfd4] bg-white px-2.5 py-1 text-[10px] font-semibold text-stone-600 shadow-sm">
+              {count}
             </span>
           </div>
-          <span className="rounded-full border border-white/70 bg-white/80 px-2.5 py-1 text-[10px] font-semibold text-stone-600">
-            {count}
-          </span>
+
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <span className="rounded-full border border-white/80 bg-white/90 px-2 py-1 text-[10px] font-medium text-stone-600">
+              {totalVisibleTasks > 0 ? `${count}/${totalVisibleTasks}` : "Trống"}
+            </span>
+            {focusCount > 0 ? (
+              <span className="rounded-full border border-[#f3dfb4] bg-[#fff4d8] px-2 py-1 text-[10px] font-medium text-[#8f5a11]">
+                {focusCount} ưu tiên
+              </span>
+            ) : null}
+            {overdueCount > 0 ? (
+              <span className="rounded-full border border-rose-200 bg-rose-50 px-2 py-1 text-[10px] font-medium text-rose-700">
+                {overdueCount} quá hạn
+              </span>
+            ) : null}
+            {isDropHighlighted ? (
+              <span className="rounded-full border border-[#ebb89d] bg-[#fff0e8] px-2.5 py-1 text-[10px] font-semibold text-[#b66343] shadow-sm">
+                Thả vào đây
+              </span>
+            ) : null}
+          </div>
         </div>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          <span className="rounded-full bg-white/85 px-2 py-1 text-[10px] font-medium text-stone-600">
-            {totalVisibleTasks > 0 ? `${count}/${totalVisibleTasks} việc` : "Chưa có việc"}
-          </span>
-          {focusCount > 0 ? (
-            <span className="rounded-full bg-amber-100 px-2 py-1 text-[10px] font-medium text-amber-700">
-              {focusCount} ưu tiên
-            </span>
-          ) : null}
-          {overdueCount > 0 ? (
-            <span className="rounded-full bg-rose-100 px-2 py-1 text-[10px] font-medium text-rose-700">
-              {overdueCount} quá hạn
-            </span>
-          ) : null}
-          {isDropHighlighted ? (
-            <span className="rounded-full bg-stone-950 px-2.5 py-1 text-[10px] font-semibold text-white shadow-sm">
-              Thả vào cột này
-            </span>
-          ) : null}
-        </div>
-      </div>
 
         <div
           className={cn(
@@ -809,46 +827,32 @@ function TaskBoardColumn({
         </div>
 
         <div className="mt-3">
-        {isComposerOpen ? (
-          <form
-            className="rounded-[1.5rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8f7f3_100%)] p-3.5 shadow-sm"
-            onSubmit={handleSubmit}
-          >
-            <div className="space-y-3">
-              <div className="flex items-center justify-between gap-2">
-                <div className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-600 shadow-sm">
-                  <Sparkles className="h-3 w-3" />
-                  Thêm nhanh
-                </div>
-                {quickCreateMilestone ? (
-                  <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-medium text-stone-600">
-                    Mốc {quickCreateMilestone.sequenceNo}
-                  </span>
-                ) : (
-                  <span className="text-[10px] font-medium text-stone-400">
-                    {workStatusLabels[status]}
-                  </span>
-                )}
-              </div>
-
-              <Input
-                className="h-11 rounded-2xl border-stone-200 bg-white text-sm shadow-sm focus:ring-1 focus:ring-stone-950/10"
-                disabled={!quickCreateMilestone || creating}
-                onChange={(event) => setTitle(event.target.value)}
-                placeholder="Nhập tên việc rồi nhấn thêm"
-                ref={inputRef}
-                value={title}
-              />
-
-              <div className="space-y-3 rounded-[1.25rem] border border-stone-200 bg-white/85 p-3 shadow-sm">
+          {isComposerOpen ? (
+            <form
+              className="rounded-[1.45rem] border border-[#eadfd4] bg-white p-3.5 shadow-[0_16px_32px_-28px_rgba(28,25,23,0.3)]"
+              onSubmit={handleSubmit}
+            >
+              <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">
-                    Hạn hoàn thành
-                  </p>
-                  <p className="text-[11px] font-medium text-stone-500">
-                    {dueAt ? formatDisplayDateTime(new Date(dueAt)) : "Không đặt hạn"}
-                  </p>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#f2d8cc] bg-[#fff6f1] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b8694d]">
+                    <Sparkles className="h-3 w-3" />
+                    Thêm nhanh
+                  </div>
+                  {quickCreateMilestone ? (
+                    <span className="rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[10px] font-medium text-stone-600">
+                      Mốc {quickCreateMilestone.sequenceNo}
+                    </span>
+                  ) : null}
                 </div>
+
+                <Input
+                  className="h-11 rounded-2xl border-[#eadfd4] bg-white text-sm shadow-sm focus:ring-1 focus:ring-[#f2d8cc]"
+                  disabled={!quickCreateMilestone || creating}
+                  onChange={(event) => setTitle(event.target.value)}
+                  placeholder="Việc tiếp theo"
+                  ref={inputRef}
+                  value={title}
+                />
 
                 <div className="flex flex-wrap gap-2">
                   {[
@@ -866,8 +870,8 @@ function TaskBoardColumn({
                         className={cn(
                           "rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
                           isActive
-                            ? "bg-stone-950 text-white shadow-sm"
-                            : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                            ? "border border-[#f2d8cc] bg-[#fff0e8] text-[#b66343]"
+                            : "border border-stone-200 bg-white text-stone-600 hover:border-[#e8c8b4] hover:text-stone-950"
                         )}
                         disabled={!quickCreateMilestone || creating}
                         onClick={() => {
@@ -885,8 +889,8 @@ function TaskBoardColumn({
                     className={cn(
                       "rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
                       showDetailedDueAt
-                        ? "bg-stone-950 text-white shadow-sm"
-                        : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                        ? "border border-[#f2d8cc] bg-[#fff0e8] text-[#b66343]"
+                        : "border border-stone-200 bg-white text-stone-600 hover:border-[#e8c8b4] hover:text-stone-950"
                     )}
                     disabled={!quickCreateMilestone || creating}
                     onClick={() => {
@@ -903,14 +907,14 @@ function TaskBoardColumn({
                     }}
                     type="button"
                   >
-                    {showDetailedDueAt ? "Ẩn chi tiết" : "Hạn chi tiết"}
+                    {showDetailedDueAt ? "Ẩn giờ" : "Chi tiết"}
                   </button>
                 </div>
 
                 {showDetailedDueAt ? (
                   <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
                     <Input
-                      className="h-10 rounded-2xl border-stone-200 bg-white text-[12px] shadow-sm focus:ring-1 focus:ring-stone-950/10"
+                      className="h-10 rounded-2xl border-[#eadfd4] bg-white text-[12px] shadow-sm focus:ring-1 focus:ring-[#f2d8cc]"
                       disabled={!quickCreateMilestone || creating}
                       onChange={(event) => {
                         const nextDate = event.target.value;
@@ -932,8 +936,8 @@ function TaskBoardColumn({
                             className={cn(
                               "rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
                               isActive
-                                ? "bg-stone-950 text-white shadow-sm"
-                                : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-950"
+                                ? "border border-[#f2d8cc] bg-[#fff0e8] text-[#b66343]"
+                                : "border border-stone-200 bg-white text-stone-600 hover:border-[#e8c8b4] hover:text-stone-950"
                             )}
                             disabled={!quickCreateMilestone || creating}
                             onClick={() => {
@@ -952,7 +956,7 @@ function TaskBoardColumn({
 
                 <div className="flex flex-wrap items-center gap-2">
                   <select
-                    className="h-9 rounded-full border border-stone-200 bg-white px-3 text-[12px] font-medium text-stone-950 outline-none transition focus:border-stone-950 focus:ring-1 focus:ring-stone-950/10"
+                    className="h-9 rounded-full border border-stone-200 bg-white px-3 text-[12px] font-medium text-stone-950 outline-none transition focus:border-[#e8c8b4] focus:ring-1 focus:ring-[#f2d8cc]"
                     disabled={!quickCreateMilestone || creating}
                     onChange={(event) =>
                       setPriority(event.target.value as GoalPriority)
@@ -971,14 +975,14 @@ function TaskBoardColumn({
                     className={cn(
                       "rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
                       isFocus
-                        ? "bg-amber-100 text-amber-700"
-                        : "border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                        ? "border border-[#f3dfb4] bg-[#fff4d8] text-[#8f5a11]"
+                        : "border border-stone-200 bg-white text-stone-600 hover:border-stone-300 hover:text-stone-900"
                     )}
                     disabled={!quickCreateMilestone || creating}
                     onClick={() => setIsFocus((current) => !current)}
                     type="button"
                   >
-                    {isFocus ? "Đang ưu tiên" : "Đánh dấu ưu tiên"}
+                    {isFocus ? "Đang ưu tiên" : "Ưu tiên"}
                   </button>
 
                   {quickCreateMilestone ? (
@@ -987,72 +991,73 @@ function TaskBoardColumn({
                     </span>
                   ) : null}
                 </div>
-              </div>
 
-              <div className="flex items-center justify-end gap-2 border-t border-stone-200 pt-2">
-                <button
-                  className="rounded-full px-3 py-2 text-xs font-medium text-stone-500 transition hover:bg-stone-100 hover:text-stone-900"
-                  disabled={creating}
-                  onClick={closeComposer}
-                  type="button"
-                >
-                  Hủy
-                </button>
-                <Button
-                  className="gap-1.5 rounded-full"
-                  disabled={!quickCreateMilestone || !title.trim() || creating}
-                  size="sm"
-                  type="submit"
-                >
-                  {creating ? (
-                    <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Plus className="h-3.5 w-3.5" />
-                  )}
-                  Thêm việc
-                </Button>
+                {dueAt ? (
+                  <p className="text-[11px] font-medium text-stone-500">
+                    Hạn {formatDisplayDateTime(new Date(dueAt))}
+                  </p>
+                ) : null}
+
+                <div className="flex items-center justify-end gap-2 border-t border-stone-200 pt-2">
+                  <button
+                    className="rounded-full px-3 py-2 text-xs font-medium text-stone-500 transition hover:bg-stone-100 hover:text-stone-900"
+                    disabled={creating}
+                    onClick={closeComposer}
+                    type="button"
+                  >
+                    Hủy
+                  </button>
+                  <Button
+                    className="gap-1.5 rounded-full bg-stone-950 text-white hover:bg-stone-800"
+                    disabled={!quickCreateMilestone || !title.trim() || creating}
+                    size="sm"
+                    type="submit"
+                  >
+                    {creating ? (
+                      <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Plus className="h-3.5 w-3.5" />
+                    )}
+                    Thêm việc
+                  </Button>
+                </div>
               </div>
-            </div>
-          </form>
-        ) : (
-          <button
-            className={cn(
-              "flex w-full items-center justify-between gap-3 rounded-[1.25rem] border border-dashed px-3.5 py-3 text-[13px] font-medium transition",
-              canQuickCreate
-                ? "border-stone-300 bg-white/70 text-stone-700 hover:border-stone-950 hover:bg-white hover:text-stone-950"
-                : "cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400"
-            )}
-            disabled={!canQuickCreate || creating}
-            onClick={openComposer}
-            type="button"
-          >
-            <span className="inline-flex items-center gap-2">
-              {creating ? (
-                <LoaderCircle className="h-4 w-4 animate-spin" />
-              ) : (
-                <Plus className="h-4 w-4" />
+            </form>
+          ) : (
+            <button
+              className={cn(
+                "flex w-full items-center justify-between gap-3 rounded-[1.25rem] border border-dashed px-3.5 py-3 text-[13px] font-medium transition",
+                canQuickCreate
+                  ? "border-[#eadfd4] bg-[#fffaf6] text-stone-700 hover:border-[#e8c8b4] hover:bg-white hover:text-stone-950"
+                  : "cursor-not-allowed border-stone-200 bg-stone-100 text-stone-400"
               )}
-              <span className="text-left">
-                {creating
-                  ? "Đang thêm công việc..."
-                  : quickCreateMilestone
-                    ? "Thêm công việc mới"
-                    : "Thêm công việc"}
+              disabled={!canQuickCreate || creating}
+              onClick={openComposer}
+              type="button"
+            >
+              <span className="inline-flex items-center gap-2">
+                {creating ? (
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
+                <span className="text-left">
+                  {creating ? "Đang thêm..." : "Thêm nhanh"}
+                </span>
               </span>
-            </span>
-            {quickCreateMilestone ? (
-              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
-                Mốc {quickCreateMilestone.sequenceNo}
-              </span>
-            ) : null}
-          </button>
-        )}
+              {quickCreateMilestone ? (
+                <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-stone-600 shadow-sm">
+                  Mốc {quickCreateMilestone.sequenceNo}
+                </span>
+              ) : null}
+            </button>
+          )}
 
-        {!canQuickCreate ? (
-          <p className="mt-2 text-center text-xs text-stone-500">
-            Hãy tạo ít nhất một cột mốc trước khi thêm công việc.
-          </p>
-        ) : null}
+          {!canQuickCreate ? (
+            <p className="mt-2 text-center text-xs text-stone-500">
+              Cần có ít nhất một cột mốc.
+            </p>
+          ) : null}
         </div>
       </div>
     </section>
@@ -1261,6 +1266,12 @@ export function TaskBoard({
     ],
     [completedVisibleTasks, focusVisibleTasks, goalFilteredTasks.length, overdueVisibleTasks]
   );
+  const boardStateLabel =
+    syncingTaskIds.length > 0
+      ? `Đang lưu ${syncingTaskIds.length}`
+      : creatingStatus
+        ? "Đang thêm việc"
+        : "Sẵn sàng";
 
   async function patchTaskInline(
     taskId: string,
@@ -1574,131 +1585,147 @@ export function TaskBoard({
   }
 
   return (
-    <section className="ui-panel overflow-hidden p-3">
-      <div className="rounded-[1.5rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#f7f7f4_100%)] p-4">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="min-w-0 space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-600">
-                <Sparkles className="h-3 w-3" />
-                Board
-              </div>
-              <h2 className="text-base font-semibold tracking-tight text-stone-950">
-                Bảng công việc
-              </h2>
-              <span className="ui-pill">
-                {visibleTasks.length}/{boardTasks.length} việc đang hiển thị
-              </span>
+    <section className="relative overflow-hidden rounded-[2rem] border border-[#e8dfd5] bg-white p-4 shadow-[0_20px_50px_-40px_rgba(28,25,23,0.22)]">
+      <div className="pointer-events-none absolute -right-10 top-0 h-28 w-28 rounded-full bg-[#fff1e9] blur-3xl" />
+      <div className="pointer-events-none absolute left-1/4 top-0 h-24 w-24 rounded-full bg-[#faf7f2] blur-3xl" />
+
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+        <div className="min-w-0 space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#f2d8cc] bg-[#fff6f1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b8694d]">
+              <PawPrint className="h-3.5 w-3.5" />
+              Mèo board
             </div>
-
-            <div className="flex flex-wrap gap-2">
-              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
-                {selectedGoal ? selectedGoal.title : "Tất cả mục tiêu"}
-              </span>
-              {selectedMilestone ? (
-                <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
-                  Tạo nhanh vào mốc {selectedMilestone.sequenceNo}
-                </span>
-              ) : null}
-              {quickFilter !== "all" ? (
-                <span className="rounded-full bg-stone-950 px-2.5 py-1 text-[11px] font-medium text-white">
-                  Đang lọc {quickFilterOptions.find((option) => option.value === quickFilter)?.label}
-                </span>
-              ) : null}
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {quickFilterOptions.map((option) => {
-                const isActive = quickFilter === option.value;
-
-                return (
-                  <button
-                    key={option.value}
-                    aria-pressed={isActive}
-                    className={cn(
-                      "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
-                      isActive
-                        ? "bg-stone-950 text-white shadow-sm"
-                        : "border border-stone-200 bg-white text-stone-700 hover:border-stone-950 hover:text-stone-950"
-                    )}
-                    onClick={() => setQuickFilter(option.value)}
-                    type="button"
-                  >
-                    {option.label}
-                    <span
-                      className={cn(
-                        "rounded-full px-1.5 py-0.5 text-[10px]",
-                        isActive ? "bg-white/15 text-white" : "bg-stone-100 text-stone-600"
-                      )}
-                    >
-                      {option.count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {availableGoals.length > 0 ? (
-              <div className="grid gap-3 lg:grid-cols-2">
-                <label className="block">
-                  <span className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-                    <Target className="h-3.5 w-3.5" />
-                    Mục tiêu
-                  </span>
-                  <select
-                    className="h-10 min-w-[14rem] w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
-                    onChange={(event) => setSelectedGoalId(event.target.value)}
-                    value={selectedGoalId}
-                  >
-                    <option value="all">Tất cả mục tiêu</option>
-                    {availableGoals.map((goal) => (
-                      <option key={goal.id} value={goal.id}>
-                        {goal.title}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="block">
-                  <span className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-                    <Layers3 className="h-3.5 w-3.5" />
-                    Cột mốc để thêm nhanh
-                  </span>
-                  <select
-                    className="h-10 min-w-[15rem] w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
-                    disabled={filteredMilestoneOptions.length === 0}
-                    onChange={(event) => setSelectedMilestoneId(event.target.value)}
-                    value={selectedMilestoneId}
-                  >
-                    {filteredMilestoneOptions.length > 0 ? (
-                      filteredMilestoneOptions.map((milestone) => (
-                        <option key={milestone.id} value={milestone.id}>
-                          {milestone.goal.title} · Cột mốc {milestone.sequenceNo}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="">Mục tiêu này chưa có cột mốc</option>
-                    )}
-                  </select>
-                </label>
-              </div>
-            ) : (
-              <p className="text-xs font-medium text-amber-700">
-                Cần có ít nhất một cột mốc để tạo công việc ngay trên board.
-              </p>
-            )}
+            <span className="rounded-full border border-stone-200 bg-white px-3 py-1 text-[11px] font-medium text-stone-600">
+              {visibleTasks.length}/{boardTasks.length} việc
+            </span>
           </div>
 
-          <div className="rounded-[1.25rem] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-600 shadow-sm lg:max-w-[16rem]">
+          <div>
+            <h2 className="text-2xl font-black tracking-tight text-stone-950">
+              Việc trong ngày
+            </h2>
+            <p className="mt-1 text-sm text-stone-600">
+              Kéo thả hoặc thêm nhanh vào đúng mốc.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-medium text-stone-600">
+              {selectedGoal ? selectedGoal.title : "Tất cả mục tiêu"}
+            </span>
+            {selectedMilestone ? (
+              <span className="rounded-full border border-[#f2d8cc] bg-[#fff6f1] px-2.5 py-1 text-[11px] font-medium text-[#b8694d]">
+                Tạo nhanh vào mốc {selectedMilestone.sequenceNo}
+              </span>
+            ) : null}
+            {quickFilter !== "all" ? (
+              <span className="rounded-full bg-stone-950 px-2.5 py-1 text-[11px] font-medium text-white">
+                {quickFilterOptions.find((option) => option.value === quickFilter)?.label}
+              </span>
+            ) : null}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {quickFilterOptions.map((option) => {
+              const isActive = quickFilter === option.value;
+
+              return (
+                <button
+                  key={option.value}
+                  aria-pressed={isActive}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
+                    getQuickFilterButtonClass(option.value, isActive)
+                  )}
+                  onClick={() => setQuickFilter(option.value)}
+                  type="button"
+                >
+                  {option.label}
+                  <span
+                    className={cn(
+                      "rounded-full px-1.5 py-0.5 text-[10px]",
+                      isActive
+                        ? option.value === "all"
+                          ? "bg-white/15 text-white"
+                          : "bg-white/75 text-current"
+                        : "bg-stone-100 text-stone-600"
+                    )}
+                  >
+                    {option.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {availableGoals.length > 0 ? (
+            <div className="grid gap-3 lg:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+                  <Target className="h-3.5 w-3.5" />
+                  Mục tiêu
+                </span>
+                <select
+                  className="h-10 min-w-[14rem] w-full rounded-xl border border-[#eadfd4] bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-[#e8c8b4] focus:ring-2 focus:ring-[#f6ddd0]"
+                  onChange={(event) => setSelectedGoalId(event.target.value)}
+                  value={selectedGoalId}
+                >
+                  <option value="all">Tất cả mục tiêu</option>
+                  {availableGoals.map((goal) => (
+                    <option key={goal.id} value={goal.id}>
+                      {goal.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+                  <Layers3 className="h-3.5 w-3.5" />
+                  Cột mốc
+                </span>
+                <select
+                  className="h-10 min-w-[15rem] w-full rounded-xl border border-[#eadfd4] bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-[#e8c8b4] focus:ring-2 focus:ring-[#f6ddd0]"
+                  disabled={filteredMilestoneOptions.length === 0}
+                  onChange={(event) => setSelectedMilestoneId(event.target.value)}
+                  value={selectedMilestoneId}
+                >
+                  {filteredMilestoneOptions.length > 0 ? (
+                    filteredMilestoneOptions.map((milestone) => (
+                      <option key={milestone.id} value={milestone.id}>
+                        {milestone.goal.title} · Mốc {milestone.sequenceNo}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="">Mục tiêu này chưa có cột mốc</option>
+                  )}
+                </select>
+              </label>
+            </div>
+          ) : (
+            <p className="text-xs font-medium text-amber-700">
+              Cần có ít nhất một cột mốc để thêm việc.
+            </p>
+          )}
+        </div>
+
+        <div className="grid gap-2 sm:grid-cols-2 xl:w-[18rem] xl:grid-cols-1">
+          <div className="rounded-[1.25rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-3 shadow-sm">
             <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
               <Clock3 className="h-3.5 w-3.5" />
-              Trạng thái hệ thống
+              Nhịp board
             </div>
-            <p className="mt-2 font-medium text-stone-800">
-              {syncingTaskIds.length > 0
-                ? `Đang lưu ${syncingTaskIds.length} thay đổi`
-                : creatingStatus
-                  ? "Đang tạo công việc mới"
-                  : "Kéo thả hoặc thêm việc ngay trong từng cột"}
+            <p className="mt-2 text-sm font-semibold text-stone-900">{boardStateLabel}</p>
+          </div>
+
+          <div className="rounded-[1.25rem] border border-[#eadfd4] bg-white px-4 py-3 shadow-sm">
+            <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              Quick add
+            </div>
+            <p className="mt-2 text-sm font-semibold text-stone-900">
+              {selectedMilestone
+                ? `Mốc ${selectedMilestone.sequenceNo}`
+                : "Chưa chọn mốc"}
             </p>
           </div>
         </div>
@@ -1750,6 +1777,7 @@ export function TaskBoard({
                   count={columnTasks.length}
                   creating={creatingStatus === column.status}
                   description={column.description}
+                  dotClassName={column.dotClassName}
                   dragging={activeTaskId !== null}
                   focusCount={columnFocusCount}
                   key={column.status}
@@ -1784,7 +1812,7 @@ export function TaskBoard({
 
         <DragOverlay dropAnimation={null}>
           {activeTask ? (
-            <div className="ui-card-compact w-[14rem] rotate-[1.5deg] p-2.5 shadow-2xl">
+            <div className="w-[14rem] rotate-[1.5deg] rounded-[1.35rem] border border-[#e8c8b4] bg-white p-2.5 shadow-2xl">
               <TaskCardContent
                 onQuickMarkDone={handleQuickMarkDone}
                 onQuickStart={handleQuickStart}
