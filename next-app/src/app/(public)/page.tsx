@@ -105,6 +105,9 @@ const playfulBenefits = [
   }
 ];
 
+const homepagePrimaryCtaClass =
+  "ui-light-cta whitespace-nowrap rounded-full border border-[#ead7c7] bg-[linear-gradient(135deg,#fff4e4_0%,#ffe0d1_48%,#edf5e5_100%)] font-semibold !text-stone-950 shadow-[0_18px_36px_-24px_rgba(232,163,137,0.6)] transition hover:-translate-y-0.5 hover:brightness-[1.01]";
+
 function PandaMascot() {
   return (
     <div className="relative h-56 w-44 shrink-0">
@@ -579,7 +582,7 @@ export default async function PublicHomePage() {
                     Đăng nhập
                   </Link>
                   <Link
-                    className="ui-dark-cta rounded-full bg-[linear-gradient(135deg,#6f9b58_0%,#1f1b18_100%)] px-4 py-2 text-sm font-semibold !text-white shadow-[0_18px_36px_-22px_rgba(111,155,88,0.75)] transition hover:brightness-105"
+                    className={cn(homepagePrimaryCtaClass, "px-4 py-2 text-sm")}
                     href="/register"
                   >
                     Bắt đầu cùng bộ ba
@@ -626,7 +629,7 @@ export default async function PublicHomePage() {
               {isAuthenticated ? (
                 <>
                   <Link
-                    className="ui-dark-cta inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#6f9b58_0%,#1f1b18_100%)] px-5 py-3 text-sm font-semibold !text-white shadow-[0_20px_42px_-24px_rgba(111,155,88,0.72)] transition hover:brightness-105"
+                    className={cn(homepagePrimaryCtaClass, "inline-flex items-center gap-2 px-5 py-3 text-sm")}
                     href="/dashboard"
                   >
                     Vào không gian làm việc
@@ -640,7 +643,7 @@ export default async function PublicHomePage() {
               ) : (
                 <>
                   <Link
-                    className="ui-dark-cta inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#6f9b58_0%,#1f1b18_100%)] px-5 py-3 text-sm font-semibold !text-white shadow-[0_20px_42px_-24px_rgba(111,155,88,0.72)] transition hover:brightness-105"
+                    className={cn(homepagePrimaryCtaClass, "inline-flex items-center gap-2 px-5 py-3 text-sm")}
                     href="/register"
                   >
                     Bắt đầu cùng bộ ba
@@ -822,7 +825,7 @@ export default async function PublicHomePage() {
                 {isAuthenticated ? (
                   <>
                     <Link
-                      className="ui-dark-cta rounded-full bg-[linear-gradient(135deg,#6f9b58_0%,#1f1b18_100%)] px-5 py-3 text-sm font-semibold !text-white shadow-[0_18px_36px_-24px_rgba(111,155,88,0.72)] transition hover:brightness-105"
+                      className={cn(homepagePrimaryCtaClass, "px-5 py-3 text-sm")}
                       href="/dashboard"
                     >
                       Vào dashboard
@@ -835,7 +838,7 @@ export default async function PublicHomePage() {
                 ) : (
                   <>
                     <Link
-                      className="ui-dark-cta rounded-full bg-[linear-gradient(135deg,#6f9b58_0%,#1f1b18_100%)] px-5 py-3 text-sm font-semibold !text-white shadow-[0_18px_36px_-24px_rgba(111,155,88,0.72)] transition hover:brightness-105"
+                      className={cn(homepagePrimaryCtaClass, "px-5 py-3 text-sm")}
                       href="/register"
                     >
                       Tạo tài khoản
