@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Compass, Plus, Sparkles, Target } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { GoalCard } from "@/features/goals/components/goal-card";
@@ -69,16 +69,19 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
 
   return (
     <div className="flex w-full max-w-none flex-col gap-4">
-      <section className="ui-toolbar-panel px-4 py-3">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-stone-500">
-              Mục tiêu
-            </p>
-            <h1 className="mt-1 text-xl font-black tracking-tight text-stone-950">
+      <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#fcfcfb_0%,#f7f7f5_48%,#eff6ff_100%)] px-5 py-5 shadow-sm">
+        <div className="pointer-events-none absolute -right-12 top-0 h-36 w-36 rounded-full bg-amber-100/60 blur-3xl" />
+        <div className="pointer-events-none absolute left-1/3 top-10 h-24 w-24 rounded-full bg-sky-100/70 blur-2xl" />
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5" />
+              Goal Space
+            </div>
+            <h1 className="mt-3 text-2xl font-black tracking-tight text-stone-950 sm:text-3xl">
               Kế hoạch mục tiêu
             </h1>
-            <p className="mt-1 text-sm text-stone-600">
+            <p className="mt-2 max-w-2xl text-sm text-stone-600">
               Tạo mới và theo dõi mục tiêu trong cùng một màn hình.
             </p>
           </div>
@@ -103,25 +106,45 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          <span className="ui-pill">
-            Tổng mục tiêu
-            <strong className="font-semibold text-stone-900">{filteredGoals.length}</strong>
-          </span>
-          <span className="ui-pill">
-            Đang thực hiện
-            <strong className="font-semibold text-stone-900">{inProgressGoals.length}</strong>
-          </span>
-          <span className="ui-pill">
-            Hoàn thành
-            <strong className="font-semibold text-stone-900">{completedGoals.length}</strong>
-          </span>
-          <span className="ui-pill">
-            Hạn gần nhất
-            <strong className="font-semibold text-stone-900">
+        <div className="relative z-10 mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Target className="h-4 w-4" />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+              Tổng mục tiêu
+              </p>
+            </div>
+            <p className="mt-2 text-2xl font-black text-stone-950">{filteredGoals.length}</p>
+          </div>
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Compass className="h-4 w-4" />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+              Đang thực hiện
+              </p>
+            </div>
+            <p className="mt-2 text-2xl font-black text-stone-950">{inProgressGoals.length}</p>
+          </div>
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Sparkles className="h-4 w-4" />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+              Hoàn thành
+              </p>
+            </div>
+            <p className="mt-2 text-2xl font-black text-stone-950">{completedGoals.length}</p>
+          </div>
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Plus className="h-4 w-4" />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+              Hạn gần nhất
+              </p>
+            </div>
+            <p className="mt-2 text-base font-bold text-stone-950">
               {nearestDeadline ? formatDisplayDate(nearestDeadline.targetDate) : "Chưa có"}
-            </strong>
-          </span>
+            </p>
+          </div>
         </div>
       </section>
 

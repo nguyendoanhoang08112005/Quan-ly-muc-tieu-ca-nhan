@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarDays, CheckCircle2, Layers3 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import {
   goalPriorityLabels,
@@ -13,14 +13,15 @@ import { cn } from "@/lib/utils";
 
 export function GoalCard({ goal }: { goal: GoalListItem }) {
   return (
-    <article className="ui-card-compact p-4 transition hover:border-stone-300">
+    <article className="group relative overflow-hidden rounded-[1.75rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#fafaf8_100%)] p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md">
+      <div className="pointer-events-none absolute -right-8 top-0 h-24 w-24 rounded-full bg-amber-100/40 blur-2xl transition group-hover:bg-sky-100/40" />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap gap-1.5">
-            <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-600">
+            <span className="rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-600">
               {goalTypeLabels[goal.goalType]}
             </span>
-            <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
+            <span className="rounded-full border border-stone-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-stone-600">
               {Math.round(goal.progress)}%
             </span>
           </div>
@@ -85,19 +86,31 @@ export function GoalCard({ goal }: { goal: GoalListItem }) {
         </div>
       ) : null}
 
-      <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] text-stone-500">
-        <span className="rounded-full bg-stone-100 px-2.5 py-1">
-          Hạn {formatDisplayDate(goal.targetDate)}
-        </span>
-        <span className="rounded-full bg-stone-100 px-2.5 py-1">
-          {goal.milestonesCount} cột mốc
-        </span>
-        <span className="rounded-full bg-stone-100 px-2.5 py-1">
-          {goal.tasksCount} công việc
-        </span>
+      <div className="mt-4 grid grid-cols-3 gap-2 text-[11px] text-stone-500">
+        <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2">
+          <div className="flex items-center gap-1.5">
+            <CalendarDays className="h-3.5 w-3.5" />
+            <span>Hạn</span>
+          </div>
+          <p className="mt-1 font-semibold text-stone-800">{formatDisplayDate(goal.targetDate)}</p>
+        </div>
+        <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2">
+          <div className="flex items-center gap-1.5">
+            <Layers3 className="h-3.5 w-3.5" />
+            <span>Cột mốc</span>
+          </div>
+          <p className="mt-1 font-semibold text-stone-800">{goal.milestonesCount}</p>
+        </div>
+        <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2">
+          <div className="flex items-center gap-1.5">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            <span>Công việc</span>
+          </div>
+          <p className="mt-1 font-semibold text-stone-800">{goal.tasksCount}</p>
+        </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between border-t border-stone-200 pt-3">
+      <div className="mt-4 flex items-center justify-between border-t border-stone-200 pt-3">
         <span className="text-[11px] font-medium text-stone-500">
           Xem chi tiết để quản lý cột mốc và tiến độ
         </span>

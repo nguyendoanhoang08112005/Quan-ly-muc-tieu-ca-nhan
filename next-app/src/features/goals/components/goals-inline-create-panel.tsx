@@ -22,7 +22,9 @@ export function GoalsInlineCreatePanel({
   const [isOpen, setIsOpen] = useState(initialOpen);
 
   return (
-    <section className="ui-panel overflow-hidden p-0">
+    <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#f6f6f3_100%)] shadow-sm">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/80" />
+      <div className="pointer-events-none absolute -left-10 top-6 h-24 w-24 rounded-full bg-emerald-100/50 blur-2xl" />
       {wasJustCreated ? (
         <div className="border-b border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-medium text-emerald-800">
           Đã tạo mục tiêu mới.
@@ -30,14 +32,17 @@ export function GoalsInlineCreatePanel({
       ) : null}
 
       {!isOpen ? (
-        <div className="flex flex-col gap-4 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
-          <div>
+        <div className="relative flex flex-col gap-4 px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-2">
             <p className="text-[11px] font-black uppercase tracking-[0.16em] text-stone-500">
               Tạo Mới
             </p>
-            <h2 className="mt-1 text-xl font-black tracking-tight text-stone-950">
+            <h2 className="text-xl font-black tracking-tight text-stone-950">
               Tạo mục tiêu ngay tại đây
             </h2>
+            <p className="text-sm text-stone-600">
+              Mở form ngắn gọn, nhập phần cốt lõi trước rồi bổ sung sau.
+            </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -48,12 +53,12 @@ export function GoalsInlineCreatePanel({
           </div>
         </div>
       ) : (
-        <div className="px-5 py-5">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-stone-600">
+        <div className="relative px-5 py-5">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-stone-600 shadow-sm">
                 <Sparkles className="h-3.5 w-3.5" />
                 Form tạo mục tiêu
-              </div>
+            </div>
 
             <button
               className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-4 text-sm font-semibold text-stone-700 transition hover:bg-stone-100 hover:text-stone-950"
