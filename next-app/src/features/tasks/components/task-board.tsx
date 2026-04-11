@@ -246,6 +246,19 @@ function getTaskIdFromDndData(data: Record<string, unknown> | undefined) {
   return typeof taskId === "string" && taskId.trim() ? taskId : null;
 }
 
+function getEmptyColumnMessage(status: WorkStatus) {
+  switch (status) {
+    case "not_started":
+      return "Chưa có việc chờ bắt đầu. Tạo nhanh một việc để lên kế hoạch rõ hơn.";
+    case "in_progress":
+      return "Chưa có việc đang làm. Kéo một việc sang đây khi bạn bắt đầu xử lý.";
+    case "paused":
+      return "Không có việc đang tạm dừng. Cột này dùng cho các việc cần quay lại sau.";
+    case "completed":
+      return "Chưa có việc hoàn thành. Khi xong, kéo việc sang đây để chốt trạng thái.";
+  }
+}
+
 function buildReorderedBoardTasks(
   tasks: TaskListItem[],
   taskId: string,
@@ -482,7 +495,8 @@ function TaskBoardColumn({
   description,
   onQuickCreate,
   quickCreateMilestone,
-  status
+  status,
+  totalVisibleTasks
 }: {
   accentClassName: string;
   active: boolean;
@@ -497,6 +511,7 @@ function TaskBoardColumn({
   ) => Promise<boolean>;
   quickCreateMilestone: TaskQuickCreateMilestoneOption | null;
   status: WorkStatus;
+  totalVisibleTasks: number;
 }) {
   const { isOver, setNodeRef } = useDroppable({
     data: {
@@ -511,6 +526,7 @@ function TaskBoardColumn({
   const [priority, setPriority] = useState<GoalPriority>("medium");
   const [isFocus, setIsFocus] = useState(status === "in_progress");
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const ratio = totalVisibleTasks > 0 ? Math.round((count / totalVisibleTasks) * 100) : 0;
 
   function openComposer() {
     setIsComposerOpen(true);
@@ -570,6 +586,17 @@ function TaskBoardColumn({
           <span className="rounded-full border border-white/70 bg-white/80 px-2.5 py-1 text-[10px] font-semibold text-stone-600">
             {count}
           </span>
+        </div>
+        <div className="mt-3">
+          <div className="h-1.5 overflow-hidden rounded-full bg-white/80">
+            <div
+              className="h-full rounded-full bg-stone-900/70 transition-all"
+              style={{ width: `${ratio}%` }}
+            />
+          </div>
+          <p className="mt-1.5 text-[10px] font-medium text-stone-500">
+            {totalVisibleTasks > 0 ? `${ratio}% số việc đang hiển thị` : "Chưa có việc nào"}
+          </p>
         </div>
       </div>
 
@@ -842,6 +869,21 @@ export function TaskBoard({
     );
   }, [filteredMilestoneOptions, selectedMilestoneId]);
   const stableNow = useMemo(() => new Date(referenceNow).getTime(), [referenceNow]);
+  const overdueVisibleTasks = useMemo(() => {
+    return visibleTasks.filter((task) => {
+      return (
+        task.dueAt !== null &&
+        task.status !== "completed" &&
+        new Date(task.dueAt).getTime() < stableNow
+      );
+    }).length;
+  }, [stableNow, visibleTasks]);
+  const focusVisibleTasks = useMemo(() => {
+    return visibleTasks.filter((task) => task.isFocus).length;
+  }, [visibleTasks]);
+  const completedVisibleTasks = useMemo(() => {
+    return visibleTasks.filter((task) => task.status === "completed").length;
+  }, [visibleTasks]);
 
   const tasksByStatus = useMemo(() => {
     const grouped = new Map<WorkStatus, TaskListItem[]>();
@@ -1093,6 +1135,30 @@ export function TaskBoard({
               ) : null}
             </div>
 
+            <div className="grid gap-2 sm:grid-cols-3">
+              <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2.5">
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
+                  <Target className="h-3.5 w-3.5" />
+                  Tập trung
+                </div>
+                <p className="mt-1.5 text-lg font-black text-stone-950">{focusVisibleTasks}</p>
+              </div>
+              <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2.5">
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
+                  <CalendarDays className="h-3.5 w-3.5" />
+                  Quá hạn
+                </div>
+                <p className="mt-1.5 text-lg font-black text-stone-950">{overdueVisibleTasks}</p>
+              </div>
+              <div className="rounded-[1rem] border border-stone-200 bg-white px-3 py-2.5">
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
+                  <CircleDot className="h-3.5 w-3.5" />
+                  Hoàn thành
+                </div>
+                <p className="mt-1.5 text-lg font-black text-stone-950">{completedVisibleTasks}</p>
+              </div>
+            </div>
+
             {availableGoals.length > 0 ? (
               <div className="grid gap-3 lg:grid-cols-2">
                 <label className="block">
@@ -1203,6 +1269,7 @@ export function TaskBoard({
                   onQuickCreate={createTaskInColumn}
                   quickCreateMilestone={selectedMilestone}
                   status={column.status}
+                  totalVisibleTasks={visibleTasks.length}
                 >
                   {columnTasks.length > 0 ? (
                     columnTasks.map((task) => (
@@ -1214,8 +1281,8 @@ export function TaskBoard({
                       />
                     ))
                   ) : (
-                    <div className="rounded-xl border border-dashed border-stone-300 bg-white px-3 py-6 text-center text-xs leading-5 text-stone-500">
-                      Kéo việc vào đây để chuyển trạng thái.
+                    <div className="rounded-[1.25rem] border border-dashed border-stone-300 bg-white/80 px-4 py-7 text-center text-xs leading-5 text-stone-500">
+                      {getEmptyColumnMessage(column.status)}
                     </div>
                   )}
                 </TaskBoardColumn>
