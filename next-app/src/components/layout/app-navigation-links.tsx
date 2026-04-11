@@ -32,14 +32,14 @@ function renderNavigationItem(
       key={item.href}
       className={cn(
         variant === "sidebar"
-          ? "block rounded-md px-2.5 py-1.5 text-[13px] font-medium transition"
+          ? "block rounded-xl px-2.5 py-2 text-[13px] font-medium transition"
           : "inline-flex min-h-9 items-center justify-center rounded-full border px-3.5 py-2 text-sm font-semibold transition",
         active
           ? variant === "sidebar"
-            ? "ui-dark-cta bg-stone-950 !text-white"
-            : "ui-dark-cta border-stone-950 bg-stone-950 !text-white"
+            ? "ui-dark-cta bg-stone-950 !text-white shadow-sm"
+            : "ui-dark-cta border-stone-950 bg-stone-950 !text-white shadow-sm"
           : variant === "sidebar"
-            ? "text-stone-800 hover:bg-stone-100 hover:text-stone-950"
+            ? "text-stone-800 hover:bg-white/80 hover:text-stone-950"
             : "border-stone-300 bg-white text-stone-800 hover:border-stone-400 hover:bg-stone-100 hover:text-stone-950"
       )}
       href={item.href}
@@ -59,12 +59,14 @@ function renderSecondaryGroup(
   return (
     <details
       className={cn(
-        variant === "sidebar" ? "rounded-md" : "rounded-xl border border-stone-200 bg-white"
+        variant === "sidebar"
+          ? "rounded-xl"
+          : "rounded-[1.25rem] border border-[color:var(--border)] bg-white/80 backdrop-blur"
       )}
       key={group.id}
       open={hasActiveItem ? true : undefined}
     >
-      <summary className="list-none cursor-pointer px-2.5 py-1.5 [&::-webkit-details-marker]:hidden">
+      <summary className="list-none cursor-pointer px-2.5 py-2 [&::-webkit-details-marker]:hidden">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[13px] font-medium text-stone-700">{group.label}</p>
@@ -75,7 +77,7 @@ function renderSecondaryGroup(
         </div>
       </summary>
 
-      <div className="mt-1 space-y-1 pl-2">
+      <div className="mt-1 space-y-1 px-1 pb-1">
         {group.items.map((item) =>
           renderNavigationItem(item, isItemActive(pathname, item.href), variant)
         )}

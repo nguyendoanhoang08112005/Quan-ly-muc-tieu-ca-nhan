@@ -36,7 +36,7 @@ export function PageFilterForm({
   searchValue: string;
 }) {
   return (
-    <section className="ui-toolbar-panel p-3">
+    <section className="ui-toolbar-panel p-3.5">
       <form className="flex flex-wrap items-end gap-3" method="get">
         {hiddenFields.map((field) => (
           <input key={field.name} name={field.name} type="hidden" value={field.value} />
@@ -61,7 +61,7 @@ export function PageFilterForm({
               {filter.label}
             </span>
             <select
-              className="h-9 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-stone-950 outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+              className="h-10 w-full rounded-xl border border-[color:var(--border)] bg-white/80 px-3 py-2 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
               defaultValue={filter.value}
               name={filter.name}
             >

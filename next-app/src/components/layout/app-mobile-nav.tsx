@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils";
 
 export function AppMobileNav({ user }: { user: AppSessionUser }) {
   return (
-    <div className="border-b border-stone-200 bg-white lg:hidden" suppressHydrationWarning>
+    <div
+      className="border-b border-[color:var(--border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.84)_0%,rgba(246,243,238,0.94)_100%)] backdrop-blur lg:hidden"
+      suppressHydrationWarning
+    >
       <div className="space-y-3 px-3 py-3">
         <div className="flex items-start justify-between gap-4">
           <div>

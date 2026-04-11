@@ -5,12 +5,12 @@ import { SignOutButton } from "@/components/layout/sign-out-button";
 export function AppSidebar({ user }: { user: AppSessionUser }) {
   return (
     <aside
-      className="sticky top-0 hidden h-screen w-48 shrink-0 overflow-y-auto border-r border-stone-200 bg-stone-50/90 lg:block"
+      className="sticky top-0 hidden h-screen w-48 shrink-0 overflow-y-auto border-r border-[color:var(--border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.72)_0%,rgba(246,243,238,0.92)_100%)] backdrop-blur lg:block"
       suppressHydrationWarning
     >
-      <div className="border-b border-stone-200 px-3 py-2.5">
+      <div className="border-b border-[color:var(--border)] px-3 py-2.5">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-black text-xs font-black text-white">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-stone-950 text-xs font-black text-white shadow-sm">
             M
           </div>
           <div className="min-w-0">
@@ -25,7 +25,7 @@ export function AppSidebar({ user }: { user: AppSessionUser }) {
         <AppNavigationLinks />
       </nav>
 
-      <div className="mt-auto border-t border-stone-200 px-2.5 py-2.5">
+      <div className="mt-auto border-t border-[color:var(--border)] px-2.5 py-2.5">
         <div className="mb-2 min-w-0">
           <p className="truncate text-sm font-medium text-stone-700">
             {user.name}

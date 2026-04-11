@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Compass, Plus, Sparkles, Target } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import {
   habitFrequencyLabels,
@@ -20,9 +20,15 @@ export default async function HabitsPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+      <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#fcfcfb_0%,#f7f7f5_48%,#eff6ff_100%)] p-8 shadow-sm">
+        <div className="pointer-events-none absolute -right-12 top-0 h-36 w-36 rounded-full bg-amber-100/60 blur-3xl" />
+        <div className="pointer-events-none absolute left-1/3 top-10 h-24 w-24 rounded-full bg-sky-100/70 blur-2xl" />
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5" />
+              Habit Space
+            </div>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
               Thói quen và nhật ký hằng ngày
             </h1>
@@ -44,26 +50,35 @@ export default async function HabitsPage() {
           </Link>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+        <div className="relative z-10 mt-8 grid gap-4 md:grid-cols-3">
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Compass className="h-4 w-4" />
+              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
               Tổng thói quen
+              </div>
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {habits.length}
             </div>
           </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Target className="h-4 w-4" />
+              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
               Đang thực hiện
+              </div>
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {activeHabits.length}
             </div>
           </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Sparkles className="h-4 w-4" />
+              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
               Đã đạt mục tiêu hôm nay
+              </div>
             </div>
             <div className="mt-2 text-4xl font-black text-stone-950">
               {completedToday}

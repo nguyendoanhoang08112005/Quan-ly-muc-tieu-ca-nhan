@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Plus } from "lucide-react";
+import { Compass, Plus, Sparkles, Target } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { DeleteNoteForm } from "@/features/notes/components/delete-note-form";
@@ -44,9 +44,15 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+      <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#fcfcfb_0%,#f7f7f5_48%,#eff6ff_100%)] p-8 shadow-sm">
+        <div className="pointer-events-none absolute -right-12 top-0 h-36 w-36 rounded-full bg-amber-100/60 blur-3xl" />
+        <div className="pointer-events-none absolute left-1/3 top-10 h-24 w-24 rounded-full bg-sky-100/70 blur-2xl" />
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5" />
+              Notes Space
+            </div>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
               Ghi chú đa đối tượng
             </h1>
@@ -66,6 +72,30 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
             <Plus className="h-4 w-4" />
             Tạo ghi chú mới
           </Link>
+        </div>
+
+        <div className="relative z-10 mt-8 grid gap-4 md:grid-cols-3">
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Compass className="h-4 w-4" />
+              <div className="text-xs font-semibold uppercase tracking-[0.22em]">Tổng ghi chú</div>
+            </div>
+            <div className="mt-2 text-4xl font-black text-stone-950">{notes.length}</div>
+          </div>
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Target className="h-4 w-4" />
+              <div className="text-xs font-semibold uppercase tracking-[0.22em]">Đang hiển thị</div>
+            </div>
+            <div className="mt-2 text-4xl font-black text-stone-950">{filteredNotes.length}</div>
+          </div>
+          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
+            <div className="flex items-center gap-2 text-stone-500">
+              <Sparkles className="h-4 w-4" />
+              <div className="text-xs font-semibold uppercase tracking-[0.22em]">Loại lọc</div>
+            </div>
+            <div className="mt-2 text-lg font-black text-stone-950">{typeFilter === "all" ? "Tất cả" : noteableTypeLabels[typeFilter as keyof typeof noteableTypeLabels]}</div>
+          </div>
         </div>
       </section>
 

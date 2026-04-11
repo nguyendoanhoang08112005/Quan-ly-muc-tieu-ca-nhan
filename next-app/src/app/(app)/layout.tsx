@@ -23,7 +23,10 @@ export default async function AppLayout({
   return (
     <AuthSessionProvider session={session}>
       <HydrationSafeContent>
-        <div className="flex min-h-screen bg-stone-50" suppressHydrationWarning>
+        <div
+          className="flex min-h-screen bg-[linear-gradient(180deg,#faf8f3_0%,#f6f3ee_100%)]"
+          suppressHydrationWarning
+        >
           <AppSidebar user={session.user} />
           <div className="flex-1">
             <AppMobileNav user={session.user} />

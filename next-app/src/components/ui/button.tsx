@@ -7,10 +7,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "ui-dark-cta bg-stone-950 !text-white hover:bg-stone-800",
+        default:
+          "ui-dark-cta bg-stone-950 !text-white shadow-[0_10px_24px_rgba(28,25,23,0.16)] hover:bg-stone-800",
         secondary:
-          "ui-light-cta border border-stone-300 bg-white !text-stone-950 hover:bg-stone-100",
-        ghost: "text-stone-700 hover:bg-stone-100 hover:text-stone-950",
+          "ui-light-cta border border-[color:var(--border)] bg-white/80 !text-stone-950 shadow-sm backdrop-blur hover:bg-white",
+        ghost: "text-stone-700 hover:bg-white/70 hover:text-stone-950",
         destructive: "ui-dark-cta bg-rose-600 !text-white hover:bg-rose-700"
       },
       size: {

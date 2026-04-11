@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Compass, Plus, Sparkles, Target } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { TaskBoard } from "@/features/tasks/components/task-board";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
@@ -24,40 +24,50 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex w-full max-w-none flex-col gap-4">
-      <section className="ui-toolbar-panel px-3 py-2">
+      <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#fcfcfb_0%,#f7f7f5_48%,#eff6ff_100%)] px-5 py-5 shadow-sm">
+        <div className="pointer-events-none absolute -right-12 top-0 h-36 w-36 rounded-full bg-amber-100/60 blur-3xl" />
+        <div className="pointer-events-none absolute left-1/3 top-10 h-24 w-24 rounded-full bg-sky-100/70 blur-2xl" />
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="min-w-0 space-y-1">
-            <h1 className="text-sm font-semibold tracking-tight text-stone-950">
+          <div className="relative z-10 min-w-0 space-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5" />
+              Work Space
+            </div>
+            <h1 className="text-2xl font-black tracking-tight text-stone-950">
               Không gian làm việc
             </h1>
-            <p className="text-xs text-stone-500">
+            <p className="text-sm text-stone-600">
               Đây là nơi duy nhất để kéo thả và đổi trạng thái công việc.
             </p>
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="ui-pill">
-                Đang mở
-                <strong className="font-semibold text-stone-900">{openTasks.length}</strong>
-              </span>
-              <span className="ui-pill">
-                Tập trung
-                <strong className="font-semibold text-stone-900">{focusTasks.length}</strong>
-              </span>
-              <span
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
+                <div className="flex items-center gap-2 text-stone-500">
+                  <Compass className="h-4 w-4" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">Đang mở</span>
+                </div>
+                <p className="mt-2 text-2xl font-black text-stone-950">{openTasks.length}</p>
+              </div>
+              <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
+                <div className="flex items-center gap-2 text-stone-500">
+                  <Target className="h-4 w-4" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">Tập trung</span>
+                </div>
+                <p className="mt-2 text-2xl font-black text-stone-950">{focusTasks.length}</p>
+              </div>
+              <div
                 className={cn(
-                  "ui-pill",
-                  overdueTasks > 0 && "border-rose-200 bg-rose-50 text-rose-700"
+                  "rounded-[1.5rem] border px-4 py-4 backdrop-blur",
+                  overdueTasks > 0
+                    ? "border-rose-200 bg-rose-50/90"
+                    : "border-white/80 bg-white/85"
                 )}
               >
-                Quá hạn
-                <strong
-                  className={cn(
-                    "font-semibold",
-                    overdueTasks > 0 ? "text-rose-700" : "text-stone-900"
-                  )}
-                >
-                  {overdueTasks}
-                </strong>
-              </span>
+                <div className={cn("flex items-center gap-2", overdueTasks > 0 ? "text-rose-600" : "text-stone-500")}>
+                  <Plus className="h-4 w-4" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">Quá hạn</span>
+                </div>
+                <p className={cn("mt-2 text-2xl font-black", overdueTasks > 0 ? "text-rose-700" : "text-stone-950")}>{overdueTasks}</p>
+              </div>
             </div>
           </div>
 
