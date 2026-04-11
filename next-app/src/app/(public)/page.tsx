@@ -781,46 +781,67 @@ export default async function PublicHomePage() {
         </section>
 
         <section className="py-8">
-          <div className="overflow-hidden rounded-[2.1rem] border border-stone-950 bg-[linear-gradient(180deg,#2b2621_0%,#171311_100%)] text-white shadow-[0_22px_50px_-30px_rgba(12,10,9,0.9)]">
-            <div className="grid gap-6 px-6 py-7 md:grid-cols-[1fr_auto] md:items-center">
+          <div className="relative overflow-hidden rounded-[2.2rem] border border-[#e7dbcf] bg-[linear-gradient(135deg,#fffaf1_0%,#fff2e7_38%,#fff4f7_74%,#eef7ea_100%)] text-stone-950 shadow-[0_28px_60px_-34px_rgba(120,113,108,0.34)]">
+            <div className="absolute -left-14 top-0 h-40 w-40 rounded-full bg-[#6f9b58]/16 blur-3xl" />
+            <div className="absolute right-8 top-8 h-32 w-32 rounded-full bg-[#eb8e73]/16 blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 h-28 w-28 rounded-full bg-[#f5d7e7]/20 blur-3xl" />
+
+            <div className="relative grid gap-7 px-6 py-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:px-8 lg:py-8">
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
                   Bắt đầu nhẹ đầu
                 </p>
-                <h2 className={cn(displayFont.className, "mt-3 text-4xl text-white md:text-5xl")}>
+                <h2
+                  className={cn(
+                    displayFont.className,
+                    "mt-3 max-w-4xl text-4xl leading-[1.03] text-stone-950 md:text-[3.3rem]"
+                  )}
+                >
                   Vào app là biết ngay nên ôm khúc tre nào, thả việc nào, giữ streak nào.
                 </h2>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-300">
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600">
                   Đây là bước chuyển đầu tiên của giao diện theo hướng gấu trúc, mèo và
                   thỏ. Nếu mood này đúng, mình sẽ đẩy tiếp dashboard, goals, habits và
                   board theo cùng hệ màu và cùng ngôn ngữ.
                 </p>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-[#cfe1c2] bg-[#edf6e7] px-3 py-1 text-[11px] font-semibold text-[#5f7a4b]">
+                    Panda focus
+                  </span>
+                  <span className="rounded-full border border-[#f0cec3] bg-[#fff0e8] px-3 py-1 text-[11px] font-semibold text-[#b05d42]">
+                    Cat action
+                  </span>
+                  <span className="rounded-full border border-[#ead8e5] bg-[#fff1f8] px-3 py-1 text-[11px] font-semibold text-[#ab6788]">
+                    Rabbit comeback
+                  </span>
+                </div>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap items-center gap-3 lg:max-w-sm lg:justify-end">
                 {isAuthenticated ? (
                   <>
                     <Link
-                      className="ui-dark-cta rounded-full bg-[linear-gradient(135deg,#f7f4ee_0%,#ffffff_100%)] px-5 py-3 text-sm font-semibold !text-stone-950 transition hover:brightness-95"
+                      className="ui-dark-cta rounded-full bg-[linear-gradient(135deg,#6f9b58_0%,#1f1b18_100%)] px-5 py-3 text-sm font-semibold !text-white shadow-[0_18px_36px_-24px_rgba(111,155,88,0.72)] transition hover:brightness-105"
                       href="/dashboard"
                     >
                       Vào dashboard
                     </Link>
                     <SignOutButton
-                      className="!w-auto rounded-full border border-stone-700 px-5 py-3 text-sm font-semibold !text-white hover:border-stone-500 hover:bg-stone-900"
-                      variant="ghost"
+                      className="!w-auto rounded-full border border-[#e7dbcf] bg-white/72 px-5 py-3 text-sm font-semibold !text-stone-900 shadow-[0_12px_26px_-20px_rgba(120,113,108,0.4)] hover:border-[#d9ccbf] hover:bg-white"
+                      variant="secondary"
                     />
                   </>
                 ) : (
                   <>
                     <Link
-                      className="ui-dark-cta rounded-full bg-[linear-gradient(135deg,#f7f4ee_0%,#ffffff_100%)] px-5 py-3 text-sm font-semibold !text-stone-950 transition hover:brightness-95"
+                      className="ui-dark-cta rounded-full bg-[linear-gradient(135deg,#6f9b58_0%,#1f1b18_100%)] px-5 py-3 text-sm font-semibold !text-white shadow-[0_18px_36px_-24px_rgba(111,155,88,0.72)] transition hover:brightness-105"
                       href="/register"
                     >
                       Tạo tài khoản
                     </Link>
                     <Link
-                      className="rounded-full border border-stone-700 px-5 py-3 text-sm font-semibold text-white transition hover:border-stone-500 hover:bg-stone-900"
+                      className="rounded-full border border-[#e7dbcf] bg-white/72 px-5 py-3 text-sm font-semibold text-stone-900 shadow-[0_12px_26px_-20px_rgba(120,113,108,0.4)] transition hover:border-[#d9ccbf] hover:bg-white"
                       href="/login"
                     >
                       Đăng nhập
