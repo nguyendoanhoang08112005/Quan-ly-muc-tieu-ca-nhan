@@ -1,18 +1,25 @@
 import { deleteTaskAction } from "@/features/tasks/actions/delete-task";
 import { ConfirmSubmitButton } from "@/components/shared/confirm-submit-button";
+import type { ButtonProps } from "@/components/ui/button";
 
 export function DeleteTaskForm({
   className,
   goalId,
+  idleLabel = "Xóa công việc",
+  pendingLabel = "Đang xóa công việc...",
   projectId,
   size = "default",
-  taskId
+  taskId,
+  variant = "destructive"
 }: {
   className?: string;
   goalId: string;
+  idleLabel?: string;
+  pendingLabel?: string;
   projectId?: string | null;
-  size?: "default" | "sm" | "lg";
+  size?: ButtonProps["size"];
   taskId: string;
+  variant?: ButtonProps["variant"];
 }) {
   return (
     <form action={deleteTaskAction}>
@@ -22,10 +29,10 @@ export function DeleteTaskForm({
       <ConfirmSubmitButton
         className={className}
         confirmMessage="Bạn có chắc muốn xóa công việc này không? Tiến độ liên quan sẽ được tính lại."
-        idleLabel="Xóa công việc"
-        pendingLabel="Đang xóa công việc..."
+        idleLabel={idleLabel}
+        pendingLabel={pendingLabel}
         size={size}
-        variant="destructive"
+        variant={variant}
       />
     </form>
   );
