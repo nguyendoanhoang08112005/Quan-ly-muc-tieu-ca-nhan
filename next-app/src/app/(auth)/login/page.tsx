@@ -6,7 +6,7 @@ import { authRoutes } from "@/lib/auth/routes";
 
 export const metadata: Metadata = {
   title: "Đăng nhập",
-  description: "Đăng nhập vào hệ thống quản lý mục tiêu cá nhân.",
+  description: "Đăng nhập để quay lại bảng điều khiển, mục tiêu và nhịp làm việc của bạn.",
   robots: {
     index: false,
     follow: false
@@ -36,20 +36,21 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <AuthShell
-      description="Đăng nhập để truy cập bảng điều khiển và sử dụng hệ thống mới."
-      eyebrow="Đăng nhập"
+      description="Quay lại dashboard, board công việc và các mục tiêu bạn đang theo. Không cần bắt đầu lại từ đầu."
+      eyebrow="Mèo đang chờ bạn"
       footer={
         <p>
           Chưa có tài khoản?{" "}
           <Link
-            className="font-semibold text-stone-950 underline decoration-stone-300 underline-offset-4"
+            className="font-semibold text-[#b05d42] underline decoration-[#efc8b9] underline-offset-4"
             href={authRoutes.register}
           >
             Tạo tài khoản
           </Link>
         </p>
       }
-      title="Đăng nhập vào hệ thống"
+      mode="login"
+      title="Đăng nhập để tiếp tục"
     >
       <LoginForm
         callbackUrl={callbackUrl}

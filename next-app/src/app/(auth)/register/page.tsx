@@ -6,7 +6,7 @@ import { authRoutes } from "@/lib/auth/routes";
 
 export const metadata: Metadata = {
   title: "Đăng ký",
-  description: "Tạo tài khoản mới trên hệ thống quản lý mục tiêu cá nhân.",
+  description: "Tạo tài khoản để bắt đầu quản lý mục tiêu, công việc và thói quen theo nhịp mới.",
   robots: {
     index: false,
     follow: false
@@ -16,19 +16,20 @@ export const metadata: Metadata = {
 export default async function RegisterPage() {
   return (
     <AuthShell
-      description="Tài khoản mới sẽ được lưu bằng Prisma và băm mật khẩu tương thích bcrypt để sẵn sàng cho dữ liệu cũ."
-      eyebrow="Đăng ký"
+      description="Tạo một tài khoản mới để bắt đầu nhẹ hơn: mục tiêu rõ hơn, việc làm gọn hơn và thói quen dễ quay lại hơn."
+      eyebrow="Thỏ đang giữ chỗ"
       footer={
         <p>
           Đã có tài khoản?{" "}
           <Link
-            className="font-semibold text-stone-950 underline decoration-stone-300 underline-offset-4"
+            className="font-semibold text-[#ab6788] underline decoration-[#ead8e5] underline-offset-4"
             href={authRoutes.signIn}
           >
             Đăng nhập
           </Link>
         </p>
       }
+      mode="register"
       title="Tạo tài khoản mới"
     >
       <RegisterForm />

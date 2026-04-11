@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,9 @@ type LoginFormProps = {
   defaultEmail?: string;
   showRegisteredMessage?: boolean;
 };
+
+const inputClassName =
+  "h-12 rounded-2xl border-[#e2d8cc] bg-white/92 px-4 text-[15px] shadow-[0_10px_20px_-18px_rgba(120,113,108,0.22)] placeholder:text-stone-400 focus:border-stone-500 focus:ring-stone-400/10";
 
 export function LoginForm({
   callbackUrl,
@@ -27,7 +29,7 @@ export function LoginForm({
     event.preventDefault();
 
     if (!email.trim() || !password) {
-      setError("Bạn cần nhập đầy đủ email và mật khẩu.");
+      setError("Mèo chưa thấy đủ email và mật khẩu.");
       return;
     }
 
@@ -44,12 +46,12 @@ export function LoginForm({
     setIsPending(false);
 
     if (!result) {
-      setError("Không thể đăng nhập lúc này. Vui lòng thử lại.");
+      setError("Chưa thể đăng nhập lúc này. Thử lại sau một nhịp.");
       return;
     }
 
     if (result.error) {
-      setError("Email hoặc mật khẩu không đúng.");
+      setError("Email hoặc mật khẩu chưa đúng.");
       return;
     }
 
@@ -58,31 +60,37 @@ export function LoginForm({
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
-      <div>
-        <h2 className="mt-3 text-3xl font-black text-stone-950">Đăng nhập</h2>
-        <p className="mt-3 text-sm leading-6 text-stone-600">
-          Đăng nhập bằng hệ thống xác thực hiện tại trên nền Prisma.
-        </p>
+      <div className="flex flex-wrap gap-2">
+        <span className="rounded-full border border-[#f1d4ca] bg-[#fff1ea] px-3 py-1 text-[11px] font-semibold text-[#b05d42]">
+          Mèo mở lại board
+        </span>
+        <span className="rounded-full border border-[#e7dbcf] bg-white/88 px-3 py-1 text-[11px] font-semibold text-stone-500">
+          Đi tiếp từ chỗ đang dở
+        </span>
       </div>
 
       {showRegisteredMessage ? (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
+        <div className="rounded-[1.35rem] border border-emerald-200 bg-[linear-gradient(180deg,#f2fbf5_0%,#e9f8ee_100%)] px-4 py-3 text-sm font-medium text-emerald-800">
           Tài khoản đã được tạo. Bạn có thể đăng nhập ngay bây giờ.
         </div>
       ) : null}
 
       {error ? (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+        <div className="rounded-[1.35rem] border border-rose-200 bg-[linear-gradient(180deg,#fff5f6_0%,#ffecee_100%)] px-4 py-3 text-sm font-medium text-rose-700">
           {error}
         </div>
       ) : null}
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-stone-800" htmlFor="email">
+        <label
+          className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500"
+          htmlFor="email"
+        >
           Email
         </label>
         <Input
           autoComplete="email"
+          className={inputClassName}
           id="email"
           name="email"
           onChange={(event) => setEmail(event.target.value)}
@@ -94,35 +102,36 @@ export function LoginForm({
 
       <div className="space-y-2">
         <label
-          className="text-sm font-semibold text-stone-800"
+          className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500"
           htmlFor="password"
         >
           Mật khẩu
         </label>
         <Input
           autoComplete="current-password"
+          className={inputClassName}
           id="password"
           name="password"
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Nhập mật khẩu"
+          placeholder="Nhập mật khẩu của bạn"
           type="password"
           value={password}
         />
       </div>
 
-      <Button className="w-full" disabled={isPending} size="lg" type="submit">
-        {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
-      </Button>
+      <div className="rounded-[1.35rem] border border-[#f1dfd8] bg-white/78 px-4 py-3 text-sm leading-6 text-stone-600">
+        Đăng nhập xong là vào lại ngay dashboard, board và các mục tiêu bạn đang theo.
+      </div>
 
-      <p className="text-sm text-stone-600">
-        Chưa có tài khoản?{" "}
-        <Link
-          className="font-semibold text-stone-950 underline decoration-stone-300 underline-offset-4"
-          href={authRoutes.register}
-        >
-          Tạo tài khoản
-        </Link>
-      </p>
+      <Button
+        className="h-12 w-full rounded-2xl border border-[#e2d8cc] bg-white/90 text-[15px] font-semibold !text-stone-950 shadow-[0_14px_26px_-22px_rgba(120,113,108,0.3)] hover:bg-white"
+        disabled={isPending}
+        size="lg"
+        type="submit"
+        variant="secondary"
+      >
+        {isPending ? "Đang mở lại khu làm việc..." : "Đăng nhập"}
+      </Button>
     </form>
   );
 }
