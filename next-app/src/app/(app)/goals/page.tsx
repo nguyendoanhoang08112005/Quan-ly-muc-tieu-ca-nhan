@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Compass, Plus, Sparkles, Target } from "lucide-react";
+import { Compass, PawPrint, Plus, Sparkles, Target } from "lucide-react";
+import { PawTrail } from "@/components/ornaments/paw-trail";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { GoalCard } from "@/features/goals/components/goal-card";
@@ -69,81 +70,111 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
 
   return (
     <div className="flex w-full max-w-none flex-col gap-4">
-      <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#fcfcfb_0%,#f7f7f5_48%,#eff6ff_100%)] px-5 py-5 shadow-sm">
-        <div className="pointer-events-none absolute -right-12 top-0 h-36 w-36 rounded-full bg-amber-100/60 blur-3xl" />
-        <div className="pointer-events-none absolute left-1/3 top-10 h-24 w-24 rounded-full bg-sky-100/70 blur-2xl" />
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5" />
-              Goal Space
+      <section className="relative overflow-hidden rounded-[2rem] border border-[#e8dfd5] bg-white px-5 py-5 shadow-[0_20px_50px_-40px_rgba(28,25,23,0.22)]">
+        <div className="pointer-events-none absolute -right-10 top-0 h-28 w-28 rounded-full bg-[#edf5e8] blur-3xl" />
+        <div className="pointer-events-none absolute left-1/4 top-0 h-24 w-24 rounded-full bg-[#f7faf4] blur-3xl" />
+        <PawTrail className="right-16 top-16 h-24 w-[14rem]" variant="bamboo" />
+
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_18rem]">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600">
+                <Sparkles className="h-3.5 w-3.5" />
+                Mục tiêu
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#d8e6cf] bg-[#f5fbf1] px-3 py-1 text-[11px] font-semibold text-[#62814f]">
+                <PawPrint className="h-3.5 w-3.5" />
+                Gấu trúc giữ nhịp
+              </div>
             </div>
-            <h1 className="mt-3 text-2xl font-black tracking-tight text-stone-950 sm:text-3xl">
-              Kế hoạch mục tiêu
+
+            <h1 className="mt-4 text-3xl font-black tracking-tight text-stone-950">
+              Mục tiêu rõ. Đích đến rõ.
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-stone-600">
-              Tạo mới và theo dõi mục tiêu trong cùng một màn hình.
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
+              Tạo mới, lọc nhanh và giữ toàn bộ mục tiêu trong một màn hình.
             </p>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-[1.35rem] border border-[#e6ddd2] bg-white px-4 py-4 shadow-sm">
+                <div className="flex items-center gap-2 text-stone-500">
+                  <Target className="h-4 w-4" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                    Tổng mục tiêu
+                  </span>
+                </div>
+                <p className="mt-2 text-2xl font-black text-stone-950">{filteredGoals.length}</p>
+              </div>
+
+              <div className="rounded-[1.35rem] border border-[#dfead8] bg-white px-4 py-4 shadow-sm">
+                <div className="flex items-center gap-2 text-stone-500">
+                  <Compass className="h-4 w-4" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                    Đang thực hiện
+                  </span>
+                </div>
+                <p className="mt-2 text-2xl font-black text-stone-950">{inProgressGoals.length}</p>
+              </div>
+
+              <div className="rounded-[1.35rem] border border-[#e6ddd2] bg-white px-4 py-4 shadow-sm">
+                <div className="flex items-center gap-2 text-stone-500">
+                  <Sparkles className="h-4 w-4" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                    Hoàn thành
+                  </span>
+                </div>
+                <p className="mt-2 text-2xl font-black text-stone-950">{completedGoals.length}</p>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              className={cn(
-                buttonVariants({ size: "sm", variant: "secondary" }),
-                "rounded-full"
-              )}
-              href="/dashboard"
-            >
-              Mở bảng công việc
-            </Link>
-            <Link
-              className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full !text-white")}
-              href="/goals?create=1"
-            >
-              <Plus className="h-4 w-4" />
-              Tạo mục tiêu
-            </Link>
-          </div>
-        </div>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap gap-2 xl:justify-end">
+              <Link
+                className={cn(
+                  buttonVariants({ size: "sm", variant: "secondary" }),
+                  "rounded-full border-[#e5dbd0] bg-white"
+                )}
+                href="/dashboard"
+              >
+                Mở bảng việc
+              </Link>
+              <Link
+                className={cn(
+                  buttonVariants({ size: "sm" }),
+                  "gap-2 rounded-full !text-white"
+                )}
+                href="/goals?create=1"
+              >
+                <Plus className="h-4 w-4" />
+                Tạo mục tiêu
+              </Link>
+            </div>
 
-        <div className="relative z-10 mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Target className="h-4 w-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
-              Tổng mục tiêu
-              </p>
+            <div className="rounded-[1.45rem] border border-[#dfead8] bg-[#f8fcf5] px-4 py-4 shadow-sm">
+              <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+                <PawPrint className="h-3.5 w-3.5" />
+                Nhịp mục tiêu
+              </div>
+              <div className="mt-3 space-y-2 text-sm text-stone-700">
+                <div className="flex items-center justify-between gap-3">
+                  <span>Form tạo mới</span>
+                  <span className="font-semibold text-stone-950">
+                    {shouldOpenCreatePanel ? "Đang mở" : "Thu gọn"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Hạn gần nhất</span>
+                  <span className="font-semibold text-stone-950">
+                    {nearestDeadline ? formatDisplayDate(nearestDeadline.targetDate) : "Chưa có"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Đang chạy</span>
+                  <span className="font-semibold text-stone-950">{inProgressGoals.length}</span>
+                </div>
+              </div>
             </div>
-            <p className="mt-2 text-2xl font-black text-stone-950">{filteredGoals.length}</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Compass className="h-4 w-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
-              Đang thực hiện
-              </p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-stone-950">{inProgressGoals.length}</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Sparkles className="h-4 w-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
-              Hoàn thành
-              </p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-stone-950">{completedGoals.length}</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Plus className="h-4 w-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
-              Hạn gần nhất
-              </p>
-            </div>
-            <p className="mt-2 text-base font-bold text-stone-950">
-              {nearestDeadline ? formatDisplayDate(nearestDeadline.targetDate) : "Chưa có"}
-            </p>
           </div>
         </div>
       </section>
@@ -188,15 +219,14 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
             Không tìm thấy mục tiêu phù hợp
           </h2>
           <p className="mt-2 text-sm leading-6 text-stone-500">
-            Hãy điều chỉnh bộ lọc để quay lại danh sách mục tiêu rộng hơn.
+            Đổi bộ lọc để quay lại danh sách rộng hơn.
           </p>
         </section>
       ) : (
         <section className="ui-panel border-dashed px-6 py-10 text-center">
           <h2 className="text-xl font-black text-stone-950">Chưa có mục tiêu nào</h2>
           <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-stone-600">
-            Biểu mẫu tạo mục tiêu đã được mở ngay phía trên. Tạo xong, mục tiêu sẽ xuất
-            hiện trong danh sách này để bạn kiểm tra và tiếp tục chỉnh chi tiết nếu cần.
+            Form tạo mới đã mở ở phía trên.
           </p>
         </section>
       )}

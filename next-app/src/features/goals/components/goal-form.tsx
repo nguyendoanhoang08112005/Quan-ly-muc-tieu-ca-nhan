@@ -12,9 +12,10 @@ import {
   Clock3,
   Flag,
   Layers3,
+  PawPrint,
   Sparkles,
-  Target
 } from "lucide-react";
+import { PawTrail } from "@/components/ornaments/paw-trail";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -61,7 +62,7 @@ function SelectField({
     <label className="block">
       <span className="mb-2 block text-sm font-semibold text-stone-700">{label}</span>
       <select
-        className="h-12 w-full rounded-2xl border border-stone-200 bg-white px-4 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10"
+        className="h-12 w-full rounded-2xl border border-[#e5dbd0] bg-white px-4 text-sm text-stone-950 shadow-sm outline-none transition focus:border-[#b8cea9] focus:ring-2 focus:ring-[#dbe8d2]"
         defaultValue={defaultValue}
         name={name}
         onChange={
@@ -89,7 +90,7 @@ function SummaryPill({
   value: string;
 }) {
   return (
-    <div className="rounded-[1.25rem] border border-white/70 bg-white/80 px-4 py-3 backdrop-blur">
+    <div className="rounded-[1.25rem] border border-[#dfead8] bg-[#f8fcf5] px-4 py-3">
       <div className="flex items-center gap-2 text-stone-500">
         {icon}
         <span className="text-xs font-semibold uppercase tracking-[0.12em]">{label}</span>
@@ -145,12 +146,13 @@ export function GoalForm({
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px]">
         <div className="space-y-5">
-          <div className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#fafaf8_100%)] p-6 shadow-sm">
-            <div className="pointer-events-none absolute -right-8 top-0 h-28 w-28 rounded-full bg-amber-100/60 blur-2xl" />
+          <div className="relative overflow-hidden rounded-[2rem] border border-[#e8dfd5] bg-white p-6 shadow-sm">
+            <div className="pointer-events-none absolute -right-8 top-0 h-28 w-28 rounded-full bg-[#edf5e8] blur-2xl" />
+            <PawTrail className="right-4 top-6 h-20 w-[10rem]" variant="bamboo" />
             <div className="flex flex-col gap-2">
-              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-600 shadow-sm">
+              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#d8e6cf] bg-[#f5fbf1] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#62814f] shadow-sm">
                 <Sparkles className="h-3.5 w-3.5" />
-                Tạo Nhanh
+                Khởi tạo
               </div>
               <h2 className="text-[2rem] font-black leading-tight text-stone-950">
                 {title ?? (mode === "edit" ? "Cập nhật mục tiêu" : "Tạo mục tiêu mới")}
@@ -203,7 +205,7 @@ export function GoalForm({
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-stone-200 bg-[linear-gradient(180deg,#fffefb_0%,#f7f7f4_100%)] p-6 shadow-sm">
+          <div className="rounded-[2rem] border border-[#e8dfd5] bg-white p-6 shadow-sm">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-500">
@@ -216,7 +218,7 @@ export function GoalForm({
               <div className="flex flex-wrap gap-2">
                 {[7, 30, 90].map((days) => (
                   <button
-                    className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-stone-600 transition hover:border-stone-900 hover:text-stone-950"
+                    className="rounded-full border border-[#d8e6cf] bg-[#f5fbf1] px-3 py-1.5 text-xs font-semibold text-[#62814f] transition hover:border-[#9eb789] hover:text-[#4d6840]"
                     key={days}
                     onClick={() => setTargetDate(addDaysToDateInput(startDate, days))}
                     type="button"
@@ -303,7 +305,7 @@ export function GoalForm({
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-stone-200 bg-[linear-gradient(180deg,#f7f7f4_0%,#f1f1ee_100%)] p-5 shadow-sm">
+          <div className="rounded-[2rem] border border-[#e8dfd5] bg-white p-5 shadow-sm">
             <button
               className="flex w-full items-center justify-between gap-3 text-left"
               onClick={() => setShowAdvanced((current) => !current)}
@@ -312,10 +314,10 @@ export function GoalForm({
               <div>
                 <p className="text-sm font-semibold text-stone-900">Tuỳ chọn nâng cao</p>
                 <p className="text-sm text-stone-500">
-                  Danh mục, thẻ, trạng thái, ghi chú và hiển thị công khai
+                  Danh mục, thẻ, trạng thái và ghi chú
                 </p>
               </div>
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-stone-700 shadow-sm">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#e5dbd0] bg-white text-stone-700 shadow-sm">
                 {showAdvanced ? (
                   <ChevronUp className="h-4 w-4" />
                 ) : (
@@ -347,7 +349,7 @@ export function GoalForm({
                     Danh mục
                   </span>
                   <select
-                    className="h-12 w-full rounded-2xl border border-stone-200 bg-white px-4 text-sm text-stone-950 shadow-sm outline-none transition focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10"
+                    className="h-12 w-full rounded-2xl border border-[#e5dbd0] bg-white px-4 text-sm text-stone-950 shadow-sm outline-none transition focus:border-[#b8cea9] focus:ring-2 focus:ring-[#dbe8d2]"
                     defaultValue={state.values.categoryId}
                     name="categoryId"
                   >
@@ -370,7 +372,7 @@ export function GoalForm({
                     <span className="block text-sm font-semibold text-stone-700">Thẻ</span>
                     <span className="text-xs text-stone-400">{tags.length} thẻ</span>
                   </div>
-                  <div className="flex flex-wrap gap-2 rounded-[1.5rem] border border-stone-200 bg-white p-3">
+                  <div className="flex flex-wrap gap-2 rounded-[1.5rem] border border-[#e5dbd0] bg-white p-3">
                     {tags.length > 0 ? (
                       tags.map((tag) => (
                         <label
@@ -413,7 +415,7 @@ export function GoalForm({
                   ) : null}
                 </label>
 
-                <label className="flex items-start gap-3 rounded-[1.5rem] border border-stone-200 bg-white px-4 py-4 md:col-span-2">
+                <label className="flex items-start gap-3 rounded-[1.5rem] border border-[#e5dbd0] bg-[#fffdfa] px-4 py-4 md:col-span-2">
                   <input
                     className="mt-1 h-4 w-4 rounded border-stone-300"
                     defaultChecked={state.values.isPublic}
@@ -435,9 +437,9 @@ export function GoalForm({
         </div>
 
         <aside className="space-y-4">
-          <div className="rounded-[2rem] border border-stone-200 bg-[linear-gradient(180deg,#fefefe_0%,#f3f4f6_100%)] p-5 text-stone-950 shadow-sm xl:sticky xl:top-6">
+          <div className="rounded-[2rem] border border-[#dfead8] bg-[#f8fcf5] p-5 text-stone-950 shadow-sm xl:sticky xl:top-6">
             <div className="flex items-center gap-2 text-stone-500">
-              <Target className="h-4 w-4" />
+              <PawPrint className="h-4 w-4 text-[#62814f]" />
               <span className="text-xs font-semibold uppercase tracking-[0.16em]">
                 Xem nhanh
               </span>
@@ -474,7 +476,7 @@ export function GoalForm({
               />
             </div>
 
-            <div className="mt-4 rounded-[1.5rem] border border-stone-200 bg-white/70 px-4 py-3 text-sm text-stone-600">
+            <div className="mt-4 rounded-[1.5rem] border border-[#dfead8] bg-white px-4 py-3 text-sm text-stone-600">
               {startDate && targetDate ? (
                 <div className="flex items-center gap-2">
                   <CalendarDays className="h-4 w-4" />
@@ -491,7 +493,7 @@ export function GoalForm({
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button disabled={isPending} size="lg" type="submit">
+        <Button className="bg-stone-950 text-white hover:bg-stone-800" disabled={isPending} size="lg" type="submit">
           {submitLabel}
         </Button>
         {onCancel ? (
