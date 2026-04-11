@@ -141,6 +141,7 @@ export function GoalForm({
     <form action={formAction} className="space-y-5">
       {goalId ? <input name="goalId" type="hidden" value={goalId} /> : null}
       {redirectTo ? <input name="redirectTo" type="hidden" value={redirectTo} /> : null}
+      {!showAdvanced ? <input name="status" type="hidden" value={statusValue} /> : null}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px]">
         <div className="space-y-5">
@@ -185,12 +186,12 @@ export function GoalForm({
               <label className="block">
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <span className="text-sm font-semibold text-stone-700">Kết quả mong muốn</span>
-                  <span className="text-xs text-stone-400">Ngắn gọn</span>
+                  <span className="text-xs text-stone-400">Tuỳ chọn</span>
                 </div>
                 <Textarea
                   defaultValue={state.values.description}
                   name="description"
-                  placeholder="Mục tiêu này hoàn thành thì điều gì thay đổi?"
+                  placeholder="Có thể bỏ trống, hoặc mô tả ngắn kết quả mong muốn"
                   rows={3}
                 />
                 {state.fieldErrors?.description?.[0] ? (

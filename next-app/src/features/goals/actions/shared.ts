@@ -3,6 +3,20 @@ import { buildDefaultGoalFormValues } from "@/features/goals/goal-helpers";
 
 type GoalFormField = keyof GoalFormValues;
 
+const goalFormFieldLabels: Record<GoalFormField, string> = {
+  title: "Tên mục tiêu",
+  description: "Kết quả mong muốn",
+  goalType: "Loại mục tiêu",
+  priority: "Độ ưu tiên",
+  status: "Trạng thái",
+  startDate: "Ngày bắt đầu",
+  targetDate: "Hạn hoàn thành",
+  note: "Ghi chú",
+  isPublic: "Công khai mục tiêu",
+  categoryId: "Danh mục",
+  tagIds: "Thẻ"
+};
+
 export type GoalFormActionState = {
   status: "idle" | "error";
   message?: string;
@@ -51,9 +65,28 @@ export function buildGoalFormErrorState(
   message: string,
   fieldErrors?: GoalFormActionState["fieldErrors"]
 ): GoalFormActionState {
+  const summarizedFieldErrors = fieldErrors
+    ? Object.entries(fieldErrors)
+        .flatMap(([field, errors]) => {
+          if (!Array.isArray(errors) || errors.length === 0) {
+            return [];
+          }
+
+          const label = goalFormFieldLabels[field as GoalFormField];
+
+          return `${label}: ${errors[0]}`;
+        })
+        .slice(0, 3)
+    : [];
+
+  const resolvedMessage =
+    summarizedFieldErrors.length > 0
+      ? summarizedFieldErrors.join(" ")
+      : message;
+
   return {
     status: "error",
-    message,
+    message: resolvedMessage,
     fieldErrors,
     values
   };

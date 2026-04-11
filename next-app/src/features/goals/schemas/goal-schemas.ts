@@ -37,7 +37,11 @@ export const goalFormSchema = z
     description: z
       .string()
       .trim()
-      .min(10, "Mô tả phải có ít nhất 10 ký tự."),
+      .max(4000, "Mô tả quá dài.")
+      .refine(
+        (value) => value === "" || value.length >= 10,
+        "Nếu nhập mô tả, cần có ít nhất 10 ký tự."
+      ),
     goalType: z.enum(goalTypeValues, {
       message: "Loại mục tiêu không hợp lệ."
     }),
