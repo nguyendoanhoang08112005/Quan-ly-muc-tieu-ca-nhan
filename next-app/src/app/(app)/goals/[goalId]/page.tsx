@@ -7,12 +7,13 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
+  Layers3,
   PencilLine,
   Plus,
   Sparkles,
   Target
 } from "lucide-react";
-import { PageSectionTitle } from "@/components/shared/app-page-patterns";
+import { PageEmptyState, PageSectionTitle } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { DeleteGoalForm } from "@/features/goals/components/delete-goal-form";
 import {
@@ -59,6 +60,23 @@ function InfoCard({
         {label}
       </div>
       <div className="mt-4">{children}</div>
+    </div>
+  );
+}
+
+function SummaryStat({
+  label,
+  value
+}: {
+  label: string;
+  value: ReactNode;
+}) {
+  return (
+    <div className="rounded-[1.15rem] border border-[#ebe1d7] bg-white px-4 py-3 shadow-sm">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+        {label}
+      </p>
+      <div className="mt-2 text-2xl font-black tracking-tight text-stone-950">{value}</div>
     </div>
   );
 }
@@ -272,78 +290,61 @@ export default async function GoalDetailPage({
           </div>
 
           <aside className="space-y-3">
-            <div className="rounded-[1.9rem] border border-stone-950 bg-stone-950 px-5 py-5 text-white shadow-[0_24px_48px_-30px_rgba(12,10,9,0.9)]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
+            <div className="rounded-[1.9rem] border border-[#e7ddd3] bg-[linear-gradient(180deg,#fffdfa_0%,#ffffff_100%)] px-5 py-5 shadow-[0_24px_48px_-34px_rgba(120,113,108,0.34)]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
                 Bức tranh hiện tại
               </p>
 
               <div className="mt-4 flex items-end justify-between gap-4">
                 <div>
-                  <p className="text-6xl font-black tracking-tight">
+                  <p className="text-6xl font-black tracking-tight text-stone-950">
                     {Math.round(goal.progress)}%
                   </p>
-                  <p className="mt-1 text-sm text-stone-300">
+                  <p className="mt-1 text-sm text-stone-600">
                     tiến độ toàn mục tiêu
                   </p>
                 </div>
 
-                <div className="rounded-[1.1rem] border border-white/10 bg-white/5 px-3 py-3 text-right">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                <div className="rounded-[1.1rem] border border-[#ece2d8] bg-[#fffaf6] px-3 py-3 text-right">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-500">
                     Công việc xong
                   </p>
-                  <p className="mt-1 text-2xl font-black">
+                  <p className="mt-1 text-2xl font-black text-stone-950">
                     {completedTasks}/{totalTasks}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-5 h-2 rounded-full bg-white/10">
+              <div className="mt-5 h-2 rounded-full bg-[#edf2e8]">
                 <div
-                  className="h-full rounded-full bg-white"
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#c6d8b7_0%,#86a96d_100%)]"
                   style={{ width: `${Math.round(goal.progress)}%` }}
                 />
               </div>
 
               <div className="mt-5 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
-                <div className="rounded-[1.1rem] border border-white/10 bg-white/5 px-4 py-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                    Cột mốc đang chạy
-                  </p>
-                  <p className="mt-2 text-2xl font-black">
-                    {activeMilestonesCount}
-                  </p>
-                </div>
-                <div className="rounded-[1.1rem] border border-white/10 bg-white/5 px-4 py-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                    Việc ưu tiên
-                  </p>
-                  <p className="mt-2 text-2xl font-black">{focusTasksCount}</p>
-                </div>
-                <div className="rounded-[1.1rem] border border-white/10 bg-white/5 px-4 py-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                    Việc quá hạn
-                  </p>
-                  <p className="mt-2 text-2xl font-black">{overdueTasksCount}</p>
-                </div>
+                <SummaryStat label="Cột mốc đang chạy" value={activeMilestonesCount} />
+                <SummaryStat label="Việc ưu tiên" value={focusTasksCount} />
+                <SummaryStat label="Việc quá hạn" value={overdueTasksCount} />
               </div>
 
-              <div className="mt-4 rounded-[1.15rem] border border-white/10 bg-white/5 px-4 py-4">
-                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                  <Clock3 className="h-4 w-4" />
+              <div className="mt-4 rounded-[1.15rem] border border-[#ece2d8] bg-[#fffaf6] px-4 py-4">
+                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-500">
+                  <Clock3 className="h-4 w-4 text-stone-500" />
                   Việc gần hạn nhất
                 </div>
                 {nextDueTask ? (
                   <>
-                    <p className="mt-3 text-sm font-semibold text-white">
+                    <p className="mt-3 text-sm font-semibold text-stone-950">
                       {nextDueTask.title}
                     </p>
-                    <p className="mt-1 text-sm text-stone-300">
+                    <p className="mt-1 text-sm text-stone-600">
                       {nextDueTask.milestoneTitle} •{" "}
                       {formatDisplayDateTime(nextDueTask.dueAt)}
                     </p>
                   </>
                 ) : (
-                  <p className="mt-3 text-sm text-stone-300">
+                  <p className="mt-3 text-sm text-stone-600">
                     Chưa có công việc nào được đặt hạn hoàn thành.
                   </p>
                 )}
@@ -411,16 +412,31 @@ export default async function GoalDetailPage({
                             "Chưa có mô tả cho cột mốc này."}
                         </p>
 
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          <span className="rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-700">
-                            Bắt đầu {formatDisplayDate(milestone.startDate)}
-                          </span>
-                          <span className="rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-700">
-                            Mục tiêu {formatDisplayDate(milestone.targetDate)}
-                          </span>
-                          <span className="rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-700">
-                            {milestone.tasksCount} công việc
-                          </span>
+                        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                          <div className="rounded-[1rem] border border-[#ebe1d7] bg-white px-3 py-3">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                              Bắt đầu
+                            </p>
+                            <p className="mt-1 text-sm font-semibold text-stone-700">
+                              {formatDisplayDate(milestone.startDate)}
+                            </p>
+                          </div>
+                          <div className="rounded-[1rem] border border-[#ebe1d7] bg-white px-3 py-3">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                              Mục tiêu
+                            </p>
+                            <p className="mt-1 text-sm font-semibold text-stone-700">
+                              {formatDisplayDate(milestone.targetDate)}
+                            </p>
+                          </div>
+                          <div className="rounded-[1rem] border border-[#ebe1d7] bg-white px-3 py-3">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                              Phạm vi
+                            </p>
+                            <p className="mt-1 text-sm font-semibold text-stone-700">
+                              {milestone.tasksCount} công việc
+                            </p>
+                          </div>
                         </div>
 
                         {milestone.note ? (
@@ -430,7 +446,7 @@ export default async function GoalDetailPage({
                         ) : null}
                       </div>
 
-                      <aside className="border-t border-stone-200 bg-stone-50/75 px-6 py-6 xl:border-l xl:border-t-0">
+                      <aside className="border-t border-stone-200 bg-[#fffaf6] px-6 py-6 xl:border-l xl:border-t-0">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
                           Tiến độ cột mốc
                         </p>
@@ -444,9 +460,9 @@ export default async function GoalDetailPage({
                           </p>
                         </div>
 
-                        <div className="mt-4 h-2 rounded-full bg-stone-200">
+                        <div className="mt-4 h-2 rounded-full bg-[#f0ece7]">
                           <div
-                            className="h-full rounded-full bg-stone-900"
+                            className="h-full rounded-full bg-[linear-gradient(90deg,#c97b5f_0%,#a76a53_100%)]"
                             style={{ width: `${Math.round(milestone.progress)}%` }}
                           />
                         </div>
@@ -559,7 +575,7 @@ export default async function GoalDetailPage({
                                     </div>
                                   </div>
 
-                                  <aside className="rounded-[1.25rem] border border-stone-200 bg-stone-50/80 px-4 py-4">
+                                  <aside className="rounded-[1.25rem] border border-[#ebe1d7] bg-[#fffaf6] px-4 py-4">
                                     <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
                                       Tiến độ công việc
                                     </p>
@@ -568,9 +584,9 @@ export default async function GoalDetailPage({
                                       <p className="text-4xl font-black tracking-tight text-stone-950">
                                         {Math.round(task.progress)}%
                                       </p>
-                                      <div className="h-2 flex-1 rounded-full bg-stone-200">
+                                      <div className="h-2 flex-1 rounded-full bg-[#f0ece7]">
                                         <div
-                                          className="h-full rounded-full bg-stone-900"
+                                          className="h-full rounded-full bg-[linear-gradient(90deg,#c97b5f_0%,#a76a53_100%)]"
                                           style={{ width: `${Math.round(task.progress)}%` }}
                                         />
                                       </div>
@@ -647,14 +663,8 @@ export default async function GoalDetailPage({
             })}
           </div>
         ) : (
-          <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
-            <h3 className="text-2xl font-black text-stone-950">
-              Mục tiêu này chưa có cột mốc
-            </h3>
-            <p className="mt-3 text-sm leading-7 text-stone-500">
-              Hãy tách mục tiêu thành các chặng nhỏ để dễ theo dõi và phân việc hơn.
-            </p>
-            <div className="mt-6">
+          <PageEmptyState
+            action={
               <Link
                 className={cn(buttonVariants({ size: "lg" }), "gap-2 rounded-full !text-white")}
                 href={`/goals/${goal.id}/milestones/new` as Route}
@@ -662,8 +672,10 @@ export default async function GoalDetailPage({
                 <Plus className="h-4 w-4" />
                 Tạo cột mốc đầu tiên
               </Link>
-            </div>
-          </div>
+            }
+            description="Hãy tách mục tiêu thành các chặng nhỏ để dễ theo dõi và phân việc hơn."
+            title="Mục tiêu này chưa có cột mốc"
+          />
         )}
       </section>
 
@@ -735,13 +747,11 @@ export default async function GoalDetailPage({
             ))}
           </div>
         ) : (
-          <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50/70 px-6 py-10 text-center">
-            <h3 className="text-2xl font-black text-stone-950">
-              Chưa có thay đổi nào được ghi nhận
-            </h3>
-            <p className="mt-3 text-sm leading-7 text-stone-500">
-              Khi trạng thái, tiến độ hoặc công việc thay đổi, nhật ký sẽ xuất hiện ở đây.
-            </p>
+          <div className="mt-6">
+            <PageEmptyState
+              description="Khi trạng thái, tiến độ hoặc công việc thay đổi, nhật ký sẽ xuất hiện ở đây."
+              title="Chưa có thay đổi nào được ghi nhận"
+            />
           </div>
         )}
       </section>

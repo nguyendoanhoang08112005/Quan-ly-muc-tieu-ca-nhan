@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { notFound } from "next/navigation";
-import { ArrowLeft, PencilLine } from "lucide-react";
+import { AlarmClock, ArrowLeft, CalendarDays, Flame, PencilLine, Target } from "lucide-react";
 import { PageEmptyState, PageHero, PageSectionTitle } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { DeleteHabitForm } from "@/features/habits/components/delete-habit-form";
@@ -98,45 +98,104 @@ export default async function HabitDetailPage({
         trailVariant="bamboo"
       />
 
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-        <div className="flex flex-wrap gap-3 text-sm">
-          <span
-            className={cn(
-              "rounded-full px-3 py-1 font-semibold",
-              habitStatusClassNames[habit.status]
-            )}
-          >
-            {habitStatusLabels[habit.status]}
-          </span>
-          <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-            {habitFrequencyLabels[habit.frequency]}
-          </span>
-          <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-            {habit.targetCount} {habit.unit} / chu kỳ
-          </span>
-          {habit.goal ? (
-            <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-              {habit.goal.title}
+      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_19rem]">
+        <div className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap gap-3 text-sm">
+            <span
+              className={cn(
+                "rounded-full px-3 py-1 font-semibold",
+                habitStatusClassNames[habit.status]
+              )}
+            >
+              {habitStatusLabels[habit.status]}
             </span>
-          ) : null}
+            <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+              {habitFrequencyLabels[habit.frequency]}
+            </span>
+            <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+              {habit.targetCount} {habit.unit} / chu kỳ
+            </span>
+            {habit.goal ? (
+              <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+                {habit.goal.title}
+              </span>
+            ) : null}
+          </div>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            <div className="rounded-[1.4rem] border border-[#e8e0d6] bg-[#fffdfa] p-4">
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+                <Target className="h-3.5 w-3.5" />
+                Nhịp hôm nay
+              </div>
+              <p className="mt-3 text-3xl font-black tracking-tight text-stone-950">
+                {todayLog ? `${todayLog.completedCount}/${todayLog.targetCountSnapshot}` : `0/${habit.targetCount}`}
+              </p>
+              <p className="mt-2 text-sm text-stone-600">
+                {todayLog?.isCompleted
+                  ? `Đã đạt ${habit.unit} trong hôm nay.`
+                  : `Mục tiêu mỗi chu kỳ là ${habit.targetCount} ${habit.unit}.`}
+              </p>
+            </div>
+
+            <div className="rounded-[1.4rem] border border-[#dfead8] bg-[#f8fcf5] p-4">
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+                <Flame className="h-3.5 w-3.5" />
+                Streak hiện tại
+              </div>
+              <p className="mt-3 text-3xl font-black tracking-tight text-stone-950">
+                {habit.currentStreak} ngày
+              </p>
+              <p className="mt-2 text-sm text-stone-600">
+                Kỷ lục cao nhất: {habit.bestStreak} ngày.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4 text-sm text-stone-600">
-            Bắt đầu: {formatDisplayDate(habit.startDate)}
+        <aside className="rounded-[2rem] border border-[#eadfd4] bg-[#fffaf6] p-5 shadow-sm">
+          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+            Mốc và ngữ cảnh
+          </p>
+          <div className="mt-4 space-y-3">
+            <div className="rounded-[1.1rem] border border-[#ece2d8] bg-white px-3 py-3">
+              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+                <CalendarDays className="h-3.5 w-3.5" />
+                Bắt đầu
+              </div>
+              <p className="mt-1 text-sm font-semibold text-stone-900">
+                {formatDisplayDate(habit.startDate)}
+              </p>
+            </div>
+            <div className="rounded-[1.1rem] border border-[#ece2d8] bg-white px-3 py-3">
+              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+                <CalendarDays className="h-3.5 w-3.5" />
+                Kết thúc
+              </div>
+              <p className="mt-1 text-sm font-semibold text-stone-900">
+                {formatDisplayDate(habit.endDate)}
+              </p>
+            </div>
+            <div className="rounded-[1.1rem] border border-[#ece2d8] bg-white px-3 py-3">
+              <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+                <AlarmClock className="h-3.5 w-3.5" />
+                Giờ nhắc
+              </div>
+              <p className="mt-1 text-sm font-semibold text-stone-900">
+                {habit.reminderTime || "Chưa đặt"}
+              </p>
+            </div>
           </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4 text-sm text-stone-600">
-            Kết thúc: {formatDisplayDate(habit.endDate)}
-          </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4 text-sm text-stone-600">
-            Giờ nhắc: {habit.reminderTime || "Chưa đặt"}
-          </div>
-        </div>
+        </aside>
       </section>
 
       <div className="grid gap-8 xl:grid-cols-[1fr,1.1fr]">
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-          <PageSectionTitle eyebrow="Nhật ký thói quen" title="Nhật ký theo ngày" />
+          <PageSectionTitle
+            description="Ghi nhanh số lần hoàn thành ngay trong ngày để giữ streak không bị đứt."
+            eyebrow="Nhật ký thói quen"
+            title="Ghi nhận hôm nay"
+          />
 
           <div className="mt-6">
             <HabitLogForm
@@ -155,13 +214,17 @@ export default async function HabitDetailPage({
         </section>
 
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-          <PageSectionTitle eyebrow="Lịch sử" title="Nhật ký gần đây" />
+          <PageSectionTitle
+            description="Các lần ghi gần nhất được gom lại để bạn thấy nhịp đang giữ ra sao."
+            eyebrow="Lịch sử"
+            title="Nhật ký gần đây"
+          />
 
           {habit.recentLogs.length > 0 ? (
             <div className="mt-6 grid gap-4">
               {habit.recentLogs.map((log) => (
                 <article
-                  className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5"
+                  className="rounded-[1.5rem] border border-stone-200 bg-[linear-gradient(180deg,#ffffff_0%,#fcfaf8_100%)] px-5 py-5 shadow-sm"
                   key={log.id}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
