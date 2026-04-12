@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import { notFound } from "next/navigation";
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { GoalForm } from "@/features/goals/components/goal-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import {
@@ -26,8 +27,13 @@ export default async function EditGoalPage({ params }: EditGoalPageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref={`/goals/${goalId}`}
+      backLabel="Quay lại mục tiêu"
+      description="Chỉnh lại đích đến, mức ưu tiên và khung thời gian của mục tiêu hiện tại."
+      eyebrow="Sửa mục tiêu"
+      title="Cập nhật mục tiêu"
+    >
         <GoalForm
           cancelHref={`/goals/${goalId}` as Route}
           categories={options.categories}
@@ -36,7 +42,6 @@ export default async function EditGoalPage({ params }: EditGoalPageProps) {
           mode="edit"
           tags={options.tags}
         />
-      </div>
-    </div>
+    </PageFormShell>
   );
 }

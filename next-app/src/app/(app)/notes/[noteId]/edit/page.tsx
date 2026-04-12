@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { NoteForm } from "@/features/notes/components/note-form";
 import { noteIdSchema } from "@/features/notes/schemas/note-schemas";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
@@ -32,7 +33,14 @@ export default async function EditNotePage({ params }: EditNotePageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-4xl rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref="/notes"
+      backLabel="Quay lại ghi chú"
+      description="Chỉnh nội dung hoặc đổi lại đối tượng gắn với ghi chú này."
+      eyebrow="Sửa ghi chú"
+      maxWidthClassName="max-w-4xl"
+      title="Cập nhật ghi chú"
+    >
       <NoteForm
         cancelHref="/notes"
         initialValues={note}
@@ -40,6 +48,6 @@ export default async function EditNotePage({ params }: EditNotePageProps) {
         noteId={parsedNoteId.data}
         targetOptions={targetOptions}
       />
-    </div>
+    </PageFormShell>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BadgeCheck, Globe2, Mail, User2 } from "lucide-react";
+import { PageHero } from "@/components/shared/app-page-patterns";
 import { ProfileForm } from "@/features/profile/components/profile-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { formatDisplayDateTime } from "@/lib/dates";
@@ -44,7 +45,20 @@ export default async function ProfileSettingsPage() {
   ];
 
   return (
-    <div className="mx-auto grid max-w-7xl gap-8 xl:grid-cols-[1.15fr,0.85fr]">
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        description="Cập nhật hồ sơ, múi giờ và ngôn ngữ để phiên đăng nhập hiển thị đúng trong toàn bộ ứng dụng."
+        eyebrow="Hồ sơ"
+        metrics={facts.map((fact) => ({
+          label: fact.label,
+          value: fact.value,
+          hint: "Thông tin hiện tại"
+        }))}
+        title="Hồ sơ và phiên đăng nhập"
+        trailVariant="stone"
+      />
+
+    <div className="grid gap-8 xl:grid-cols-[1.15fr,0.85fr]">
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <ProfileForm
           initialValues={{
@@ -58,17 +72,6 @@ export default async function ProfileSettingsPage() {
       </section>
 
       <section className="space-y-6">
-        <div className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-          <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-            Hồ sơ và phiên đăng nhập
-          </h1>
-          <p className="mt-4 text-sm leading-7 text-stone-600">
-            Đây là khu vực chuyển đổi hồ sơ từ Laravel sang Next.js. Sau khi
-            lưu, phiên JWT sẽ được cập nhật lại để tên, email và ngôn ngữ mới
-            hiển thị đúng ngay trên khung ứng dụng.
-          </p>
-        </div>
-
         <div className="grid gap-4">
           {facts.map((fact) => {
             const Icon = fact.icon;
@@ -126,6 +129,6 @@ export default async function ProfileSettingsPage() {
           </dl>
         </div>
       </section>
-    </div>
+    </div></div>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { notFound } from "next/navigation";
 import { ArrowLeft, PencilLine } from "lucide-react";
+import { PageEmptyState, PageHero, PageSectionTitle } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { DeleteHabitForm } from "@/features/habits/components/delete-habit-form";
 import { HabitLogForm } from "@/features/habits/components/habit-log-form";
@@ -45,93 +46,79 @@ export default async function HabitDetailPage({
     null;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link
-            className={cn(
-              buttonVariants({ variant: "secondary" }),
-              "gap-2 rounded-full"
-            )}
-            href={"/habits" as Route}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Quay lại thói quen
-          </Link>
-
-          <div className="flex flex-wrap gap-3">
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        actions={
+          <>
             <Link
-              className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
+              className={cn(
+                buttonVariants({ variant: "secondary" }),
+                "gap-2 rounded-full"
+              )}
+              href={"/habits" as Route}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Quay lại thói quen
+            </Link>
+            <Link
+              className={cn(buttonVariants({ variant: "secondary" }), "gap-2 rounded-full")}
               href={`/habits/${habit.id}/edit` as Route}
             >
               <PencilLine className="h-4 w-4" />
               Chỉnh sửa
             </Link>
             <DeleteHabitForm habitId={habit.id} />
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
-            <div className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-stone-500">
-              Chi tiết thói quen
-            </div>
-            <h1 className="mt-4 text-4xl font-black tracking-tight text-stone-950">
-              {habit.title}
-            </h1>
-            <p className="mt-4 text-sm leading-7 text-stone-600">
-              {habit.description}
+          </>
+        }
+        aside={
+          <div className="rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              Ngữ cảnh
             </p>
-
-            <div className="mt-5 flex flex-wrap gap-3 text-sm">
-              <span
-                className={cn(
-                  "rounded-full px-3 py-1 font-semibold",
-                  habitStatusClassNames[habit.status]
-                )}
-              >
-                {habitStatusLabels[habit.status]}
-              </span>
-              <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                {habitFrequencyLabels[habit.frequency]}
-              </span>
-              <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                {habit.targetCount} {habit.unit} / chu kỳ
-              </span>
-              {habit.goal ? (
-                <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                  {habit.goal.title}
-                </span>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3 lg:w-[460px] lg:grid-cols-1">
-            <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
-              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-                Chuỗi hiện tại
+            <div className="mt-3 space-y-2 text-sm text-stone-700">
+              <div className="flex items-center justify-between gap-3">
+                <span>Tần suất</span>
+                <span className="font-semibold text-stone-950">{habitFrequencyLabels[habit.frequency]}</span>
               </div>
-              <div className="mt-2 text-4xl font-black">{habit.currentStreak}</div>
-            </div>
-            <div className="grid gap-4 sm:col-span-2 sm:grid-cols-2 lg:grid-cols-2">
-              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Chuỗi tốt nhất
-                </div>
-                <div className="mt-2 text-3xl font-black text-stone-950">
-                  {habit.bestStreak}
-                </div>
-              </div>
-              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Log gần nhất
-                </div>
-                <div className="mt-2 text-sm font-black text-stone-950">
-                  {formatDisplayDateTime(habit.lastLoggedAt, "Chưa ghi nhận")}
-                </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Mục tiêu</span>
+                <span className="font-semibold text-stone-950">{habit.goal?.title ?? "Chưa gắn"}</span>
               </div>
             </div>
           </div>
+        }
+        description={habit.description}
+        eyebrow="Chi tiết thói quen"
+        metrics={[
+          { label: "Chuỗi hiện tại", value: habit.currentStreak, hint: "Streak đang giữ", tone: "bamboo" },
+          { label: "Chuỗi tốt nhất", value: habit.bestStreak, hint: "Kỷ lục hiện có" },
+          { label: "Log gần nhất", value: formatDisplayDateTime(habit.lastLoggedAt, "Chưa ghi nhận"), hint: "Lần cập nhật gần nhất" }
+        ]}
+        title={habit.title}
+        trailVariant="bamboo"
+      />
+
+      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+        <div className="flex flex-wrap gap-3 text-sm">
+          <span
+            className={cn(
+              "rounded-full px-3 py-1 font-semibold",
+              habitStatusClassNames[habit.status]
+            )}
+          >
+            {habitStatusLabels[habit.status]}
+          </span>
+          <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+            {habitFrequencyLabels[habit.frequency]}
+          </span>
+          <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+            {habit.targetCount} {habit.unit} / chu kỳ
+          </span>
+          {habit.goal ? (
+            <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+              {habit.goal.title}
+            </span>
+          ) : null}
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -149,14 +136,7 @@ export default async function HabitDetailPage({
 
       <div className="grid gap-8 xl:grid-cols-[1fr,1.1fr]">
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Nhật ký thói quen
-            </p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Nhật ký theo ngày
-            </h2>
-          </div>
+          <PageSectionTitle eyebrow="Nhật ký thói quen" title="Nhật ký theo ngày" />
 
           <div className="mt-6">
             <HabitLogForm
@@ -175,14 +155,7 @@ export default async function HabitDetailPage({
         </section>
 
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Lịch sử
-            </p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Nhật ký gần đây
-            </h2>
-          </div>
+          <PageSectionTitle eyebrow="Lịch sử" title="Nhật ký gần đây" />
 
           {habit.recentLogs.length > 0 ? (
             <div className="mt-6 grid gap-4">
@@ -221,13 +194,11 @@ export default async function HabitDetailPage({
               ))}
             </div>
           ) : (
-            <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center">
-              <h3 className="text-2xl font-black text-stone-950">
-                Chưa có nhật ký nào
-              </h3>
-              <p className="mt-3 text-sm leading-7 text-stone-500">
-                Hãy ghi nhật ký ngày đầu tiên để bắt đầu tính chuỗi liên tiếp.
-              </p>
+            <div className="mt-6">
+              <PageEmptyState
+                description="Hãy ghi nhật ký ngày đầu tiên để bắt đầu tính chuỗi liên tiếp."
+                title="Chưa có nhật ký nào"
+              />
             </div>
           )}
         </section>

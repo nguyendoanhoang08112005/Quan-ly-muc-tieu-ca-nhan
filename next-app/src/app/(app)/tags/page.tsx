@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { Sparkles } from "lucide-react";
+import { PageEmptyState, PageHero } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { DeleteTagForm } from "@/features/tags/components/delete-tag-form";
 import { TagForm } from "@/features/tags/components/tag-form";
@@ -12,7 +14,18 @@ export default async function TagsPage() {
   const tags = await listTagsForUser(userId);
 
   return (
-    <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[420px,1fr]">
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        description="Thẻ giúp gắn nhãn nhanh cho mục tiêu và làm cho việc lọc theo ngữ cảnh dễ hơn."
+        eyebrow="Thẻ"
+        metrics={[
+          { icon: Sparkles, label: "Tổng thẻ", value: tags.length, hint: "Đang có trong hệ thống" }
+        ]}
+        title="Gắn nhãn cho mục tiêu"
+        trailVariant="stone"
+      />
+
+    <div className="grid gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <TagForm cancelHref={"/tags" as Route} mode="create" />
       </section>
@@ -23,9 +36,7 @@ export default async function TagsPage() {
             <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
               Thẻ
             </p>
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Gắn nhãn cho mục tiêu
-            </h1>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-stone-950">Các thẻ đang được dùng</h2>
           </div>
           <div className="rounded-full bg-stone-100 px-4 py-2 text-sm font-semibold text-stone-700">
             {tags.length} thẻ
@@ -70,11 +81,11 @@ export default async function TagsPage() {
             ))}
           </div>
         ) : (
-          <div className="mt-8 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center text-sm text-stone-500">
-            Chưa có tag nào.
+          <div className="mt-8">
+            <PageEmptyState description="Tạo thẻ đầu tiên để gắn nhãn cho mục tiêu." title="Chưa có thẻ nào" />
           </div>
         )}
       </section>
-    </div>
+    </div></div>
   );
 }

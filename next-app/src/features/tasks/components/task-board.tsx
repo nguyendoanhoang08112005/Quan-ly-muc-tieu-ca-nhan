@@ -1590,132 +1590,144 @@ export function TaskBoard({
       <div className="pointer-events-none absolute -right-10 top-0 h-28 w-28 rounded-full bg-[#fff1e9] blur-3xl" />
       <div className="pointer-events-none absolute left-1/4 top-0 h-24 w-24 rounded-full bg-[#faf7f2] blur-3xl" />
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_17rem]">
-        <div className="min-w-0 space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#f2d8cc] bg-[#fff6f1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b8694d]">
-              <PawPrint className="h-3.5 w-3.5" />
-              Mèo board
+      <div className="rounded-[1.7rem] border border-[#ece2d8] bg-[linear-gradient(180deg,#ffffff_0%,#fcfaf8_100%)] p-4 shadow-[0_18px_40px_-32px_rgba(28,25,23,0.2)] sm:p-5">
+        <PawTrail className="right-8 top-6 h-16 w-[11rem]" variant="mixed" />
+
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#f2d8cc] bg-[#fff6f1] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#b8694d]">
+                <PawPrint className="h-3.5 w-3.5" />
+                Mèo board
+              </div>
+              <span className="rounded-full border border-stone-200 bg-white px-3 py-1 text-[11px] font-medium text-stone-600">
+                {visibleTasks.length}/{boardTasks.length} việc
+              </span>
             </div>
-            <span className="rounded-full border border-stone-200 bg-white px-3 py-1 text-[11px] font-medium text-stone-600">
-              {visibleTasks.length}/{boardTasks.length} việc
-            </span>
-          </div>
 
-          <div>
-            <h2 className="text-2xl font-black tracking-tight text-stone-950">
-              Việc trong ngày
-            </h2>
-            <p className="mt-1 text-sm text-stone-600">
-              Kéo thả hoặc thêm nhanh vào đúng mốc.
-            </p>
-          </div>
+            <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h2 className="text-2xl font-black tracking-tight text-stone-950">
+                  Việc trong ngày
+                </h2>
+                <p className="mt-1 text-sm text-stone-600">
+                  Kéo đúng cột hoặc thêm nhanh vào đúng mốc.
+                </p>
+              </div>
 
-          <div className="flex flex-wrap gap-2">
-            {quickFilterOptions.map((option) => {
-              const isActive = quickFilter === option.value;
+              <div className="flex flex-wrap gap-2">
+                {quickFilterOptions.map((option) => {
+                  const isActive = quickFilter === option.value;
 
-              return (
-                <button
-                  key={option.value}
-                  aria-pressed={isActive}
-                  className={cn(
-                    "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
-                    getQuickFilterButtonClass(option.value, isActive)
-                  )}
-                  onClick={() => setQuickFilter(option.value)}
-                  type="button"
-                >
-                  {option.label}
-                  <span
-                    className={cn(
-                      "rounded-full px-1.5 py-0.5 text-[10px]",
-                      isActive
-                        ? option.value === "all"
-                          ? "bg-white/15 text-white"
-                          : "bg-white/75 text-current"
-                        : "bg-stone-100 text-stone-600"
-                    )}
-                  >
-                    {option.count}
+                  return (
+                    <button
+                      key={option.value}
+                      aria-pressed={isActive}
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-semibold transition",
+                        getQuickFilterButtonClass(option.value, isActive)
+                      )}
+                      onClick={() => setQuickFilter(option.value)}
+                      type="button"
+                    >
+                      {option.label}
+                      <span
+                        className={cn(
+                          "rounded-full px-1.5 py-0.5 text-[10px]",
+                          isActive
+                            ? option.value === "all"
+                              ? "bg-white/15 text-white"
+                              : "bg-white/75 text-current"
+                            : "bg-stone-100 text-stone-600"
+                        )}
+                      >
+                        {option.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {availableGoals.length > 0 ? (
+              <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                <label className="block">
+                  <span className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+                    <Target className="h-3.5 w-3.5" />
+                    Mục tiêu
                   </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {availableGoals.length > 0 ? (
-            <div className="grid gap-3 lg:grid-cols-2">
-              <label className="block">
-                <span className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-                  <Target className="h-3.5 w-3.5" />
-                  Mục tiêu
-                </span>
-                <select
-                  className="h-10 min-w-[14rem] w-full rounded-xl border border-[#eadfd4] bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-[#e8c8b4] focus:ring-2 focus:ring-[#f6ddd0]"
-                  onChange={(event) => setSelectedGoalId(event.target.value)}
-                  value={selectedGoalId}
-                >
-                  <option value="all">Tất cả mục tiêu</option>
-                  {availableGoals.map((goal) => (
-                    <option key={goal.id} value={goal.id}>
-                      {goal.title}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block">
-                <span className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-                  <Layers3 className="h-3.5 w-3.5" />
-                  Cột mốc
-                </span>
-                <select
-                  className="h-10 min-w-[15rem] w-full rounded-xl border border-[#eadfd4] bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-[#e8c8b4] focus:ring-2 focus:ring-[#f6ddd0]"
-                  disabled={filteredMilestoneOptions.length === 0}
-                  onChange={(event) => setSelectedMilestoneId(event.target.value)}
-                  value={selectedMilestoneId}
-                >
-                  {filteredMilestoneOptions.length > 0 ? (
-                    filteredMilestoneOptions.map((milestone) => (
-                      <option key={milestone.id} value={milestone.id}>
-                        {milestone.goal.title} · Mốc {milestone.sequenceNo}
+                  <select
+                    className="h-10 min-w-[14rem] w-full rounded-xl border border-[#eadfd4] bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-[#e8c8b4] focus:ring-2 focus:ring-[#f6ddd0]"
+                    onChange={(event) => setSelectedGoalId(event.target.value)}
+                    value={selectedGoalId}
+                  >
+                    <option value="all">Tất cả mục tiêu</option>
+                    {availableGoals.map((goal) => (
+                      <option key={goal.id} value={goal.id}>
+                        {goal.title}
                       </option>
-                    ))
-                  ) : (
-                    <option value="">Mục tiêu này chưa có cột mốc</option>
-                  )}
-                </select>
-              </label>
-            </div>
-          ) : (
-            <p className="text-xs font-medium text-amber-700">
-              Cần có ít nhất một cột mốc để thêm việc.
-            </p>
-          )}
-        </div>
-
-        <div className="relative rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
-          <PawTrail className="right-2 top-3 h-16 w-[10rem]" variant="stone" />
-          <div className="relative z-10 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-            <Clock3 className="h-3.5 w-3.5" />
-            Nhịp board
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+                    <Layers3 className="h-3.5 w-3.5" />
+                    Cột mốc
+                  </span>
+                  <select
+                    className="h-10 min-w-[15rem] w-full rounded-xl border border-[#eadfd4] bg-white px-3 text-sm text-stone-950 outline-none transition focus:border-[#e8c8b4] focus:ring-2 focus:ring-[#f6ddd0]"
+                    disabled={filteredMilestoneOptions.length === 0}
+                    onChange={(event) => setSelectedMilestoneId(event.target.value)}
+                    value={selectedMilestoneId}
+                  >
+                    {filteredMilestoneOptions.length > 0 ? (
+                      filteredMilestoneOptions.map((milestone) => (
+                        <option key={milestone.id} value={milestone.id}>
+                          {milestone.goal.title} · Mốc {milestone.sequenceNo}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">Mục tiêu này chưa có cột mốc</option>
+                    )}
+                  </select>
+                </label>
+              </div>
+            ) : (
+              <p className="mt-4 text-xs font-medium text-amber-700">
+                Cần có ít nhất một cột mốc để thêm việc.
+              </p>
+            )}
           </div>
-          <div className="relative z-10 mt-3 space-y-2 text-sm">
-            <div className="flex items-center justify-between gap-3 text-stone-700">
-              <span>Trạng thái</span>
-              <span className="font-semibold text-stone-950">{boardStateLabel}</span>
+
+          <div className="relative rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+            <PawTrail className="right-0 top-2 h-14 w-[8rem]" variant="stone" />
+            <div className="relative z-10 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              <Clock3 className="h-3.5 w-3.5" />
+              Bảng hiện tại
             </div>
-            <div className="flex items-center justify-between gap-3 text-stone-700">
-              <span>Mục tiêu</span>
-              <span className="truncate font-semibold text-stone-950">
-                {selectedGoal ? selectedGoal.title : "Tất cả"}
-              </span>
-            </div>
-            <div className="flex items-center justify-between gap-3 text-stone-700">
-              <span>Quick add</span>
-              <span className="font-semibold text-stone-950">
-                {selectedMilestone ? `Mốc ${selectedMilestone.sequenceNo}` : "Chưa chọn"}
-              </span>
+            <div className="relative z-10 mt-3 grid gap-3">
+              <div className="rounded-[1rem] border border-[#ece2d8] bg-white px-3 py-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+                  Trạng thái
+                </p>
+                <p className="mt-1 text-sm font-semibold text-stone-950">{boardStateLabel}</p>
+              </div>
+              <div className="rounded-[1rem] border border-[#ece2d8] bg-white px-3 py-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+                  Mục tiêu
+                </p>
+                <p className="mt-1 truncate text-sm font-semibold text-stone-950">
+                  {selectedGoal ? selectedGoal.title : "Tất cả mục tiêu"}
+                </p>
+              </div>
+              <div className="rounded-[1rem] border border-[#ece2d8] bg-white px-3 py-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+                  Quick add
+                </p>
+                <p className="mt-1 text-sm font-semibold text-stone-950">
+                  {selectedMilestone ? `Mốc ${selectedMilestone.sequenceNo}` : "Chưa chọn"}
+                </p>
+              </div>
             </div>
           </div>
         </div>

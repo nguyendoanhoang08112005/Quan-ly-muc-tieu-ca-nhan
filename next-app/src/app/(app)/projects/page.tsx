@@ -1,6 +1,10 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { Compass, Plus, Sparkles, Target } from "lucide-react";
+import {
+  PageEmptyState,
+  PageHero
+} from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { DeleteProjectForm } from "@/features/projects/components/delete-project-form";
@@ -42,28 +46,12 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const activeProjects = filteredProjects.filter((project) => project.status === "active");
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#fcfcfb_0%,#f7f7f5_48%,#eff6ff_100%)] p-8 shadow-sm">
-        <div className="pointer-events-none absolute -right-12 top-0 h-36 w-36 rounded-full bg-amber-100/60 blur-3xl" />
-        <div className="pointer-events-none absolute left-1/3 top-10 h-24 w-24 rounded-full bg-sky-100/70 blur-2xl" />
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5" />
-              Project Space
-            </div>
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Danh sách dự án
-            </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Dự án giờ là mô-đun độc lập, nhưng vẫn gắn với mục tiêu và công
-              việc để không bị trôi thành phần cũ không còn người quản lý.
-            </p>
-          </div>
-
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        actions={
           <Link
             className={cn(
-              buttonVariants({ size: "lg" }),
+              buttonVariants({ size: "sm" }),
               "gap-2 rounded-full !text-white"
             )}
             href="/projects/new"
@@ -71,42 +59,40 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
             <Plus className="h-4 w-4" />
             Tạo dự án mới
           </Link>
-        </div>
-
-        <div className="relative z-10 mt-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Compass className="h-4 w-4" />
-              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
-              Tổng dự án
+        }
+        aside={
+          <div className="rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              Nhịp dự án
+            </p>
+            <div className="mt-3 space-y-2 text-sm text-stone-700">
+              <div className="flex items-center justify-between gap-3">
+                <span>Đang chạy</span>
+                <span className="font-semibold text-stone-950">{activeProjects.length}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Có công việc</span>
+                <span className="font-semibold text-stone-950">
+                  {filteredProjects.filter((project) => project.tasksCount > 0).length}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Đang hiển thị</span>
+                <span className="font-semibold text-stone-950">{filteredProjects.length}</span>
               </div>
             </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {filteredProjects.length}
-            </div>
           </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Target className="h-4 w-4" />
-              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
-                Đang chạy
-              </div>
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">{activeProjects.length}</div>
-          </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Sparkles className="h-4 w-4" />
-              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
-              Có công việc
-              </div>
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {filteredProjects.filter((project) => project.tasksCount > 0).length}
-            </div>
-          </div>
-        </div>
-      </section>
+        }
+        description="Dự án giúp gom việc theo một nhịp triển khai rõ ràng, nhưng vẫn gắn với mục tiêu và công việc thực."
+        eyebrow="Dự án"
+        metrics={[
+          { icon: Compass, label: "Tổng dự án", value: filteredProjects.length, hint: "Theo bộ lọc hiện tại" },
+          { icon: Target, label: "Đang chạy", value: activeProjects.length, tone: "bamboo", hint: "Trạng thái active" },
+          { icon: Sparkles, label: "Có công việc", value: filteredProjects.filter((project) => project.tasksCount > 0).length, tone: "warm", hint: "Có task gắn vào" }
+        ]}
+        title="Danh sách dự án"
+        trailVariant="mixed"
+      />
 
       <PageFilterForm
         filters={[
@@ -203,24 +189,24 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
           ))}
         </section>
       ) : projects.length > 0 ? (
-        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
-          <h2 className="text-2xl font-black text-stone-950">
-            Không tìm thấy dự án phù hợp
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-stone-500">
-            Hãy xóa bớt bộ lọc hoặc đổi từ khóa để xem nhiều dự án hơn.
-          </p>
-        </section>
+        <PageEmptyState
+          description="Hãy xóa bớt bộ lọc hoặc đổi từ khóa để xem nhiều dự án hơn."
+          title="Không tìm thấy dự án phù hợp"
+        />
       ) : (
-        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
-          <h2 className="text-2xl font-black text-stone-950">
-            Chưa có dự án nào
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-stone-500">
-            Tạo dự án để gom công việc theo một nhóm có ý nghĩa hơn, thay vì để
-            mô-đun cũ này tiếp tục bị bỏ dang dở.
-          </p>
-        </section>
+        <PageEmptyState
+          action={
+            <Link
+              className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full !text-white")}
+              href="/projects/new"
+            >
+              <Plus className="h-4 w-4" />
+              Tạo dự án mới
+            </Link>
+          }
+          description="Tạo dự án để gom công việc theo một nhóm có ý nghĩa hơn."
+          title="Chưa có dự án nào"
+        />
       )}
     </div>
   );

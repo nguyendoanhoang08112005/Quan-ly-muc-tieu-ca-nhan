@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { Bell, ArrowRight } from "lucide-react";
+import { PageEmptyState, PageHero } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { MarkAllNotificationsReadForm } from "@/features/notifications/components/mark-all-notifications-read-form";
 import { MarkNotificationReadForm } from "@/features/notifications/components/mark-notification-read-form";
@@ -24,47 +25,36 @@ export default async function NotificationsPage() {
   ]);
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Trung tâm thông báo
-            </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Trung tâm thông báo tập trung vào trạng thái chưa đọc, sự kiện gần
-              đây và điều hướng nhanh tới nội dung liên quan.
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        actions={<MarkAllNotificationsReadForm disabled={summary.unread === 0} />}
+        aside={
+          <div className="rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              Điều hướng
             </p>
-          </div>
-
-          <MarkAllNotificationsReadForm disabled={summary.unread === 0} />
-        </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tổng thông báo
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {summary.total}
+            <div className="mt-3 space-y-2 text-sm text-stone-700">
+              <div className="flex items-center justify-between gap-3">
+                <span>Chưa đọc</span>
+                <span className="font-semibold text-stone-950">{summary.unread}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Đã đọc</span>
+                <span className="font-semibold text-stone-950">{summary.read}</span>
+              </div>
             </div>
           </div>
-          <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Chưa đọc
-            </div>
-            <div className="mt-2 text-4xl font-black">{summary.unread}</div>
-          </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Đã đọc
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {summary.read}
-            </div>
-          </div>
-        </div>
-      </section>
+        }
+        description="Thông báo tập trung vào trạng thái chưa đọc, sự kiện gần đây và điều hướng nhanh tới nội dung liên quan."
+        eyebrow="Thông báo"
+        metrics={[
+          { label: "Tổng thông báo", value: summary.total, hint: "Toàn bộ sự kiện" },
+          { label: "Chưa đọc", value: summary.unread, tone: "warm", hint: "Cần xem trước" },
+          { label: "Đã đọc", value: summary.read, tone: "bamboo", hint: "Đã xử lý" }
+        ]}
+        title="Trung tâm thông báo"
+        trailVariant="stone"
+      />
 
       {notifications.length > 0 ? (
         <section className="grid gap-6">
@@ -132,18 +122,10 @@ export default async function NotificationsPage() {
           ))}
         </section>
       ) : (
-        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-16 text-center shadow-sm">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-stone-100">
-            <Bell className="h-8 w-8 text-stone-500" />
-          </div>
-          <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-            Chưa có thông báo nào
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-            Thông báo mới sẽ xuất hiện ở đây khi hệ thống bắt đầu ghi nhận các
-            sự kiện như phiên pomodoro hoàn thành.
-          </p>
-        </section>
+        <PageEmptyState
+          description="Thông báo mới sẽ xuất hiện ở đây khi hệ thống bắt đầu ghi nhận các sự kiện như phiên pomodoro hoàn thành."
+          title="Chưa có thông báo nào"
+        />
       )}
     </div>
   );

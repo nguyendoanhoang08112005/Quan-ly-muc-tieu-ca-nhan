@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { Compass } from "lucide-react";
+import { PageEmptyState, PageHero } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { CategoryForm } from "@/features/categories/components/category-form";
 import { DeleteCategoryForm } from "@/features/categories/components/delete-category-form";
@@ -13,7 +15,18 @@ export default async function CategoriesPage() {
   const categories = await listCategoriesForUser(userId);
 
   return (
-    <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[420px,1fr]">
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        description="Danh mục giúp chia mục tiêu thành các nhóm rõ ràng hơn để lọc và rà soát."
+        eyebrow="Danh mục"
+        metrics={[
+          { icon: Compass, label: "Tổng danh mục", value: categories.length, hint: "Đang có trong hệ thống" }
+        ]}
+        title="Dữ liệu phân loại cho mục tiêu"
+        trailVariant="bamboo"
+      />
+
+    <div className="grid gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <CategoryForm cancelHref={"/categories" as Route} mode="create" />
       </section>
@@ -21,12 +34,8 @@ export default async function CategoriesPage() {
       <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">
-              Danh mục
-            </p>
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950">
-              Dữ liệu phân loại cho mục tiêu
-            </h1>
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-stone-500">Danh mục</p>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-stone-950">Các nhóm đang được dùng</h2>
           </div>
           <div className="rounded-full bg-stone-100 px-4 py-2 text-sm font-semibold text-stone-700">
             {categories.length} danh mục
@@ -74,11 +83,11 @@ export default async function CategoriesPage() {
             ))}
           </div>
         ) : (
-          <div className="mt-8 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-10 text-center text-sm text-stone-500">
-            Chưa có danh mục nào.
+          <div className="mt-8">
+            <PageEmptyState description="Tạo danh mục đầu tiên để bắt đầu nhóm mục tiêu." title="Chưa có danh mục nào" />
           </div>
         )}
       </section>
-    </div>
+    </div></div>
   );
 }

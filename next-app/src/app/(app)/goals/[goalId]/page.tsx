@@ -12,6 +12,7 @@ import {
   Sparkles,
   Target
 } from "lucide-react";
+import { PageSectionTitle } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { DeleteGoalForm } from "@/features/goals/components/delete-goal-form";
 import {
@@ -353,28 +354,20 @@ export default async function GoalDetailPage({
       </section>
 
       <section className="space-y-5">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Luồng thực thi
-            </p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Cột mốc và công việc
-            </h2>
-            <p className="mt-2 max-w-3xl text-sm leading-7 text-stone-600">
-              Mỗi cột mốc là một chặng. Bên trong là những việc cụ thể để biến mục
-              tiêu thành tiến độ nhìn thấy được.
-            </p>
-          </div>
-
-          <Link
-            className={cn(buttonVariants({ size: "lg" }), "gap-2 rounded-full !text-white")}
-            href={`/goals/${goal.id}/milestones/new` as Route}
-          >
-            <Plus className="h-4 w-4" />
-            Tạo cột mốc mới
-          </Link>
-        </div>
+        <PageSectionTitle
+          action={
+            <Link
+              className={cn(buttonVariants({ size: "lg" }), "gap-2 rounded-full !text-white")}
+              href={`/goals/${goal.id}/milestones/new` as Route}
+            >
+              <Plus className="h-4 w-4" />
+              Tạo cột mốc mới
+            </Link>
+          }
+          description="Mỗi cột mốc là một chặng. Bên trong là những việc cụ thể để biến mục tiêu thành tiến độ nhìn thấy được."
+          eyebrow="Luồng thực thi"
+          title="Cột mốc và công việc"
+        />
 
         {goal.milestones.length > 0 ? (
           <div className="relative space-y-5">

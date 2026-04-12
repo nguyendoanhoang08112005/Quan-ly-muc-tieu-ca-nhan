@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { CheckCircle2, Compass, Sparkles, Target } from "lucide-react";
+import { CheckCircle2, Compass, Target } from "lucide-react";
+import { PageEmptyState, PageHero } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { goalPriorityLabels, workStatusClassNames, workStatusLabels } from "@/features/goals/goal-helpers";
@@ -52,28 +53,9 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 
   return (
     <div className="flex w-full max-w-none flex-col gap-4">
-      <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#fcfcfb_0%,#f7f7f5_48%,#eff6ff_100%)] px-5 py-5 shadow-sm">
-        <div className="pointer-events-none absolute -right-12 top-0 h-36 w-36 rounded-full bg-amber-100/60 blur-3xl" />
-        <div className="pointer-events-none absolute left-1/3 top-10 h-24 w-24 rounded-full bg-sky-100/70 blur-2xl" />
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5" />
-              Task Space
-            </div>
-            <p className="mt-3 text-[11px] font-black uppercase tracking-[0.16em] text-stone-500">
-              Công việc
-            </p>
-            <h1 className="mt-1 text-2xl font-black tracking-tight text-stone-950">
-              Danh sách công việc
-            </h1>
-            <p className="mt-2 text-sm text-stone-600">
-              Trang này dùng để rà soát và chỉnh chi tiết. Kéo thả trạng thái tập
-              trung ở Trang chủ.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+      <PageHero
+        actions={
+          <>
             <Link
               className={cn(
                 buttonVariants({ size: "sm" }),
@@ -92,40 +74,40 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             >
               Mở mục tiêu
             </Link>
-          </div>
-        </div>
-
-        <div className="relative z-10 mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Compass className="h-4 w-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">Đang mở</p>
+          </>
+        }
+        aside={
+          <div className="rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              Rà soát nhanh
+            </p>
+            <div className="mt-3 space-y-2 text-sm text-stone-700">
+              <div className="flex items-center justify-between gap-3">
+                <span>Board chính</span>
+                <span className="font-semibold text-stone-950">Trang chủ</span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Việc tập trung</span>
+                <span className="font-semibold text-stone-950">{focusTasks.length}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Đã hoàn thành</span>
+                <span className="font-semibold text-stone-950">{completedTasks.length}</span>
+              </div>
             </div>
-            <p className="mt-2 text-2xl font-black text-stone-950">{openTasks.length}</p>
           </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Target className="h-4 w-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">Tập trung</p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-stone-950">{focusTasks.length}</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <CheckCircle2 className="h-4 w-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">Hoàn thành</p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-stone-950">{completedTasks.length}</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-4 py-4 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Sparkles className="h-4 w-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">Tổng việc</p>
-            </div>
-            <p className="mt-2 text-2xl font-black text-stone-950">{filteredTasks.length}</p>
-          </div>
-        </div>
-      </section>
+        }
+        description="Trang này dùng để rà soát, tìm kiếm và chỉnh chi tiết từng công việc."
+        eyebrow="Công việc"
+        metrics={[
+          { icon: Compass, label: "Đang mở", value: openTasks.length, hint: "Chưa hoàn thành" },
+          { icon: Target, label: "Tập trung", value: focusTasks.length, tone: "warm", hint: "Đang được ghim" },
+          { icon: CheckCircle2, label: "Hoàn thành", value: completedTasks.length, tone: "bamboo", hint: "Đã xong" },
+          { label: "Tổng việc", value: filteredTasks.length, hint: "Theo bộ lọc hiện tại" }
+        ]}
+        title="Danh sách công việc"
+        trailVariant="mixed"
+      />
 
       <PageFilterForm
         filters={[
@@ -243,44 +225,34 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             ))}
           </section>
       ) : tasks.length > 0 ? (
-        <section className="ui-panel border-dashed px-6 py-10 text-center">
-          <h2 className="text-xl font-black text-stone-950">
-            Không có công việc khớp bộ lọc
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-stone-500">
-            Hãy nới lỏng từ khóa hoặc trạng thái để quay lại danh sách rộng hơn.
-          </p>
-        </section>
+        <PageEmptyState
+          description="Hãy nới lỏng từ khóa hoặc trạng thái để quay lại danh sách rộng hơn."
+          title="Không có công việc khớp bộ lọc"
+        />
       ) : (
-        <section className="ui-panel border-dashed px-6 py-10 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-stone-100">
-            <CheckCircle2 className="h-6 w-6 text-stone-500" />
-          </div>
-          <h2 className="mt-4 text-2xl font-black tracking-tight text-stone-950">
-            Chưa có công việc nào
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-stone-600">
-            Hãy bắt đầu ở Trang chủ để tạo và kéo thả công việc trong một bảng duy
-            nhất, rồi quay lại đây khi cần rà soát chi tiết.
-          </p>
-          <div className="mt-5 flex flex-wrap justify-center gap-2">
-            <Link
-              className={cn(buttonVariants({ size: "sm" }), "rounded-full !text-white")}
-              href="/dashboard"
-            >
-              Mở bảng công việc
-            </Link>
-            <Link
-              className={cn(
-                buttonVariants({ size: "sm", variant: "secondary" }),
-                "rounded-full"
-              )}
-              href="/goals"
-            >
-              Tạo mục tiêu trước
-            </Link>
-          </div>
-        </section>
+        <PageEmptyState
+          action={
+            <>
+              <Link
+                className={cn(buttonVariants({ size: "sm" }), "rounded-full !text-white")}
+                href="/dashboard"
+              >
+                Mở bảng công việc
+              </Link>
+              <Link
+                className={cn(
+                  buttonVariants({ size: "sm", variant: "secondary" }),
+                  "rounded-full"
+                )}
+                href="/goals"
+              >
+                Tạo mục tiêu trước
+              </Link>
+            </>
+          }
+          description="Hãy bắt đầu ở Trang chủ để tạo và kéo thả công việc trong một bảng duy nhất, rồi quay lại đây khi cần rà soát chi tiết."
+          title="Chưa có công việc nào"
+        />
       )}
     </div>
   );

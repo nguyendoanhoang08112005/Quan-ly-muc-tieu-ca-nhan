@@ -1,4 +1,5 @@
 import type { Route } from "next";
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { GoalForm } from "@/features/goals/components/goal-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { listGoalMetadataOptions } from "@/server/modules/goals/queries";
@@ -8,15 +9,19 @@ export default async function NewGoalPage() {
   const options = await listGoalMetadataOptions(userId);
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref="/goals"
+      backLabel="Quay lại mục tiêu"
+      description="Tạo mục tiêu mới, chia theo chặng và gắn ngữ cảnh cần thiết ngay từ đầu."
+      eyebrow="Tạo mục tiêu"
+      title="Mục tiêu mới"
+    >
         <GoalForm
           cancelHref={"/goals" as Route}
           categories={options.categories}
           mode="create"
           tags={options.tags}
         />
-      </div>
-    </div>
+    </PageFormShell>
   );
 }

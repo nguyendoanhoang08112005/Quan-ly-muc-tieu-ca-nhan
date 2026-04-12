@@ -1,3 +1,4 @@
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { HabitForm } from "@/features/habits/components/habit-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { listHabitGoalOptionsForUser } from "@/server/modules/habits/queries";
@@ -7,8 +8,15 @@ export default async function NewHabitPage() {
   const goalOptions = await listHabitGoalOptionsForUser(userId);
 
   return (
-    <div className="mx-auto max-w-4xl rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref="/habits"
+      backLabel="Quay lại thói quen"
+      description="Tạo thói quen mới, chọn nhịp lặp và gắn vào mục tiêu nếu cần."
+      eyebrow="Tạo thói quen"
+      maxWidthClassName="max-w-4xl"
+      title="Thói quen mới"
+    >
       <HabitForm cancelHref="/habits" goalOptions={goalOptions} mode="create" />
-    </div>
+    </PageFormShell>
   );
 }

@@ -1,3 +1,4 @@
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { ProjectForm } from "@/features/projects/components/project-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { listProjectGoalOptionsForUser } from "@/server/modules/projects/queries";
@@ -7,8 +8,14 @@ export default async function NewProjectPage() {
   const goalOptions = await listProjectGoalOptionsForUser(userId);
 
   return (
-    <div className="mx-auto max-w-5xl rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref="/projects"
+      backLabel="Quay lại dự án"
+      description="Tạo dự án mới để gom các công việc liên quan vào một nhịp triển khai rõ hơn."
+      eyebrow="Tạo dự án"
+      title="Dự án mới"
+    >
       <ProjectForm cancelHref="/projects" goalOptions={goalOptions} mode="create" />
-    </div>
+    </PageFormShell>
   );
 }

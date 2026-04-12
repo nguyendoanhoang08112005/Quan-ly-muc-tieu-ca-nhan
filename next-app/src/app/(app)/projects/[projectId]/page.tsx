@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { notFound } from "next/navigation";
 import { ArrowLeft, PencilLine, Plus } from "lucide-react";
+import { PageEmptyState, PageHero, PageSectionTitle } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { DeleteProjectForm } from "@/features/projects/components/delete-project-form";
 import {
@@ -50,95 +51,79 @@ export default async function ProjectDetailPage({
     : [];
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link
-            className={cn(
-              buttonVariants({ variant: "secondary" }),
-              "gap-2 rounded-full"
-            )}
-            href={"/projects" as Route}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Quay lại dự án
-          </Link>
-
-          <div className="flex flex-wrap gap-3">
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        actions={
+          <>
             <Link
-              className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
+              className={cn(
+                buttonVariants({ variant: "secondary" }),
+                "gap-2 rounded-full"
+              )}
+              href={"/projects" as Route}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Quay lại dự án
+            </Link>
+            <Link
+              className={cn(buttonVariants({ variant: "secondary" }), "gap-2 rounded-full")}
               href={`/projects/${project.id}/edit` as Route}
             >
               <PencilLine className="h-4 w-4" />
               Chỉnh sửa
             </Link>
             <DeleteProjectForm projectId={project.id} />
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
-            <div className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-stone-500">
-              Chi tiết dự án
-            </div>
-            <h1 className="mt-4 text-4xl font-black tracking-tight text-stone-950">
-              {project.name}
-            </h1>
-            <p className="mt-4 text-sm leading-7 text-stone-600">
-              {project.description}
+          </>
+        }
+        aside={
+          <div className="rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              Ngữ cảnh
             </p>
-
-            <div className="mt-5 flex flex-wrap gap-3 text-sm">
-              <span
-                className={cn(
-                  "rounded-full px-3 py-1 font-semibold",
-                  projectStatusClassNames[project.status]
-                )}
-              >
-                {projectStatusLabels[project.status]}
-              </span>
-              {project.goal ? (
-                <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                  {project.goal.title}
-                </span>
-              ) : null}
-              <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                Bắt đầu {formatDisplayDate(project.startDate)}
-              </span>
-              <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
-                Kết thúc {formatDisplayDate(project.endDate)}
-              </span>
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3 lg:w-[440px] lg:grid-cols-1">
-            <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
-              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-                Tiến độ
+            <div className="mt-3 space-y-2 text-sm text-stone-700">
+              <div className="flex items-center justify-between gap-3">
+                <span>Trạng thái</span>
+                <span className="font-semibold text-stone-950">{projectStatusLabels[project.status]}</span>
               </div>
-              <div className="mt-2 text-4xl font-black">
-                {Math.round(project.progress)}%
-              </div>
-            </div>
-            <div className="grid gap-4 sm:col-span-2 sm:grid-cols-2 lg:grid-cols-2">
-              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Công việc
-                </div>
-                <div className="mt-2 text-3xl font-black text-stone-950">
-                  {project.tasksCount}
-                </div>
-              </div>
-              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-4">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-                  Hoàn thành
-                </div>
-                <div className="mt-2 text-3xl font-black text-stone-950">
-                  {project.completedTasksCount}
-                </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Mục tiêu</span>
+                <span className="font-semibold text-stone-950">{project.goal?.title ?? "Chưa gắn"}</span>
               </div>
             </div>
           </div>
+        }
+        description={project.description}
+        eyebrow="Chi tiết dự án"
+        metrics={[
+          { label: "Tiến độ", value: `${Math.round(project.progress)}%`, hint: "Toàn bộ dự án", tone: "warm" },
+          { label: "Công việc", value: project.tasksCount, hint: "Đang gắn vào dự án" },
+          { label: "Hoàn thành", value: project.completedTasksCount, hint: "Đã xong", tone: "bamboo" }
+        ]}
+        title={project.name}
+        trailVariant="mixed"
+      />
+
+      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+        <div className="flex flex-wrap gap-3 text-sm">
+          <span
+            className={cn(
+              "rounded-full px-3 py-1 font-semibold",
+              projectStatusClassNames[project.status]
+            )}
+          >
+            {projectStatusLabels[project.status]}
+          </span>
+          {project.goal ? (
+            <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+              {project.goal.title}
+            </span>
+          ) : null}
+          <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+            Bắt đầu {formatDisplayDate(project.startDate)}
+          </span>
+          <span className="rounded-full bg-stone-100 px-3 py-1 font-semibold text-stone-700">
+            Kết thúc {formatDisplayDate(project.endDate)}
+          </span>
         </div>
 
         {quickCreateMilestones.length > 0 ? (
@@ -183,14 +168,7 @@ export default async function ProjectDetailPage({
       </section>
 
       <section className="space-y-6">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-            Công việc trong dự án
-          </p>
-          <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-            Công việc trong dự án này
-          </h2>
-        </div>
+        <PageSectionTitle eyebrow="Công việc trong dự án" title="Công việc trong dự án này" />
 
         {project.tasks.length > 0 ? (
           <div className="grid gap-6">
@@ -285,32 +263,29 @@ export default async function ProjectDetailPage({
             ))}
           </div>
         ) : (
-          <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
-            <h3 className="text-2xl font-black text-stone-950">
-              Dự án này chưa có công việc nào
-            </h3>
-            <p className="mt-3 text-sm leading-7 text-stone-500">
-              Hãy tạo công việc mới trong cột mốc liên quan rồi gắn dự án này
-              ngay trong biểu mẫu công việc.
-            </p>
-            {quickCreateMilestones.length > 0 ? (
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
-                {quickCreateMilestones.map((milestone) => (
-                  <Link
-                    className={cn(
-                      buttonVariants({ variant: "secondary" }),
-                      "gap-2 rounded-full"
-                    )}
-                    href={`/goals/${milestone.goal.id}/milestones/${milestone.id}/tasks/new` as Route}
-                    key={milestone.id}
-                  >
-                    <Plus className="h-4 w-4" />
-                    Cột mốc {milestone.sequenceNo}
-                  </Link>
-                ))}
-              </div>
-            ) : null}
-          </div>
+          <PageEmptyState
+            action={
+              quickCreateMilestones.length > 0 ? (
+                <>
+                  {quickCreateMilestones.map((milestone) => (
+                    <Link
+                      className={cn(
+                        buttonVariants({ variant: "secondary" }),
+                        "gap-2 rounded-full"
+                      )}
+                      href={`/goals/${milestone.goal.id}/milestones/${milestone.id}/tasks/new` as Route}
+                      key={milestone.id}
+                    >
+                      <Plus className="h-4 w-4" />
+                      Cột mốc {milestone.sequenceNo}
+                    </Link>
+                  ))}
+                </>
+              ) : undefined
+            }
+            description="Hãy tạo công việc mới trong cột mốc liên quan rồi gắn dự án này ngay trong biểu mẫu công việc."
+            title="Dự án này chưa có công việc nào"
+          />
         )}
       </section>
     </div>

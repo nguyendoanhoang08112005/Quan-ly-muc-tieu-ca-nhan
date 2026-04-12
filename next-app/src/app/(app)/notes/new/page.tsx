@@ -1,3 +1,4 @@
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { NoteForm } from "@/features/notes/components/note-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
 import { listNoteTargetOptionsForUser } from "@/server/modules/notes/queries";
@@ -7,8 +8,15 @@ export default async function NewNotePage() {
   const targetOptions = await listNoteTargetOptionsForUser(userId);
 
   return (
-    <div className="mx-auto max-w-4xl rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref="/notes"
+      backLabel="Quay lại ghi chú"
+      description="Lưu nhanh ý tưởng hoặc ngữ cảnh cho đúng đối tượng đang làm việc."
+      eyebrow="Tạo ghi chú"
+      maxWidthClassName="max-w-4xl"
+      title="Ghi chú mới"
+    >
       <NoteForm cancelHref="/notes" mode="create" targetOptions={targetOptions} />
-    </div>
+    </PageFormShell>
   );
 }

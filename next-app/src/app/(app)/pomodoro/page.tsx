@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { ArrowRight, TimerReset } from "lucide-react";
+import { ArrowRight, Clock3, TimerReset } from "lucide-react";
+import { PageEmptyState, PageHero, PageSectionTitle } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { PomodoroStartForm } from "@/features/pomodoro/components/pomodoro-start-form";
 import { PomodoroCountdown } from "@/features/pomodoro/components/pomodoro-countdown";
@@ -33,74 +34,54 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
   const taskExists = overview.taskOptions.some((task) => task.id === selectedTaskId);
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Phiên pomodoro
-            </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Pomodoro giờ đã lưu bền vững, có phiên đang chạy và luồng hoàn
-              thành gắn với công việc thực trong hệ thống.
-            </p>
-          </div>
-
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        actions={
           <Link
-            className={cn(buttonVariants({ variant: "secondary" }), "gap-2")}
+            className={cn(buttonVariants({ variant: "secondary" }), "gap-2 rounded-full")}
             href={"/tasks" as Route}
           >
             Mở công việc
             <ArrowRight className="h-4 w-4" />
           </Link>
-        </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-4">
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Tổng phiên
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {overview.summary.totalSessions}
-            </div>
-          </div>
-          <div className="rounded-[1.5rem] bg-stone-950 px-5 py-5 text-white">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-300">
-              Đang chạy
-            </div>
-            <div className="mt-2 text-4xl font-black">
-              {overview.summary.activeSessions}
-            </div>
-          </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Hoàn thành
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {overview.summary.completedSessions}
+        }
+        aside={
+          <div className="rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              Phiên hiện tại
+            </p>
+            <div className="mt-3 space-y-2 text-sm text-stone-700">
+              <div className="flex items-center justify-between gap-3">
+                <span>Trạng thái</span>
+                <span className="font-semibold text-stone-950">
+                  {overview.activeSession ? "Đang tập trung" : "Sẵn sàng bắt đầu"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Hôm nay</span>
+                <span className="font-semibold text-stone-950">{overview.summary.todaySessions}</span>
+              </div>
             </div>
           </div>
-          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 px-5 py-5">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-400">
-              Hôm nay
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {overview.summary.todaySessions}
-            </div>
-          </div>
-        </div>
-      </section>
+        }
+        description="Pomodoro lưu bền vững, gắn với công việc thật và cho phép hoàn thành hoặc dừng đúng ngữ cảnh."
+        eyebrow="Pomodoro"
+        metrics={[
+          { icon: Clock3, label: "Tổng phiên", value: overview.summary.totalSessions, hint: "Toàn bộ đã ghi" },
+          { icon: TimerReset, label: "Đang chạy", value: overview.summary.activeSessions, tone: "warm", hint: "Phiên đang mở" },
+          { label: "Hoàn thành", value: overview.summary.completedSessions, tone: "bamboo", hint: "Đã kết thúc" },
+          { label: "Hôm nay", value: overview.summary.todaySessions, hint: "Trong ngày hiện tại" }
+        ]}
+        title="Phiên pomodoro"
+        trailVariant="mixed"
+      />
 
       <div className="grid gap-8 xl:grid-cols-[0.95fr,1.05fr]">
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Phiên đang chạy
-            </p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              {overview.activeSession ? "Đang tập trung" : "Bắt đầu phiên mới"}
-            </h2>
-          </div>
+          <PageSectionTitle
+            eyebrow="Phiên đang chạy"
+            title={overview.activeSession ? "Đang tập trung" : "Bắt đầu phiên mới"}
+          />
 
           {overview.activeSession ? (
             <div className="mt-6 space-y-6">
@@ -145,14 +126,7 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
         </section>
 
         <section className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-              Lịch sử
-            </p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950">
-              Các phiên gần đây
-            </h2>
-          </div>
+          <PageSectionTitle eyebrow="Lịch sử" title="Các phiên gần đây" />
 
           {overview.recentSessions.length > 0 ? (
             <div className="mt-6 grid gap-4">
@@ -228,16 +202,11 @@ export default async function PomodoroPage({ searchParams }: PomodoroPageProps) 
               ))}
             </div>
           ) : (
-            <div className="mt-6 rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-16 text-center shadow-sm">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-stone-100">
-                <TimerReset className="h-8 w-8 text-stone-500" />
-              </div>
-              <h2 className="mt-6 text-3xl font-black tracking-tight text-stone-950">
-                Chưa có phiên pomodoro nào
-              </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-                Chọn một công việc ở bên trái để bắt đầu phiên tập trung đầu tiên.
-              </p>
+            <div className="mt-6">
+              <PageEmptyState
+                description="Chọn một công việc ở bên trái để bắt đầu phiên tập trung đầu tiên."
+                title="Chưa có phiên pomodoro nào"
+              />
             </div>
           )}
         </section>

@@ -32,7 +32,7 @@ export default async function DashboardPage() {
         <PawTrail className="right-20 top-16 h-24 w-[14rem]" variant="mixed" />
 
         <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_18rem]">
-          <div className="min-w-0">
+          <div className="min-w-0 rounded-[1.75rem] border border-[#eee4da] bg-[linear-gradient(180deg,#ffffff_0%,#fcfaf8_100%)] p-4 shadow-[0_18px_36px_-30px_rgba(28,25,23,0.22)] sm:p-5">
             <div className="flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd3] bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -44,54 +44,85 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            <h1 className="mt-4 text-3xl font-black tracking-tight text-stone-950">
-              Kéo đúng cột. Làm đúng việc.
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
-              Board hôm nay, gọn và đủ tập trung.
-            </p>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[1.35rem] border border-[#ebe1d7] bg-white px-4 py-4 shadow-sm">
-                <div className="flex items-center gap-2 text-stone-500">
-                  <Compass className="h-4 w-4" />
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
-                    Đang mở
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-black text-stone-950">{openTasks.length}</p>
-              </div>
-
-              <div className="rounded-[1.35rem] border border-[#efe5c8] bg-white px-4 py-4 shadow-sm">
-                <div className="flex items-center gap-2 text-stone-500">
-                  <Target className="h-4 w-4" />
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
-                    Tập trung
-                  </span>
-                </div>
-                <p className="mt-2 text-2xl font-black text-stone-950">{focusTasks.length}</p>
-              </div>
-
-              <div className="rounded-[1.35rem] border border-[#ebe1d7] bg-white px-4 py-4 shadow-sm">
-                <div
-                  className={cn(
-                    "flex items-center gap-2",
-                    overdueTasks > 0 ? "text-rose-600" : "text-stone-500"
-                  )}
-                >
-                  <Plus className="h-4 w-4" />
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
-                    Quá hạn
-                  </span>
-                </div>
-                <p
-                  className={cn(
-                    "mt-2 text-2xl font-black",
-                    overdueTasks > 0 ? "text-rose-700" : "text-stone-950"
-                  )}
-                >
-                  {overdueTasks}
+            <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+              <div className="min-w-0">
+                <h1 className="text-3xl font-black tracking-tight text-stone-950">
+                  Kéo đúng cột. Làm đúng việc.
+                </h1>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-stone-600">
+                  Hôm nay chỉ cần nhìn đúng board, mốc đang mở và việc đang ưu tiên.
                 </p>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-[#e8dfd5] bg-white px-3 py-1.5 text-xs font-medium text-stone-700">
+                    {goals.length} mục tiêu đang theo
+                  </span>
+                  <span className="rounded-full border border-[#e8dfd5] bg-white px-3 py-1.5 text-xs font-medium text-stone-700">
+                    {quickCreateMilestone ? `Quick add vào mốc ${quickCreateMilestone.sequenceNo}` : "Chưa có mốc để thêm nhanh"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-[1.35rem] border border-[#ebe1d7] bg-white px-4 py-4 shadow-sm">
+                  <div className="flex items-center gap-2 text-stone-500">
+                    <Compass className="h-4 w-4" />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                      Đang mở
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-black text-stone-950">{openTasks.length}</p>
+                  <p className="mt-1 text-xs text-stone-500">Các việc chưa xong</p>
+                </div>
+
+                <div className="rounded-[1.35rem] border border-[#efe5c8] bg-white px-4 py-4 shadow-sm">
+                  <div className="flex items-center gap-2 text-stone-500">
+                    <Target className="h-4 w-4" />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                      Tập trung
+                    </span>
+                  </div>
+                  <p className="mt-2 text-2xl font-black text-stone-950">{focusTasks.length}</p>
+                  <p className="mt-1 text-xs text-stone-500">Đang được ghim ưu tiên</p>
+                </div>
+
+                <div className="rounded-[1.35rem] border border-[#ebe1d7] bg-white px-4 py-4 shadow-sm">
+                  <div
+                    className={cn(
+                      "flex items-center gap-2",
+                      overdueTasks > 0 ? "text-rose-600" : "text-stone-500"
+                    )}
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                      Quá hạn
+                    </span>
+                  </div>
+                  <p
+                    className={cn(
+                      "mt-2 text-2xl font-black",
+                      overdueTasks > 0 ? "text-rose-700" : "text-stone-950"
+                    )}
+                  >
+                    {overdueTasks}
+                  </p>
+                  <p className="mt-1 text-xs text-stone-500">Cần xử lý trước</p>
+                </div>
+
+                <div className="rounded-[1.35rem] border border-[#e6efd9] bg-[#fbfdf8] px-4 py-4 shadow-sm">
+                  <div className="flex items-center gap-2 text-stone-500">
+                    <PawPrint className="h-4 w-4" />
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                      Quick add
+                    </span>
+                  </div>
+                  <p className="mt-2 text-lg font-black text-stone-950">
+                    {quickCreateMilestone ? `Mốc ${quickCreateMilestone.sequenceNo}` : "Chưa có"}
+                  </p>
+                  <p className="mt-1 text-xs text-stone-500">
+                    {quickCreateMilestone ? quickCreateMilestone.title : "Cần tạo cột mốc trước"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

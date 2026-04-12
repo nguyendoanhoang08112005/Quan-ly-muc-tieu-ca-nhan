@@ -1,6 +1,10 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { ArrowRight, Compass, Plus, Sparkles, Target } from "lucide-react";
+import {
+  PageEmptyState,
+  PageHero
+} from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import {
   habitFrequencyLabels,
@@ -19,28 +23,12 @@ export default async function HabitsPage() {
   const completedToday = habits.filter((habit) => habit.todayLog?.isCompleted).length;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
-      <section className="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#fcfcfb_0%,#f7f7f5_48%,#eff6ff_100%)] p-8 shadow-sm">
-        <div className="pointer-events-none absolute -right-12 top-0 h-36 w-36 rounded-full bg-amber-100/60 blur-3xl" />
-        <div className="pointer-events-none absolute left-1/3 top-10 h-24 w-24 rounded-full bg-sky-100/70 blur-2xl" />
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-600 backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5" />
-              Habit Space
-            </div>
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-stone-950 md:text-5xl">
-              Thói quen và nhật ký hằng ngày
-            </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
-              Mô-đun này đưa bộ theo dõi thói quen lên hệ mới với nhật ký theo
-              ngày, chuỗi liên tiếp và liên kết mục tiêu khi cần.
-            </p>
-          </div>
-
+    <div className="flex w-full max-w-none flex-col gap-4">
+      <PageHero
+        actions={
           <Link
             className={cn(
-              buttonVariants({ size: "lg" }),
+              buttonVariants({ size: "sm" }),
               "gap-2 rounded-full !text-white"
             )}
             href="/habits/new"
@@ -48,44 +36,34 @@ export default async function HabitsPage() {
             <Plus className="h-4 w-4" />
             Tạo thói quen mới
           </Link>
-        </div>
-
-        <div className="relative z-10 mt-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Compass className="h-4 w-4" />
-              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
-              Tổng thói quen
+        }
+        aside={
+          <div className="rounded-[1.45rem] border border-[#eadfd4] bg-[#fffaf6] px-4 py-4 shadow-sm">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
+              Nhịp hôm nay
+            </p>
+            <div className="mt-3 space-y-2 text-sm text-stone-700">
+              <div className="flex items-center justify-between gap-3">
+                <span>Đã đạt</span>
+                <span className="font-semibold text-stone-950">{completedToday}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span>Đang thực hiện</span>
+                <span className="font-semibold text-stone-950">{activeHabits.length}</span>
               </div>
             </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {habits.length}
-            </div>
           </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Target className="h-4 w-4" />
-              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
-              Đang thực hiện
-              </div>
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {activeHabits.length}
-            </div>
-          </div>
-          <div className="rounded-[1.5rem] border border-white/80 bg-white/85 px-5 py-5 backdrop-blur">
-            <div className="flex items-center gap-2 text-stone-500">
-              <Sparkles className="h-4 w-4" />
-              <div className="text-xs font-semibold uppercase tracking-[0.22em]">
-              Đã đạt mục tiêu hôm nay
-              </div>
-            </div>
-            <div className="mt-2 text-4xl font-black text-stone-950">
-              {completedToday}
-            </div>
-          </div>
-        </div>
-      </section>
+        }
+        description="Theo dõi nhịp nhỏ mỗi ngày, giữ streak và xem lại nhật ký theo từng thói quen."
+        eyebrow="Thói quen"
+        metrics={[
+          { icon: Compass, label: "Tổng thói quen", value: habits.length, hint: "Tất cả đang có" },
+          { icon: Target, label: "Đang thực hiện", value: activeHabits.length, tone: "bamboo", hint: "Trạng thái active" },
+          { icon: Sparkles, label: "Đạt hôm nay", value: completedToday, tone: "warm", hint: "Đã hoàn thành mục tiêu ngày" }
+        ]}
+        title="Thói quen và nhật ký hằng ngày"
+        trailVariant="bamboo"
+      />
 
       {habits.length > 0 ? (
         <section className="grid gap-6 lg:grid-cols-2">
@@ -184,14 +162,19 @@ export default async function HabitsPage() {
           ))}
         </section>
       ) : (
-        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white px-8 py-12 text-center shadow-sm">
-          <h2 className="text-2xl font-black text-stone-950">
-            Chưa có thói quen nào trên hệ mới
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-stone-500">
-            Tạo thói quen đầu tiên để bắt đầu theo dõi chuỗi liên tiếp và nhật ký theo ngày.
-          </p>
-        </section>
+        <PageEmptyState
+          action={
+            <Link
+              className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full !text-white")}
+              href="/habits/new"
+            >
+              <Plus className="h-4 w-4" />
+              Tạo thói quen mới
+            </Link>
+          }
+          description="Tạo thói quen đầu tiên để bắt đầu theo dõi chuỗi liên tiếp và nhật ký theo ngày."
+          title="Chưa có thói quen nào"
+        />
       )}
     </div>
   );

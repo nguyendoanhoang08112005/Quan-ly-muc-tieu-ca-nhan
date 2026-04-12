@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import { notFound } from "next/navigation";
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { goalIdSchema } from "@/features/goals/schemas/goal-schemas";
 import { MilestoneForm } from "@/features/milestones/components/milestone-form";
 import { milestoneIdSchema } from "@/features/milestones/schemas/milestone-schemas";
@@ -36,8 +37,13 @@ export default async function EditMilestonePage({
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref={`/goals/${parsedGoalId.data}`}
+      backLabel="Quay lại mục tiêu"
+      description="Cập nhật tiêu đề, thời gian và trạng thái của cột mốc này."
+      eyebrow="Sửa cột mốc"
+      title="Cập nhật cột mốc"
+    >
         <MilestoneForm
           cancelHref={`/goals/${parsedGoalId.data}` as Route}
           goalId={parsedGoalId.data}
@@ -45,7 +51,6 @@ export default async function EditMilestonePage({
           milestoneId={parsedMilestoneId.data}
           mode="edit"
         />
-      </div>
-    </div>
+    </PageFormShell>
   );
 }

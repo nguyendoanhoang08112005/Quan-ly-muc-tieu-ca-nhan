@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import { notFound } from "next/navigation";
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { ProjectForm } from "@/features/projects/components/project-form";
 import { projectIdSchema } from "@/features/projects/schemas/project-schemas";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
@@ -33,7 +34,13 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
   }
 
   return (
-    <div className="mx-auto max-w-5xl rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref={`/projects/${parsedProjectId.data}`}
+      backLabel="Quay lại dự án"
+      description="Cập nhật thông tin triển khai, mục tiêu liên kết và tiến độ dự án."
+      eyebrow="Sửa dự án"
+      title="Cập nhật dự án"
+    >
       <ProjectForm
         cancelHref={`/projects/${parsedProjectId.data}` as Route}
         goalOptions={goalOptions}
@@ -41,6 +48,6 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
         mode="edit"
         projectId={parsedProjectId.data}
       />
-    </div>
+    </PageFormShell>
   );
 }

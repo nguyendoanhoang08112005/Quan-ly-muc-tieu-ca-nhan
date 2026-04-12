@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import { notFound } from "next/navigation";
+import { PageFormShell } from "@/components/shared/app-page-patterns";
 import { habitIdSchema } from "@/features/habits/schemas/habit-schemas";
 import { HabitForm } from "@/features/habits/components/habit-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
@@ -33,7 +34,14 @@ export default async function EditHabitPage({ params }: EditHabitPageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-4xl rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
+    <PageFormShell
+      backHref={`/habits/${parsedHabitId.data}`}
+      backLabel="Quay lại thói quen"
+      description="Cập nhật mục tiêu lặp, số lượng cần đạt và nhịp nhắc cho thói quen."
+      eyebrow="Sửa thói quen"
+      maxWidthClassName="max-w-4xl"
+      title="Cập nhật thói quen"
+    >
       <HabitForm
         cancelHref={`/habits/${parsedHabitId.data}` as Route}
         goalOptions={goalOptions}
@@ -41,6 +49,6 @@ export default async function EditHabitPage({ params }: EditHabitPageProps) {
         initialValues={habit}
         mode="edit"
       />
-    </div>
+    </PageFormShell>
   );
 }
