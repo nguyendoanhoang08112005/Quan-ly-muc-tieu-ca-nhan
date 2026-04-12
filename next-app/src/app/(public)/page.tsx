@@ -223,7 +223,7 @@ function NavActions({ isAuthenticated }: { isAuthenticated: boolean }) {
   );
 }
 
-function HeroMockup() {
+function HeroMockup({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
     <div
       className={cn(
@@ -236,16 +236,58 @@ function HeroMockup() {
       <MascotBadge className="right-8 top-8" type="cat" />
       <MascotBadge className="bottom-20 right-4" type="rabbit" />
 
-      <div className="mx-auto flex max-w-[760px] flex-wrap items-center justify-center gap-2">
-        <span className="rounded-full border border-[#e8e1f7] bg-white/92 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b645d]">
-          không gian làm việc
-        </span>
-        <span className="rounded-full bg-[#f5f1ff] px-3 py-1 text-xs font-semibold text-[#6b4eff]">
-          mục tiêu · việc · thói quen
-        </span>
+      <div className="mx-auto max-w-[760px] text-center">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className="rounded-full border border-[#e8e1f7] bg-white/92 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b645d]">
+            Planner cá nhân
+          </span>
+        </div>
+
+        <h1 className="mx-auto mt-5 max-w-[760px] text-balance text-[2.35rem] font-extrabold leading-[1.02] tracking-[-0.05em] text-[#1f1c1a] sm:text-[3.2rem]">
+          Mọi thứ bạn cần để quản lý mục tiêu và việc trong ngày.
+        </h1>
+
+        <p className="mx-auto mt-3 max-w-[560px] text-sm leading-7 text-[#6b645d] sm:text-base">
+          Chia mục tiêu thành cột mốc, kéo việc theo trạng thái, giữ nhịp thói quen
+          và ghi chú lại ngay trong cùng một nơi.
+        </p>
+
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          {isAuthenticated ? (
+            <>
+              <Link
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-[14px] bg-[#202020] px-5 text-sm font-semibold text-white transition hover:bg-[#111111]"
+                href="/dashboard"
+              >
+                Mở bảng làm việc
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <SignOutButton
+                className="!h-11 !w-auto rounded-[14px] border border-[#ece7e1] bg-white px-5 text-sm !font-semibold !text-[#1f1c1a] shadow-none hover:bg-[#faf9f8]"
+                variant="secondary"
+              />
+            </>
+          ) : (
+            <>
+              <Link
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-[14px] bg-[#202020] px-5 text-sm font-semibold text-white transition hover:bg-[#111111]"
+                href="/register"
+              >
+                Tạo tài khoản
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                className="inline-flex h-11 items-center justify-center rounded-[14px] px-4 text-sm font-semibold text-[#6b645d] underline-offset-4 transition hover:text-[#1f1c1a] hover:underline"
+                href="#modules"
+              >
+                Xem thêm tính năng
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="mt-6 rounded-[30px] border border-white/70 bg-white/92 p-4 shadow-[rgba(17,24,39,0.08)_0px_16px_40px_-28px] sm:p-6">
+      <div className="mt-8 rounded-[30px] border border-white/70 bg-white/92 p-4 shadow-[rgba(17,24,39,0.08)_0px_16px_40px_-28px] sm:p-6">
         <div className="grid gap-4 xl:grid-cols-[1fr_520px_1fr] xl:items-center">
           <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-2">
             {featureWallLeft.map((item) => (
@@ -384,70 +426,8 @@ export default async function PublicHomePage() {
       </header>
 
       <div className="mx-auto w-full max-w-[1120px] px-5 pb-20 pt-12 sm:pt-16">
-        <section className="text-center" id="tong-quan">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#ece7e1] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#6b645d]">
-            <Sparkles className="h-3.5 w-3.5 text-[#6b4eff]" />
-            Planner cá nhân
-          </div>
-
-          <h1 className="mx-auto mt-6 max-w-[980px] text-balance text-[3.15rem] font-extrabold leading-[0.92] tracking-[-0.06em] text-[#1f1c1a] sm:text-[4.5rem] lg:text-[5.8rem]">
-            Lên mục tiêu. Sắp việc. Giữ nhịp mỗi ngày.
-          </h1>
-
-          <p className="mx-auto mt-5 max-w-[680px] text-base leading-8 text-[#6b645d] sm:text-lg">
-            Một nơi để chia mục tiêu thành cột mốc, kéo công việc theo đúng trạng thái
-            và theo dõi thói quen mà không bị rối màn hình.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            {isAuthenticated ? (
-              <>
-                <Link
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-[14px] bg-[#202020] px-6 text-sm font-semibold text-white transition hover:bg-[#111111]"
-                  href="/dashboard"
-                >
-                  Mở bảng làm việc
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <SignOutButton
-                  className="!h-12 !w-auto rounded-[14px] border border-[#ece7e1] bg-white px-6 text-sm !font-semibold !text-[#1f1c1a] shadow-none hover:bg-[#faf9f8]"
-                  variant="secondary"
-                />
-              </>
-            ) : (
-              <>
-                <Link
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-[14px] bg-[#202020] px-6 text-sm font-semibold text-white transition hover:bg-[#111111]"
-                  href="/register"
-                >
-                  Tạo tài khoản
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  className="inline-flex h-12 items-center justify-center rounded-[14px] px-4 text-sm font-semibold text-[#6b645d] underline-offset-4 transition hover:text-[#1f1c1a] hover:underline"
-                  href="#mockup"
-                >
-                  Xem cách hoạt động
-                </Link>
-              </>
-            )}
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-            <span className="rounded-full border border-[#ece7e1] bg-white px-3 py-1 text-sm font-medium text-[#6b645d]">
-              Mục tiêu theo chặng
-            </span>
-            <span className="rounded-full border border-[#ece7e1] bg-white px-3 py-1 text-sm font-medium text-[#6b645d]">
-              Board kéo thả
-            </span>
-            <span className="rounded-full border border-[#ece7e1] bg-white px-3 py-1 text-sm font-medium text-[#6b645d]">
-              Theo dõi thói quen
-            </span>
-          </div>
-        </section>
-
-        <section className="mt-14" id="mockup">
-          <HeroMockup />
+        <section id="tong-quan">
+          <HeroMockup isAuthenticated={isAuthenticated} />
         </section>
 
         <section className="mt-16" id="modules">
