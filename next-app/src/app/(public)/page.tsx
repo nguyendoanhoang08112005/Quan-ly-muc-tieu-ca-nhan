@@ -1,526 +1,348 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Baloo_2, Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import {
   ArrowRight,
+  BarChart3,
+  BellRing,
+  CalendarDays,
   CheckCircle2,
-  ChevronRight,
-  HeartHandshake,
-  ListTodo,
+  Clock3,
+  FolderKanban,
+  FolderOpenDot,
+  LayoutPanelTop,
+  NotebookPen,
+  PawPrint,
   Sparkles,
-  Target
+  Tags,
+  Target,
+  TimerReset
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { SignOutButton } from "@/components/layout/sign-out-button";
 import { getServerAuthSession } from "@/lib/auth/session";
 import { cn } from "@/lib/utils";
 
-const displayFont = Baloo_2({
-  subsets: ["latin", "vietnamese"],
-  weight: ["700", "800"]
-});
-
 const bodyFont = Plus_Jakarta_Sans({
   subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700"]
+  weight: ["400", "500", "600", "700", "800"]
 });
 
 export const metadata: Metadata = {
   title: "Trang chủ",
   description:
-    "Quản lý mục tiêu, công việc và thói quen theo phong cách gấu trúc, mèo và thỏ: tập trung hơn, vui hơn và ít khô hơn."
+    "Trang chủ mới theo hướng Figma: nav mảnh, hero lớn, mockup làm trung tâm và động vật chỉ làm accent."
 };
 
-const highlights = [
-  "Mục tiêu, việc làm và thói quen nằm trong cùng một không gian có cá tính",
-  "Board kéo thả, quick add và dashboard không còn cảm giác admin trắng phẳng",
-  "Mascot, microcopy và trạng thái giúp mở app lên thấy muốn dùng tiếp"
+const surfaceShadow =
+  "shadow-[rgba(15,23,42,0.03)_0px_0px_0px_1px,rgba(15,23,42,0.04)_0px_10px_30px,rgba(15,23,42,0.08)_0px_18px_40px_-24px]";
+
+const heroStats = [
+  { value: "3 chặng", label: "mục tiêu đang mở" },
+  { value: "1 việc focus", label: "trong board hôm nay" },
+  { value: "6 ngày streak", label: "vẫn giữ được nhịp" }
 ];
 
-const mascotGuides = [
+const modules = [
   {
-    accent:
-      "border-[#d9e7cf] bg-[linear-gradient(180deg,rgba(247,251,244,0.98)_0%,rgba(234,245,226,0.98)_100%)]",
-    description:
-      "Gấu trúc xuất hiện ở những nơi cần tập trung: mục tiêu, tiến độ, pomodoro và dashboard.",
-    eyebrow: "Bình tĩnh",
-    title: "Gấu trúc giữ nhịp"
-  },
-  {
-    accent:
-      "border-[#f1d2c9] bg-[linear-gradient(180deg,rgba(255,248,243,0.98)_0%,rgba(255,234,226,0.98)_100%)]",
-    description:
-      "Mèo dẫn dắt các thao tác nhanh: task board, empty state, quick add và thông báo nhỏ.",
-    eyebrow: "Tinh nghịch",
-    title: "Mèo tạo động lực"
-  },
-  {
-    accent:
-      "border-[#ead8e5] bg-[linear-gradient(180deg,rgba(255,249,252,0.98)_0%,rgba(245,233,241,0.98)_100%)]",
-    description:
-      "Thỏ giữ phần khởi đầu, habits và comeback moments để app không phán xét khi bạn hụt nhịp.",
-    eyebrow: "Khởi đầu lại",
-    title: "Thỏ kéo bạn quay lại"
-  }
-];
-
-const flowSteps = [
-  {
-    description:
-      "Bắt đầu từ mục tiêu, chia thành các cột mốc nhỏ để biết mình đang đi tới đâu.",
     icon: Target,
-    title: "Lên kế hoạch như gấu trúc"
+    title: "Mục tiêu rõ",
+    text: "Chia đích lớn thành từng chặng và xem tiến độ thật nhanh.",
+    accent: "bg-[#eef5ff] text-[#4f46e5]"
   },
   {
-    description:
-      "Chuyển từng cột mốc thành các việc cụ thể và gắn đúng ưu tiên thay vì ghi đại cho đủ.",
-    icon: ListTodo,
-    title: "Biến ý định thành hành động"
+    icon: LayoutPanelTop,
+    title: "Board gọn",
+    text: "Thả việc đúng cột, thêm nhanh ở đúng chỗ, ít thao tác vòng.",
+    accent: "bg-[#fff1f5] text-[#e11d48]"
   },
   {
-    description:
-      "Giữ nhịp mỗi ngày bằng thói quen nhỏ, comeback nhẹ nhàng và không bị chì chiết vì lỡ một hôm.",
-    icon: HeartHandshake,
-    title: "Giữ thói quen như thỏ"
+    icon: TimerReset,
+    title: "Quay lại nhẹ",
+    text: "Thói quen và nhịp dùng được giữ đủ mềm để không ngán mở app.",
+    accent: "bg-[#f4f8ec] text-[#5f7a34]"
   }
 ];
 
-const playfulBenefits = [
-  {
-    accent:
-      "border-[#e5dccf] bg-[linear-gradient(180deg,rgba(255,251,245,0.98)_0%,rgba(247,240,231,0.96)_100%)]",
-    label: "Hóm hỉnh vừa đủ",
-    text: "Sản phẩm có cá tính mà không bị sến, vẫn làm việc nghiêm túc và rõ ràng."
-  },
-  {
-    accent:
-      "border-[#d9e7cf] bg-[linear-gradient(180deg,rgba(247,251,244,0.98)_0%,rgba(238,246,232,0.96)_100%)]",
-    label: "Đáng yêu có mục đích",
-    text: "Mascot không chỉ để trang trí. Chúng dẫn mắt, giảm áp lực và làm trạng thái dễ hiểu hơn."
-  },
-  {
-    accent:
-      "border-[#f1d2c9] bg-[linear-gradient(180deg,rgba(255,248,243,0.98)_0%,rgba(255,236,229,0.96)_100%)]",
-    label: "Mở lên là muốn dùng",
-    text: "Trang chủ, dashboard và board đều tạo cảm giác ấm, nhẹ đầu và thú vị hơn."
-  }
+const featureWallLeft = [
+  { icon: Target, label: "Mục tiêu" },
+  { icon: LayoutPanelTop, label: "Task board" },
+  { icon: NotebookPen, label: "Ghi chú" },
+  { icon: BellRing, label: "Nhắc việc" },
+  { icon: Tags, label: "Thẻ" },
+  { icon: BarChart3, label: "Tiến độ" }
 ];
 
-const homepagePrimaryCtaClass =
-  "ui-light-cta whitespace-nowrap rounded-full border border-[#ead7c7] bg-[linear-gradient(135deg,#fff4e4_0%,#ffe0d1_48%,#edf5e5_100%)] font-semibold !text-stone-950 shadow-[0_18px_36px_-24px_rgba(232,163,137,0.6)] transition hover:-translate-y-0.5 hover:brightness-[1.01]";
+const featureWallRight = [
+  { icon: CalendarDays, label: "Lịch" },
+  { icon: FolderKanban, label: "Dự án" },
+  { icon: TimerReset, label: "Pomodoro" },
+  { icon: FolderOpenDot, label: "Danh mục" },
+  { icon: Clock3, label: "Deadline" },
+  { icon: CheckCircle2, label: "Thói quen" }
+];
 
-function PandaMascot() {
+function PandaMascotArt() {
   return (
-    <div className="relative h-56 w-44 shrink-0">
-      <div className="absolute left-5 top-1 h-12 w-12 rounded-full bg-stone-950" />
-      <div className="absolute right-5 top-1 h-12 w-12 rounded-full bg-stone-950" />
-      <div className="absolute left-1/2 top-5 h-28 w-28 -translate-x-1/2 rounded-full bg-[#fffdf8] shadow-[inset_0_-10px_18px_rgba(28,25,23,0.06)]" />
-      <div className="absolute left-[2.8rem] top-[3.2rem] h-9 w-7 rotate-[18deg] rounded-full bg-stone-950" />
-      <div className="absolute right-[2.8rem] top-[3.2rem] h-9 w-7 -rotate-[18deg] rounded-full bg-stone-950" />
-      <div className="absolute left-[3.5rem] top-[4.1rem] h-2.5 w-2.5 rounded-full bg-white" />
-      <div className="absolute right-[3.5rem] top-[4.1rem] h-2.5 w-2.5 rounded-full bg-white" />
-      <div className="absolute left-1/2 top-[5.4rem] h-3.5 w-4 -translate-x-1/2 rounded-full bg-stone-950" />
-      <div className="absolute left-1/2 top-[6rem] h-2 w-8 -translate-x-1/2 rounded-full border-b-2 border-stone-950" />
-
-      <div className="absolute bottom-3 left-1/2 h-32 w-32 -translate-x-1/2 rounded-[45%] bg-stone-950" />
-      <div className="absolute bottom-5 left-1/2 h-24 w-20 -translate-x-1/2 rounded-[45%] bg-[#fffdf8]" />
-      <div className="absolute bottom-7 left-4 h-10 w-10 rounded-full bg-stone-950" />
-      <div className="absolute bottom-7 right-4 h-10 w-10 rounded-full bg-stone-950" />
-
-      <div className="absolute right-0 top-32 flex rotate-[-18deg] gap-1">
-        <span className="h-16 w-3 rounded-full bg-[#8bb174]" />
-        <span className="mt-2 h-14 w-3 rounded-full bg-[#6f9b58]" />
+    <div className="relative h-40 w-32">
+      <div className="absolute left-4 top-1 h-8 w-8 rounded-full bg-[#232323]" />
+      <div className="absolute right-4 top-1 h-8 w-8 rounded-full bg-[#232323]" />
+      <div className="absolute left-1/2 top-4 h-20 w-20 -translate-x-1/2 rounded-full bg-[#fffdf9]" />
+      <div className="absolute left-[2.2rem] top-[2.7rem] h-7 w-5 rotate-[18deg] rounded-full bg-[#232323]" />
+      <div className="absolute right-[2.2rem] top-[2.7rem] h-7 w-5 -rotate-[18deg] rounded-full bg-[#232323]" />
+      <div className="absolute left-[2.8rem] top-[3.5rem] h-2 w-2 rounded-full bg-white" />
+      <div className="absolute right-[2.8rem] top-[3.5rem] h-2 w-2 rounded-full bg-white" />
+      <div className="absolute left-1/2 top-[4.7rem] h-2.5 w-3 -translate-x-1/2 rounded-full bg-[#232323]" />
+      <div className="absolute bottom-2 left-1/2 h-20 w-20 -translate-x-1/2 rounded-[45%] bg-[#232323]" />
+      <div className="absolute bottom-4 left-1/2 h-14 w-12 -translate-x-1/2 rounded-[45%] bg-[#fffdf9]" />
+      <div className="absolute bottom-5 left-3 h-7 w-7 rounded-full bg-[#232323]" />
+      <div className="absolute bottom-5 right-3 h-7 w-7 rounded-full bg-[#232323]" />
+      <div className="absolute right-0 top-[5.7rem] flex rotate-[-18deg] gap-1">
+        <span className="h-11 w-2.5 rounded-full bg-[#90b56f]" />
+        <span className="mt-2 h-9 w-2.5 rounded-full bg-[#79a15b]" />
       </div>
     </div>
   );
 }
 
-function CatMascot() {
+function CatMascotArt() {
   return (
-    <div className="relative h-48 w-40 shrink-0">
-      <div className="absolute left-7 top-2 h-8 w-8 rotate-45 rounded-sm bg-[#f4b9a2]" />
-      <div className="absolute right-7 top-2 h-8 w-8 rotate-45 rounded-sm bg-[#f4b9a2]" />
-      <div className="absolute left-1/2 top-5 h-24 w-24 -translate-x-1/2 rounded-full bg-[#ffd7c8] shadow-[inset_0_-10px_18px_rgba(235,142,115,0.14)]" />
-      <div className="absolute left-[3.2rem] top-[4.4rem] h-2.5 w-2.5 rounded-full bg-stone-900" />
-      <div className="absolute right-[3.2rem] top-[4.4rem] h-2.5 w-2.5 rounded-full bg-stone-900" />
-      <div className="absolute left-1/2 top-[5.2rem] h-3 w-3 -translate-x-1/2 rotate-45 rounded-sm bg-[#eb8e73]" />
-      <div className="absolute left-[2.1rem] top-[5.6rem] h-px w-5 bg-[#c17761]" />
-      <div className="absolute left-[2rem] top-[6.1rem] h-px w-5 bg-[#c17761]" />
-      <div className="absolute right-[2.1rem] top-[5.6rem] h-px w-5 bg-[#c17761]" />
-      <div className="absolute right-[2rem] top-[6.1rem] h-px w-5 bg-[#c17761]" />
-
-      <div className="absolute bottom-3 left-1/2 h-24 w-24 -translate-x-1/2 rounded-[45%] bg-[#f4b9a2]" />
-      <div className="absolute bottom-1 right-1 h-24 w-16 rounded-full border-[10px] border-l-0 border-[#eb8e73] bg-transparent" />
-      <div className="absolute bottom-4 left-5 h-8 w-8 rounded-full bg-[#ffd7c8]" />
-      <div className="absolute bottom-4 right-5 h-8 w-8 rounded-full bg-[#ffd7c8]" />
+    <div className="relative h-40 w-32">
+      <div className="absolute left-5 top-2 h-7 w-7 rotate-45 rounded-sm bg-[#ffd2c4]" />
+      <div className="absolute right-5 top-2 h-7 w-7 rotate-45 rounded-sm bg-[#ffd2c4]" />
+      <div className="absolute left-1/2 top-4 h-20 w-20 -translate-x-1/2 rounded-full bg-[#ffe2d8]" />
+      <div className="absolute left-[2.55rem] top-[3.6rem] h-2.5 w-2.5 rounded-full bg-[#222222]" />
+      <div className="absolute right-[2.55rem] top-[3.6rem] h-2.5 w-2.5 rounded-full bg-[#222222]" />
+      <div className="absolute left-1/2 top-[4.5rem] h-2.5 w-2.5 -translate-x-1/2 rotate-45 rounded-sm bg-[#ff6d5a]" />
+      <div className="absolute bottom-2 left-1/2 h-20 w-20 -translate-x-1/2 rounded-[45%] bg-[#ffd2c4]" />
+      <div className="absolute bottom-0 right-0 h-20 w-12 rounded-full border-[9px] border-l-0 border-[#ff9b86] bg-transparent" />
+      <div className="absolute bottom-4 left-4 h-7 w-7 rounded-full bg-[#ffe9e1]" />
+      <div className="absolute bottom-4 right-4 h-7 w-7 rounded-full bg-[#ffe9e1]" />
     </div>
   );
 }
 
-function RabbitMascot() {
+function RabbitMascotArt() {
   return (
-    <div className="relative h-44 w-36 shrink-0">
-      <div className="absolute left-[2.4rem] top-0 h-14 w-7 rounded-full bg-[#f6dce8]" />
-      <div className="absolute right-[2.4rem] top-0 h-14 w-7 rounded-full bg-[#f6dce8]" />
-      <div className="absolute left-[2.85rem] top-2 h-9 w-4 rounded-full bg-[#ffeef6]" />
-      <div className="absolute right-[2.85rem] top-2 h-9 w-4 rounded-full bg-[#ffeef6]" />
-      <div className="absolute left-1/2 top-8 h-24 w-24 -translate-x-1/2 rounded-full bg-[#fff8fc] shadow-[inset_0_-12px_18px_rgba(242,154,82,0.08)]" />
-      <div className="absolute left-[2.95rem] top-[4.3rem] h-2.5 w-2.5 rounded-full bg-stone-900" />
-      <div className="absolute right-[2.95rem] top-[4.3rem] h-2.5 w-2.5 rounded-full bg-stone-900" />
-      <div className="absolute left-1/2 top-[5.15rem] h-3 w-3 -translate-x-1/2 rounded-full bg-[#f29a52]" />
-      <div className="absolute left-1/2 top-[5.85rem] h-2 w-7 -translate-x-1/2 rounded-full border-b-2 border-[#d37b39]" />
-
-      <div className="absolute bottom-3 left-1/2 h-22 w-24 -translate-x-1/2 rounded-[48%] bg-[#fff2f8]" />
-      <div className="absolute bottom-0 left-5 h-8 w-8 rounded-full bg-[#ffe7f2]" />
-      <div className="absolute bottom-0 right-5 h-8 w-8 rounded-full bg-[#ffe7f2]" />
-      <div className="absolute bottom-5 right-0 rotate-[18deg] rounded-full bg-[#f29a52] px-3 py-1 text-[10px] font-black text-white shadow-sm">
-        hop
+    <div className="relative h-40 w-32">
+      <div className="absolute left-[2.2rem] top-0 h-12 w-6 rounded-full bg-[#ffdbe6]" />
+      <div className="absolute right-[2.2rem] top-0 h-12 w-6 rounded-full bg-[#ffdbe6]" />
+      <div className="absolute left-[2.45rem] top-2 h-8 w-3.5 rounded-full bg-[#fff2f7]" />
+      <div className="absolute right-[2.45rem] top-2 h-8 w-3.5 rounded-full bg-[#fff2f7]" />
+      <div className="absolute left-1/2 top-6 h-20 w-20 -translate-x-1/2 rounded-full bg-[#fff8fb]" />
+      <div className="absolute left-[2.55rem] top-[3.7rem] h-2.5 w-2.5 rounded-full bg-[#222222]" />
+      <div className="absolute right-[2.55rem] top-[3.7rem] h-2.5 w-2.5 rounded-full bg-[#222222]" />
+      <div className="absolute left-1/2 top-[4.65rem] h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-[#ff9a5d]" />
+      <div className="absolute bottom-2 left-1/2 h-[4.5rem] w-20 -translate-x-1/2 rounded-[48%] bg-[#fff1f7]" />
+      <div className="absolute bottom-0 left-4 h-7 w-7 rounded-full bg-[#ffe4ef]" />
+      <div className="absolute bottom-0 right-4 h-7 w-7 rounded-full bg-[#ffe4ef]" />
+      <div className="absolute left-1/2 top-2 flex -translate-x-1/2 gap-0.5">
+        <span className="h-3 w-1 rounded-full bg-[#72b15b]" />
+        <span className="h-4 w-1 rounded-full bg-[#91c978]" />
       </div>
     </div>
   );
 }
 
-function WorkspacePreview() {
-  return (
-    <div className="overflow-hidden rounded-[2.25rem] border border-[#e8dccd] bg-[linear-gradient(180deg,rgba(255,252,246,0.98)_0%,rgba(249,243,235,0.98)_44%,rgba(245,248,239,0.98)_100%)] shadow-[0_38px_80px_-50px_rgba(120,113,108,0.55)]">
-      <div className="border-b border-[#ebdecf] bg-[linear-gradient(90deg,rgba(255,248,243,0.82)_0%,rgba(247,251,244,0.85)_50%,rgba(255,247,251,0.82)_100%)] px-5 py-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
-              Không gian làm việc
-            </p>
-            <h2 className={cn(displayFont.className, "mt-2 text-2xl text-stone-950")}>
-              Bộ ba đang canh tiến độ
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-stone-500">
-              Gấu trúc lo mục tiêu, mèo giữ board, thỏ giữ nhịp hằng ngày.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full bg-[#e7f1de] px-3 py-1 text-[11px] font-semibold text-[#64844f]">
-              2 việc focus
-            </span>
-            <span className="rounded-full bg-[#ffe5dc] px-3 py-1 text-[11px] font-semibold text-[#b05d42]">
-              1 việc quá hạn
-            </span>
-            <span className="rounded-full bg-[#fde9f2] px-3 py-1 text-[11px] font-semibold text-[#ab6788]">
-              6 ngày streak
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-4 bg-[linear-gradient(180deg,#fbf8f2_0%,#f8f1e8_52%,#f3f7ed_100%)] p-5 lg:grid-cols-[0.85fr_1.15fr]">
-        <div className="rounded-[1.75rem] border border-[#d9e7cf] bg-[linear-gradient(180deg,rgba(248,252,245,0.98)_0%,rgba(236,246,229,0.96)_100%)] p-4 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                Gấu trúc nhắc
-              </p>
-              <p className="mt-1 text-sm font-semibold text-stone-900">
-                Hôm nay chốt 1 việc quan trọng trước.
-              </p>
-            </div>
-            <div className="rounded-full bg-[#e4efdc] px-3 py-1 text-[11px] font-semibold text-[#5f7a4b]">
-              Tre focus
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-[1.3rem] bg-[linear-gradient(180deg,#f7fbf4_0%,#eef6e8_100%)] p-4">
-            <div className="flex items-end justify-between gap-3">
-              <PandaMascot />
-              <div className="max-w-[9rem] rounded-[1.2rem] border border-[#d9e7cf] bg-white/80 px-3 py-3 text-xs leading-5 text-stone-600 shadow-sm">
-                “Làm ít thôi cũng được. Miễn là trúng việc.”
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-[1.3rem] border border-[#ead8e5] bg-[linear-gradient(180deg,rgba(255,249,252,0.96)_0%,rgba(248,238,245,0.94)_100%)] p-4">
-            <div className="flex items-end justify-between gap-3">
-              <div className="max-w-[10rem] rounded-[1.2rem] border border-[#ead8e5] bg-white/78 px-3 py-3 text-xs leading-5 text-stone-600 shadow-sm">
-                “Lỡ một hôm cũng không sao. Nhảy lại từ hôm nay.”
-              </div>
-              <RabbitMascot />
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-[1.75rem] border border-[#f0d5cb] bg-[linear-gradient(180deg,rgba(255,250,247,0.98)_0%,rgba(255,239,232,0.96)_100%)] p-4 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                Task board
-              </p>
-              <p className="mt-1 text-sm font-semibold text-stone-900">
-                Kéo thả như đang chơi với mèo.
-              </p>
-            </div>
-            <div className="rounded-full bg-[#ffe8df] px-3 py-1 text-[11px] font-semibold text-[#b05d42]">
-              Mèo trực chiến
-            </div>
-          </div>
-
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <section className="rounded-[1.25rem] border border-[#ebdecf] bg-[#fffaf5] p-3">
-              <div className="flex items-center justify-between">
-                <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-700">
-                  Chưa bắt đầu
-                </span>
-                <span className="text-[10px] font-semibold text-stone-400">2</span>
-              </div>
-              <div className="mt-3 space-y-2">
-                <article className="rounded-[1rem] border border-[#ebdecf] bg-white p-3 shadow-sm">
-                  <p className="text-[11px] font-semibold text-stone-950">
-                    Tạo moodboard gấu trúc
-                  </p>
-                  <p className="mt-1 text-[10px] text-stone-500">
-                    Mốc 1 · Thiết kế lại trang chủ
-                  </p>
-                </article>
-                <article className="rounded-[1rem] border border-[#ebdecf] bg-white p-3 shadow-sm">
-                  <p className="text-[11px] font-semibold text-stone-950">
-                    Viết microcopy cho mèo
-                  </p>
-                  <p className="mt-1 text-[10px] text-stone-500">
-                    Mốc 1 · Chưa vào board
-                  </p>
-                </article>
-              </div>
-            </section>
-
-            <section className="rounded-[1.25rem] border border-[#d9e7cf] bg-[linear-gradient(180deg,#f7fbf4_0%,#edf8ea_100%)] p-3">
-              <div className="flex items-center justify-between">
-                <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-semibold text-sky-700">
-                  Đang làm
-                </span>
-                <span className="text-[10px] font-semibold text-stone-400">1</span>
-              </div>
-              <div className="mt-3 space-y-2">
-                <article className="rounded-[1rem] border border-[#d9e7cf] bg-white p-3 shadow-sm">
-                  <div className="flex items-center gap-1">
-                    <span className="rounded-full bg-[#fff2d6] px-1.5 py-0.5 text-[9px] font-semibold text-[#946c16]">
-                      Focus
-                    </span>
-                  </div>
-                  <p className="mt-1.5 text-[11px] font-semibold text-stone-950">
-                    Tối ưu task board
-                  </p>
-                  <p className="mt-1 text-[10px] text-stone-500">
-                    Mèo đang canh cột này
-                  </p>
-                </article>
-              </div>
-            </section>
-
-            <section className="relative overflow-hidden rounded-[1.25rem] border border-[#f3d6cd] bg-[linear-gradient(180deg,#fff7f3_0%,#ffece5_100%)] p-3">
-              <div className="absolute -bottom-6 -right-6 scale-75 opacity-90">
-                <CatMascot />
-              </div>
-              <div className="relative">
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
-                    Hoàn thành
-                  </span>
-                  <span className="text-[10px] font-semibold text-stone-400">1</span>
-                </div>
-                <div className="mt-3 rounded-[1rem] border border-[#f3d6cd] bg-white/90 p-3 shadow-sm">
-                  <p className="text-[11px] font-semibold text-stone-950">
-                    Dựng mascot đầu tiên
-                  </p>
-                  <p className="mt-1 text-[10px] text-stone-500">
-                    Mèo nói: “Xong rồi nhé.”
-                  </p>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function HeroScene() {
-  return (
-    <div className="relative overflow-hidden rounded-[2.4rem] border border-[#eadfd1] bg-[linear-gradient(180deg,#fff7e9_0%,#fff7f4_30%,#fff8fb_62%,#edf7e8_100%)] p-5 shadow-[0_42px_90px_-56px_rgba(120,113,108,0.56)] md:p-6">
-      <div className="absolute -left-10 top-12 h-36 w-36 rounded-full bg-[#fff0bd]/70 blur-3xl" />
-      <div className="absolute -right-8 top-4 h-36 w-36 rounded-full bg-[#ffdcd2]/65 blur-3xl" />
-      <div className="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ffeef6]/55 blur-3xl" />
-      <div className="absolute bottom-0 left-1/2 h-32 w-[82%] -translate-x-1/2 rounded-[100%] bg-[#e4efdc]/75 blur-2xl" />
-
-      <div className="relative">
-        <div className="grid gap-3 md:grid-cols-3">
-          <div className="rounded-[1.2rem] border border-[#d9e7cf] bg-white/85 px-4 py-3 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-              Panda Mode
-            </p>
-            <p className="mt-1 text-sm font-semibold text-stone-900">
-              Lên mục tiêu cho ra mục tiêu
-            </p>
-          </div>
-
-          <div className="rounded-[1.2rem] border border-[#f3d6cd] bg-white/85 px-4 py-3 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-              Cat Mode
-            </p>
-            <p className="mt-1 text-sm font-semibold text-stone-900">
-              Thả việc đúng cột rồi xử lý ngay
-            </p>
-          </div>
-
-          <div className="rounded-[1.2rem] border border-[#ead8e5] bg-white/85 px-4 py-3 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-              Rabbit Mode
-            </p>
-            <p className="mt-1 text-sm font-semibold text-stone-900">
-              Giữ nhịp nhỏ để quay lại đều hơn
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 grid gap-4 xl:grid-cols-3">
-          <article className="rounded-[2rem] border border-[#d9e7cf] bg-[linear-gradient(180deg,rgba(248,252,245,0.98)_0%,rgba(237,246,230,0.96)_100%)] p-5 shadow-[0_18px_40px_-30px_rgba(111,155,88,0.48)]">
-            <div className="flex min-h-[18rem] flex-col">
-              <div className="rounded-[1.35rem] border border-[#d9e7cf] bg-white/82 px-4 py-3 text-sm leading-6 text-stone-600 shadow-sm">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                  Gấu trúc bảo
-                </p>
-                <div className="mt-2 font-semibold text-stone-900">
-                  “Đừng ôm cả khu rừng, chọn một khúc tre trước.”
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-1 items-end justify-center rounded-[1.6rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(255,255,255,0)_62%),linear-gradient(180deg,rgba(255,255,255,0.28)_0%,rgba(228,239,220,0.68)_100%)]">
-                <PandaMascot />
-              </div>
-
-              <div className="mt-4 flex items-center justify-between gap-3 rounded-[1.15rem] border border-[#cfe1c2] bg-white/72 px-4 py-3">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
-                    Vai trò chính
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-stone-900">
-                    Goals, progress, focus
-                  </p>
-                </div>
-                <span className="rounded-full bg-[#e4efdc] px-3 py-1 text-[11px] font-semibold text-[#5f7a4b]">
-                  Bình tĩnh
-                </span>
-              </div>
-            </div>
-          </article>
-
-          <article className="rounded-[2rem] border border-[#f3d6cd] bg-[linear-gradient(180deg,rgba(255,249,245,0.98)_0%,rgba(255,236,228,0.96)_100%)] p-5 shadow-[0_18px_40px_-30px_rgba(235,142,115,0.5)]">
-            <div className="flex min-h-[18rem] flex-col">
-              <div className="rounded-[1.35rem] border border-[#f3d6cd] bg-white/82 px-4 py-3 text-sm leading-6 text-stone-600 shadow-sm">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                  Mèo bảo
-                </p>
-                <div className="mt-2 font-semibold text-stone-900">
-                  “Kéo việc vào đây đi, đừng để mình nằm chờ.”
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-1 items-end justify-center rounded-[1.6rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(255,255,255,0)_62%),linear-gradient(180deg,rgba(255,255,255,0.28)_0%,rgba(255,232,223,0.72)_100%)]">
-                <CatMascot />
-              </div>
-
-              <div className="mt-4 flex items-center justify-between gap-3 rounded-[1.15rem] border border-[#f0cec3] bg-white/72 px-4 py-3">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
-                    Vai trò chính
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-stone-900">
-                    Board, quick add, actions
-                  </p>
-                </div>
-                <span className="rounded-full bg-[#ffe6dc] px-3 py-1 text-[11px] font-semibold text-[#b05d42]">
-                  Nhanh tay
-                </span>
-              </div>
-            </div>
-          </article>
-
-          <article className="rounded-[2rem] border border-[#ead8e5] bg-[linear-gradient(180deg,rgba(255,250,252,0.98)_0%,rgba(247,238,244,0.96)_100%)] p-5 shadow-[0_18px_40px_-30px_rgba(215,167,194,0.58)]">
-            <div className="flex min-h-[18rem] flex-col">
-              <div className="rounded-[1.35rem] border border-[#ead8e5] bg-white/82 px-4 py-3 text-sm leading-6 text-stone-600 shadow-sm">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-                  Thỏ bảo
-                </p>
-                <div className="mt-2 font-semibold text-stone-900">
-                  “Lỡ một ngày thì thôi, mình nhảy tiếp ngày mai.”
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-1 items-end justify-center rounded-[1.6rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(255,255,255,0)_62%),linear-gradient(180deg,rgba(255,255,255,0.28)_0%,rgba(255,238,246,0.74)_100%)]">
-                <RabbitMascot />
-              </div>
-
-              <div className="mt-4 flex items-center justify-between gap-3 rounded-[1.15rem] border border-[#e6d1e0] bg-white/72 px-4 py-3">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
-                    Vai trò chính
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-stone-900">
-                    Habits, streak, comeback
-                  </p>
-                </div>
-                <span className="rounded-full bg-[#fde9f2] px-3 py-1 text-[11px] font-semibold text-[#ab6788]">
-                  Nhẹ đầu
-                </span>
-              </div>
-            </div>
-          </article>
-        </div>
-
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-[1.25rem] border border-[#d9e7cf] bg-white/82 px-4 py-4 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-              Mục tiêu rõ
-            </p>
-            <p className="mt-2 text-lg font-black text-stone-950">3 chặng tre</p>
-            <p className="mt-1 text-sm text-stone-500">
-              chia nhỏ để không ngợp
-            </p>
-          </div>
-          <div className="rounded-[1.25rem] border border-[#f3d6cd] bg-white/82 px-4 py-4 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-              Việc trong ngày
-            </p>
-            <p className="mt-2 text-lg font-black text-stone-950">1 việc focus</p>
-            <p className="mt-1 text-sm text-stone-500">
-              ít nhưng trúng việc
-            </p>
-          </div>
-          <div className="rounded-[1.25rem] border border-[#ead8e5] bg-white/82 px-4 py-4 shadow-sm">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
-              Nhịp sử dụng
-            </p>
-            <p className="mt-2 text-lg font-black text-stone-950">6 ngày streak</p>
-            <p className="mt-1 text-sm text-stone-500">
-              hụt nhịp vẫn quay lại được
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SectionTitle({
-  eyebrow,
-  title
+function MascotBadge({
+  type,
+  className
 }: {
-  eyebrow: string;
-  title: string;
+  type: "panda" | "cat" | "rabbit";
+  className?: string;
 }) {
   return (
-    <div className="max-w-3xl">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
-        {eyebrow}
-      </p>
-      <h2 className={cn(displayFont.className, "mt-3 text-3xl text-stone-950 md:text-4xl")}>
-        {title}
-      </h2>
+    <div
+      className={cn(
+        "absolute hidden h-[78px] w-[78px] items-center justify-center rounded-[24px] border border-white/80 bg-white/92 backdrop-blur md:flex",
+        "shadow-[rgba(17,24,39,0.08)_0px_10px_26px_-18px,rgba(17,24,39,0.08)_0px_1px_1px]",
+        className
+      )}
+    >
+      <div className="scale-[0.38]">
+        {type === "panda" ? <PandaMascotArt /> : type === "cat" ? <CatMascotArt /> : <RabbitMascotArt />}
+      </div>
+    </div>
+  );
+}
+
+function FeatureGlyph({
+  icon: Icon,
+  label
+}: {
+  icon: LucideIcon;
+  label: string;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-2 rounded-[18px] border border-[#ece7e1] bg-white/86 px-3 py-3 text-center backdrop-blur">
+      <Icon className="h-4.5 w-4.5 text-[#6b645d]" />
+      <span className="text-xs font-medium text-[#6b645d]">{label}</span>
+    </div>
+  );
+}
+
+function NavActions({ isAuthenticated }: { isAuthenticated: boolean }) {
+  if (isAuthenticated) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link
+          className="inline-flex h-8 items-center justify-center rounded-[8px] bg-[#f0f0f0] px-3 text-sm font-semibold text-[#1f1f1f] transition hover:bg-[#e7e7e7]"
+          href="/dashboard"
+        >
+          Dashboard
+        </Link>
+        <SignOutButton
+          className="!h-8 !w-auto rounded-[8px] bg-[#202020] px-3 text-sm !font-semibold !text-white hover:bg-[#111111]"
+          variant="default"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Link
+        className="hidden h-8 items-center justify-center rounded-[8px] px-3 text-sm font-medium text-[#6b645d] transition hover:bg-[#f5f5f5] sm:inline-flex"
+        href="/login"
+      >
+        Contact
+      </Link>
+      <Link
+        className="inline-flex h-8 items-center justify-center rounded-[8px] bg-[#f0f0f0] px-3 text-sm font-semibold text-[#1f1f1f] transition hover:bg-[#e7e7e7]"
+        href="/login"
+      >
+        Login
+      </Link>
+      <Link
+        className="inline-flex h-8 items-center justify-center rounded-[8px] bg-[#202020] px-3 text-sm font-semibold text-white transition hover:bg-[#111111]"
+        href="/register"
+      >
+        Sign Up
+      </Link>
+    </div>
+  );
+}
+
+function HeroMockup() {
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-[40px] border border-[#ece7e1] px-4 pb-4 pt-6 sm:px-6 sm:pb-6 sm:pt-7 lg:px-8 lg:pb-8 lg:pt-8",
+        "bg-[radial-gradient(circle_at_top_left,rgba(124,92,255,0.20),transparent_25%),radial-gradient(circle_at_top_right,rgba(255,77,122,0.18),transparent_26%),linear-gradient(180deg,#f9f7ff_0%,#ffffff_38%,#fbfaf9_100%)]",
+        surfaceShadow
+      )}
+    >
+      <MascotBadge className="-left-3 top-16" type="panda" />
+      <MascotBadge className="right-8 top-8" type="cat" />
+      <MascotBadge className="bottom-20 right-4" type="rabbit" />
+
+      <div className="mx-auto flex max-w-[760px] flex-wrap items-center justify-center gap-2">
+        <span className="rounded-full border border-[#e8e1f7] bg-white/92 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b645d]">
+          không gian làm việc
+        </span>
+        <span className="rounded-full bg-[#f5f1ff] px-3 py-1 text-xs font-semibold text-[#6b4eff]">
+          mục tiêu · việc · thói quen
+        </span>
+      </div>
+
+      <div className="mt-6 rounded-[30px] border border-white/70 bg-white/92 p-4 shadow-[rgba(17,24,39,0.08)_0px_16px_40px_-28px] sm:p-6">
+        <div className="grid gap-4 xl:grid-cols-[1fr_520px_1fr] xl:items-center">
+          <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-2">
+            {featureWallLeft.map((item) => (
+              <FeatureGlyph key={item.label} icon={item.icon} label={item.label} />
+            ))}
+          </div>
+
+          <div className="rounded-[30px] border border-[#ece7e1] bg-[linear-gradient(180deg,#ffffff_0%,#faf9fb_100%)] p-4 sm:p-5">
+            <div className="flex items-center justify-between gap-3">
+              <span className="rounded-full bg-[#f5f1ff] px-3 py-1 text-xs font-semibold text-[#6b4eff]">
+                Tất cả trong một nơi
+              </span>
+              <span className="rounded-full border border-[#ece7e1] bg-white px-3 py-1 text-xs font-semibold text-[#6b645d]">
+                Hôm nay
+              </span>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="rounded-[22px] border border-[#e8e2f5] bg-[#faf7ff] p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7569aa]">
+                  Mục tiêu
+                </p>
+                <p className="mt-2 text-xl font-bold text-[#221b3d]">Ra mắt phiên bản mới</p>
+                <div className="mt-4 h-2 rounded-full bg-white">
+                  <div className="h-2 w-[62%] rounded-full bg-[#7c5cff]" />
+                </div>
+                <p className="mt-2 text-sm text-[#6a6480]">3/5 cột mốc đã xong</p>
+              </div>
+
+              <div className="rounded-[22px] border border-[#f1dfdb] bg-[#fff8f7] p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#b85e6f]">
+                  Công việc
+                </p>
+                <div className="mt-3 space-y-2">
+                  <div className="rounded-[14px] bg-white px-3 py-2">
+                    <p className="text-sm font-semibold text-[#1f1c1a]">Hoàn thiện dashboard</p>
+                    <p className="mt-1 text-xs text-[#8a8179]">Đang làm · 18:00 hôm nay</p>
+                  </div>
+                  <div className="rounded-[14px] border border-dashed border-[#efc7d3] px-3 py-2 text-sm text-[#b85e6f]">
+                    + Thêm nhanh vào board
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[22px] border border-[#e5efda] bg-[#f7fbf2] p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6f8058]">
+                  Thói quen
+                </p>
+                <div className="mt-4 flex gap-2">
+                  {["on", "on", "on", "on", "on", "off", "on"].map((state, index) => (
+                    <span
+                      key={`${state}-${index}`}
+                      className={cn(
+                        "h-8 w-8 rounded-full",
+                        state === "on" ? "bg-[#90b56f]" : "bg-white"
+                      )}
+                    />
+                  ))}
+                </div>
+                <p className="mt-3 text-sm text-[#6a735f]">6 ngày streak vẫn giữ được.</p>
+              </div>
+
+              <div className="rounded-[22px] border border-[#ece7e1] bg-white p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6b645d]">
+                  Ghi chú nhanh
+                </p>
+                <div className="mt-3 space-y-2">
+                  <div className="h-2 rounded-full bg-[#ece7e1]" />
+                  <div className="h-2 w-[84%] rounded-full bg-[#ece7e1]" />
+                  <div className="h-2 w-[68%] rounded-full bg-[#ece7e1]" />
+                </div>
+                <p className="mt-3 text-sm text-[#8a8179]">Ý tưởng mới, note lại ngay trong ngày.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-2">
+            {featureWallRight.map((item) => (
+              <FeatureGlyph key={item.label} icon={item.icon} label={item.label} />
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          {heroStats.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-[22px] border border-[#ece7e1] bg-white/84 px-4 py-3 backdrop-blur"
+            >
+              <p className="text-base font-bold tracking-[-0.03em] text-[#1f1c1a]">{item.value}</p>
+              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#8b827b]">
+                {item.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -530,327 +352,208 @@ export default async function PublicHomePage() {
   const isAuthenticated = Boolean(session?.user?.id);
 
   return (
-    <main
-      className={cn(
-        bodyFont.className,
-        "min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(255,241,189,0.48),transparent_26%),radial-gradient(circle_at_top_right,rgba(255,220,210,0.38),transparent_24%),radial-gradient(circle_at_50%_12%,rgba(255,238,246,0.4),transparent_24%),linear-gradient(180deg,#fffaf3_0%,#f8f2e8_48%,#f4f3ec_100%)]"
-      )}
-    >
-      <div className="mx-auto max-w-7xl px-5 py-5 sm:px-6 lg:px-8">
-        <header className="ui-toolbar-panel overflow-hidden px-4 py-3">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-[1.1rem] bg-[linear-gradient(180deg,#23201d_0%,#161311_100%)] text-white shadow-sm">
-                <span className={cn(displayFont.className, "text-xl")}>P</span>
-                <span className="absolute -right-1 -top-1 rounded-full bg-[#f4b9a2] px-1.5 py-0.5 text-[9px] font-bold text-stone-950">
-                  C
-                </span>
-                <span className="absolute -bottom-1 -left-1 rounded-full bg-[#f6dce8] px-1.5 py-0.5 text-[9px] font-bold text-stone-950">
-                  R
-                </span>
-              </div>
-              <div>
-                <p className={cn(displayFont.className, "text-2xl leading-none text-stone-950")}>
-                  Panda Cat Rabbit Planner
-                </p>
-                <p className="mt-1 text-sm text-stone-500">
-                  Gấu trúc giữ mục tiêu, mèo giữ nhịp làm việc, thỏ giữ thói quen quay lại
-                </p>
-              </div>
+    <main className={cn(bodyFont.className, "min-h-screen bg-white text-[#1f1c1a]")}>
+      <header className="sticky top-0 z-30 border-b border-[#efebe7] bg-white/90 backdrop-blur-[10px]">
+        <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-5">
+          <Link className="flex items-center gap-3" href="/">
+            <div className="grid h-8 w-8 place-items-center rounded-[10px] bg-[linear-gradient(135deg,#8b5cf6,#ff4d7a)] text-white">
+              <PawPrint className="h-4 w-4" />
             </div>
+            <div>
+              <p className="text-sm font-extrabold tracking-[-0.02em] text-[#1f1c1a]">
+                Mục tiêu cá nhân
+              </p>
+              <p className="text-[11px] text-[#7c736c]">planner cho từng ngày làm việc</p>
+            </div>
+          </Link>
 
-            <div className="flex flex-wrap items-center gap-2">
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    className="rounded-full border border-[#dfd5c8] bg-white/70 px-4 py-2 text-sm font-medium text-stone-700 transition hover:border-[#d5cabd] hover:bg-white hover:text-stone-950"
-                    href="/dashboard"
-                  >
-                    Vào dashboard
-                  </Link>
-                  <SignOutButton
-                    className="!w-auto rounded-full bg-[linear-gradient(135deg,#2c2620_0%,#14110f_100%)] px-4 py-2 text-sm font-semibold !text-white shadow-[0_16px_30px_-20px_rgba(28,25,23,0.75)] hover:brightness-105"
-                    variant="default"
-                  />
-                </>
-              ) : (
-                <>
-                  <Link
-                    className="rounded-full border border-[#dfd5c8] bg-white/70 px-4 py-2 text-sm font-medium text-stone-700 transition hover:border-[#d5cabd] hover:bg-white hover:text-stone-950"
-                    href="/login"
-                  >
-                    Đăng nhập
-                  </Link>
-                  <Link
-                    className={cn(homepagePrimaryCtaClass, "px-4 py-2 text-sm")}
-                    href="/register"
-                  >
-                    Bắt đầu cùng bộ ba
-                  </Link>
-                </>
-              )}
-            </div>
+          <nav className="hidden items-center gap-6 text-sm font-medium text-[#6b645d] lg:flex">
+            <Link className="transition hover:text-[#1f1c1a]" href="#tong-quan">
+              Tổng quan
+            </Link>
+            <Link className="transition hover:text-[#1f1c1a]" href="#mockup">
+              Mockup
+            </Link>
+            <Link className="transition hover:text-[#1f1c1a]" href="#modules">
+              Modules
+            </Link>
+          </nav>
+
+          <NavActions isAuthenticated={isAuthenticated} />
+        </div>
+      </header>
+
+      <div className="mx-auto w-full max-w-[1120px] px-5 pb-20 pt-12 sm:pt-16">
+        <section className="text-center" id="tong-quan">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#ece7e1] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#6b645d]">
+            <Sparkles className="h-3.5 w-3.5 text-[#6b4eff]" />
+            Planner cá nhân
           </div>
-        </header>
 
-        <section className="grid gap-10 py-10 lg:grid-cols-[0.98fr_1.02fr] lg:items-center lg:py-14">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#ead8e5] bg-[linear-gradient(90deg,rgba(255,255,255,0.92)_0%,rgba(255,244,249,0.92)_100%)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500 shadow-sm">
-              <Sparkles className="h-3.5 w-3.5" />
-              Bản chuyển giao diện bắt đầu từ trang chủ
-            </div>
-            <h1
-              className={cn(
-                displayFont.className,
-                "mt-5 max-w-3xl text-5xl leading-[1.04] text-stone-950 md:text-6xl"
-              )}
-            >
-              Làm việc có mục tiêu, nhưng đừng biến cuộc sống thành bảng tính.
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-stone-600">
-              Một không gian quản lý mục tiêu, công việc và thói quen mang tinh thần
-              gấu trúc bình tĩnh, mèo tinh nghịch và thỏ kéo nhịp quay lại. Vẫn rõ
-              ràng để làm việc, nhưng không còn cảm giác bảng điều khiển khô cứng.
-            </p>
+          <h1 className="mx-auto mt-6 max-w-[980px] text-balance text-[3.15rem] font-extrabold leading-[0.92] tracking-[-0.06em] text-[#1f1c1a] sm:text-[4.5rem] lg:text-[5.8rem]">
+            Lên mục tiêu. Sắp việc. Giữ nhịp mỗi ngày.
+          </h1>
 
-            <div className="mt-6 flex flex-wrap gap-2">
-              <span className="rounded-full border border-[#d9e7cf] bg-[#f3f9ee] px-3 py-1.5 text-sm font-semibold text-[#5f7a4b]">
-                Panda for goals
-              </span>
-              <span className="rounded-full border border-[#f3d6cd] bg-[#fff2ec] px-3 py-1.5 text-sm font-semibold text-[#b05d42]">
-                Cat for tasks
-              </span>
-              <span className="rounded-full border border-[#ead8e5] bg-[#fff3fa] px-3 py-1.5 text-sm font-semibold text-[#ab6788]">
-                Rabbit for habits
-              </span>
-            </div>
+          <p className="mx-auto mt-5 max-w-[680px] text-base leading-8 text-[#6b645d] sm:text-lg">
+            Một nơi để chia mục tiêu thành cột mốc, kéo công việc theo đúng trạng thái
+            và theo dõi thói quen mà không bị rối màn hình.
+          </p>
 
-            <div className="mt-7 flex flex-wrap gap-3">
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    className={cn(homepagePrimaryCtaClass, "inline-flex items-center gap-2 px-5 py-3 text-sm")}
-                    href="/dashboard"
-                  >
-                    Vào không gian làm việc
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <SignOutButton
-                    className="!w-auto rounded-full border border-[#f3d6cd] bg-[linear-gradient(180deg,#fff8f5_0%,#ffece5_100%)] px-5 py-3 text-sm font-semibold !text-stone-900 shadow-[0_10px_24px_-20px_rgba(235,142,115,0.72)] hover:brightness-105"
-                    variant="secondary"
-                  />
-                </>
-              ) : (
-                <>
-                  <Link
-                    className={cn(homepagePrimaryCtaClass, "inline-flex items-center gap-2 px-5 py-3 text-sm")}
-                    href="/register"
-                  >
-                    Bắt đầu cùng bộ ba
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    className="inline-flex items-center gap-2 rounded-full border border-[#ead8e5] bg-[linear-gradient(180deg,#fffafd_0%,#fff1f7_100%)] px-5 py-3 text-sm font-semibold text-stone-900 shadow-[0_10px_24px_-18px_rgba(245,215,231,0.9)] transition hover:brightness-105"
-                    href="/login"
-                  >
-                    Tôi đã có tài khoản
-                    <ChevronRight className="h-4 w-4" />
-                  </Link>
-                </>
-              )}
-            </div>
-
-            <div className="mt-7 grid gap-2 sm:grid-cols-2">
-              {highlights.map((item) => (
-                <div
-                  className="flex items-start gap-3 rounded-[1.4rem] border border-[#e7dbce] bg-[linear-gradient(180deg,rgba(255,251,246,0.95)_0%,rgba(248,242,234,0.95)_100%)] px-4 py-3 shadow-sm"
-                  key={item}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            {isAuthenticated ? (
+              <>
+                <Link
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-[14px] bg-[#202020] px-6 text-sm font-semibold text-white transition hover:bg-[#111111]"
+                  href="/dashboard"
                 >
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#6f9b58]" />
-                  <p className="text-sm leading-6 text-stone-700">{item}</p>
-                </div>
-              ))}
+                  Mở bảng làm việc
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <SignOutButton
+                  className="!h-12 !w-auto rounded-[14px] border border-[#ece7e1] bg-white px-6 text-sm !font-semibold !text-[#1f1c1a] shadow-none hover:bg-[#faf9f8]"
+                  variant="secondary"
+                />
+              </>
+            ) : (
+              <>
+                <Link
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-[14px] bg-[#202020] px-6 text-sm font-semibold text-white transition hover:bg-[#111111]"
+                  href="/register"
+                >
+                  Tạo tài khoản
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  className="inline-flex h-12 items-center justify-center rounded-[14px] px-4 text-sm font-semibold text-[#6b645d] underline-offset-4 transition hover:text-[#1f1c1a] hover:underline"
+                  href="#mockup"
+                >
+                  Xem cách hoạt động
+                </Link>
+              </>
+            )}
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <span className="rounded-full border border-[#ece7e1] bg-white px-3 py-1 text-sm font-medium text-[#6b645d]">
+              Mục tiêu theo chặng
+            </span>
+            <span className="rounded-full border border-[#ece7e1] bg-white px-3 py-1 text-sm font-medium text-[#6b645d]">
+              Board kéo thả
+            </span>
+            <span className="rounded-full border border-[#ece7e1] bg-white px-3 py-1 text-sm font-medium text-[#6b645d]">
+              Theo dõi thói quen
+            </span>
+          </div>
+        </section>
+
+        <section className="mt-14" id="mockup">
+          <HeroMockup />
+        </section>
+
+        <section className="mt-16" id="modules">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6b645d]">
+                Các khối chính
+              </p>
+              <h2 className="mt-2 text-[2.15rem] font-extrabold tracking-[-0.04em] text-[#1f1c1a]">
+                Mỗi phần một việc rõ ràng.
+              </h2>
             </div>
+            <p className="max-w-[360px] text-sm leading-7 text-[#6b645d]">
+              Không nhồi thêm màn phụ. Mở vào là thấy đúng thứ cần nhìn.
+            </p>
           </div>
-
-          <div className="lg:pl-2">
-            <HeroScene />
-          </div>
-        </section>
-
-        <section className="grid gap-4 py-4 md:grid-cols-3">
-          {playfulBenefits.map((benefit) => (
-            <article
-              className={cn("rounded-[1.6rem] border px-5 py-5 shadow-sm", benefit.accent)}
-              key={benefit.label}
-            >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
-                {benefit.label}
-              </p>
-              <p className="mt-3 text-sm leading-7 text-stone-600">
-                {benefit.text}
-              </p>
-            </article>
-          ))}
-        </section>
-
-        <section className="py-12">
-          <SectionTitle
-            eyebrow="Ba mascot, ba vai trò"
-            title="Mascot không chỉ đáng yêu. Chúng điều khiển nhịp của từng phần việc."
-          />
 
           <div className="mt-6 grid gap-4 lg:grid-cols-3">
-            {mascotGuides.map((item, index) => (
+            {modules.map((item) => (
               <article
-                className={cn("overflow-hidden rounded-[1.9rem] border p-6 shadow-sm", item.accent)}
                 key={item.title}
+                className={cn("rounded-[28px] border border-[#ece7e1] bg-white p-5", surfaceShadow)}
               >
-                <div className="flex h-full flex-col gap-5">
-                  <div className="max-w-xl">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
-                      {item.eyebrow}
-                    </p>
-                    <h3 className={cn(displayFont.className, "mt-3 text-3xl text-stone-950")}>
-                      {item.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-7 text-stone-600">
-                      {item.description}
-                    </p>
-                  </div>
-
-                  <div className="mt-auto flex justify-center">
-                    {index === 0 ? <PandaMascot /> : index === 1 ? <CatMascot /> : <RabbitMascot />}
-                  </div>
+                <div
+                  className={cn(
+                    "inline-flex h-11 w-11 items-center justify-center rounded-[14px]",
+                    item.accent
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
                 </div>
+                <h3 className="mt-5 text-xl font-bold tracking-[-0.03em] text-[#1f1c1a]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-[#6b645d]">{item.text}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="py-6">
-          <SectionTitle
-            eyebrow="Trải nghiệm cốt lõi"
-            title="Người mới vào là hiểu ngay nên làm gì, nhưng vẫn thấy sản phẩm có hồn."
-          />
-
-          <div className="mt-6 grid gap-4 lg:grid-cols-3">
-            {flowSteps.map((step, index) => {
-              const Icon = step.icon;
-
-              return (
-                <article
-                  className={cn(
-                    "rounded-[1.7rem] border px-5 py-5 shadow-sm",
-                    index === 0
-                      ? "border-[#d9e7cf] bg-[linear-gradient(180deg,rgba(247,251,244,0.98)_0%,rgba(238,246,232,0.96)_100%)]"
-                      : index === 1
-                        ? "border-[#f3d6cd] bg-[linear-gradient(180deg,rgba(255,248,243,0.98)_0%,rgba(255,236,229,0.96)_100%)]"
-                        : "border-[#ead8e5] bg-[linear-gradient(180deg,rgba(255,249,252,0.98)_0%,rgba(245,233,241,0.96)_100%)]"
-                  )}
-                  key={step.title}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div
-                      className={cn(
-                        "flex h-12 w-12 items-center justify-center rounded-[1.25rem] text-white shadow-sm",
-                        index === 0
-                          ? "bg-[linear-gradient(180deg,#6f9b58_0%,#476736_100%)]"
-                          : index === 1
-                            ? "bg-[linear-gradient(180deg,#eb8e73_0%,#b96548_100%)]"
-                            : "bg-[linear-gradient(180deg,#f29a52_0%,#c8753a_100%)]"
-                      )}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-400">
-                      0{index + 1}
-                    </span>
-                  </div>
-                  <h3 className={cn(displayFont.className, "mt-4 text-3xl leading-none text-stone-950")}>
-                    {step.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-stone-600">
-                    {step.description}
-                  </p>
-                </article>
-              );
-            })}
+        <section
+          className={cn(
+            "mt-16 grid gap-5 rounded-[36px] border border-[#ece7e1] p-6 sm:p-8 lg:grid-cols-[1.05fr_0.95fr]",
+            "bg-[radial-gradient(circle_at_top_left,rgba(124,92,255,0.08),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,77,122,0.08),transparent_24%),linear-gradient(180deg,#ffffff_0%,#fbfaf9_100%)]",
+            surfaceShadow
+          )}
+        >
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6b645d]">
+              Trọng tâm mới
+            </p>
+            <h2 className="mt-3 max-w-[560px] text-[2.4rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#1f1c1a]">
+              Homepage giờ là landing thật, không còn chỉ là đổi màu của bản cũ.
+            </h2>
+            <p className="mt-4 max-w-[520px] text-sm leading-7 text-[#6b645d]">
+              Nếu hướng này đúng, mình sẽ kéo tiếp cùng cấu trúc cho dashboard,
+              goals và board để cả app đi chung một ngôn ngữ.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                className="inline-flex h-12 items-center justify-center rounded-[14px] bg-[#202020] px-6 text-sm font-semibold text-white transition hover:bg-[#111111]"
+                href={isAuthenticated ? "/dashboard" : "/register"}
+              >
+                {isAuthenticated ? "Đi vào app" : "Tạo tài khoản"}
+              </Link>
+              <Link
+                className="inline-flex h-12 items-center justify-center rounded-[14px] border border-[#ece7e1] bg-white px-6 text-sm font-semibold text-[#1f1c1a] transition hover:bg-[#faf9f8]"
+                href="/login"
+              >
+                Xem đăng nhập
+              </Link>
+            </div>
           </div>
-        </section>
 
-        <section className="py-8">
-          <WorkspacePreview />
-        </section>
-
-        <section className="py-8">
-          <div className="relative overflow-hidden rounded-[2.2rem] border border-[#e7dbcf] bg-[linear-gradient(135deg,#fffaf1_0%,#fff2e7_38%,#fff4f7_74%,#eef7ea_100%)] text-stone-950 shadow-[0_28px_60px_-34px_rgba(120,113,108,0.34)]">
-            <div className="absolute -left-14 top-0 h-40 w-40 rounded-full bg-[#6f9b58]/16 blur-3xl" />
-            <div className="absolute right-8 top-8 h-32 w-32 rounded-full bg-[#eb8e73]/16 blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 h-28 w-28 rounded-full bg-[#f5d7e7]/20 blur-3xl" />
-
-            <div className="relative grid gap-7 px-6 py-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:px-8 lg:py-8">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
-                  Bắt đầu nhẹ đầu
-                </p>
-                <h2
-                  className={cn(
-                    displayFont.className,
-                    "mt-3 max-w-4xl text-4xl leading-[1.03] text-stone-950 md:text-[3.3rem]"
-                  )}
-                >
-                  Vào app là biết ngay nên ôm khúc tre nào, thả việc nào, giữ streak nào.
-                </h2>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-                  Đây là bước chuyển đầu tiên của giao diện theo hướng gấu trúc, mèo và
-                  thỏ. Nếu mood này đúng, mình sẽ đẩy tiếp dashboard, goals, habits và
-                  board theo cùng hệ màu và cùng ngôn ngữ.
-                </p>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-[#cfe1c2] bg-[#edf6e7] px-3 py-1 text-[11px] font-semibold text-[#5f7a4b]">
-                    Panda focus
-                  </span>
-                  <span className="rounded-full border border-[#f0cec3] bg-[#fff0e8] px-3 py-1 text-[11px] font-semibold text-[#b05d42]">
-                    Cat action
-                  </span>
-                  <span className="rounded-full border border-[#ead8e5] bg-[#fff1f8] px-3 py-1 text-[11px] font-semibold text-[#ab6788]">
-                    Rabbit comeback
-                  </span>
+          <div className="grid gap-3">
+            <div className="rounded-[24px] border border-[#ece7e1] bg-white px-4 py-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-[#f5f1ff] p-2 text-[#6b4eff]">
+                  <LayoutPanelTop className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#1f1c1a]">Nav gọn hơn</p>
+                  <p className="mt-1 text-sm text-[#6b645d]">Không còn search bar và category rail thừa.</p>
                 </div>
               </div>
-
-              <div className="flex flex-wrap items-center gap-3 lg:max-w-sm lg:justify-end">
-                {isAuthenticated ? (
-                  <>
-                    <Link
-                      className={cn(homepagePrimaryCtaClass, "px-5 py-3 text-sm")}
-                      href="/dashboard"
-                    >
-                      Vào dashboard
-                    </Link>
-                    <SignOutButton
-                      className="!w-auto rounded-full border border-[#e7dbcf] bg-white/72 px-5 py-3 text-sm font-semibold !text-stone-900 shadow-[0_12px_26px_-20px_rgba(120,113,108,0.4)] hover:border-[#d9ccbf] hover:bg-white"
-                      variant="secondary"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      className={cn(homepagePrimaryCtaClass, "px-5 py-3 text-sm")}
-                      href="/register"
-                    >
-                      Tạo tài khoản
-                    </Link>
-                    <Link
-                      className="rounded-full border border-[#e7dbcf] bg-white/72 px-5 py-3 text-sm font-semibold text-stone-900 shadow-[0_12px_26px_-20px_rgba(120,113,108,0.4)] transition hover:border-[#d9ccbf] hover:bg-white"
-                      href="/login"
-                    >
-                      Đăng nhập
-                    </Link>
-                  </>
-                )}
+            </div>
+            <div className="rounded-[24px] border border-[#ece7e1] bg-white px-4 py-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-[#fff1f5] p-2 text-[#e11d48]">
+                  <CheckCircle2 className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#1f1c1a]">Hero có trọng tâm</p>
+                  <p className="mt-1 text-sm text-[#6b645d]">Headline, CTA và mockup đi thành một nhịp.</p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-[24px] border border-[#ece7e1] bg-white px-4 py-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-[#f4f8ec] p-2 text-[#5f7a34]">
+                  <Clock3 className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#1f1c1a]">Mascot ít nhưng đúng chỗ</p>
+                  <p className="mt-1 text-sm text-[#6b645d]">Chỉ treo quanh mockup và card, không phủ cả trang.</p>
+                </div>
               </div>
             </div>
           </div>
