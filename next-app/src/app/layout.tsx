@@ -9,11 +9,13 @@ export const metadata: Metadata = {
     default: "Quản lý mục tiêu cá nhân",
     template: "%s | Quản lý mục tiêu cá nhân"
   },
-  description: "Nền tảng Next.js mới cho ứng dụng quản lý mục tiêu cá nhân.",
+  description:
+    "Ứng dụng quản lý mục tiêu cá nhân giúp bạn chia mục tiêu thành cột mốc, theo dõi công việc và giữ nhịp làm việc mỗi ngày.",
   applicationName: "Quản lý mục tiêu cá nhân",
   openGraph: {
     title: "Quản lý mục tiêu cá nhân",
-    description: "Nền tảng Next.js mới cho ứng dụng quản lý mục tiêu cá nhân.",
+    description:
+      "Ứng dụng quản lý mục tiêu cá nhân giúp bạn chia mục tiêu thành cột mốc, theo dõi công việc và giữ nhịp làm việc mỗi ngày.",
     siteName: "Quản lý mục tiêu cá nhân",
     type: "website"
   }
