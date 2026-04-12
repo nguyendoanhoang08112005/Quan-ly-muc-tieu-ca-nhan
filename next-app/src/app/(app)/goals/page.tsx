@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Compass, PawPrint, Plus, Sparkles, Target } from "lucide-react";
 import { PawTrail } from "@/components/ornaments/paw-trail";
 import { buttonVariants } from "@/components/ui/button";
+import { PageEmptyState, PageSectionTitle } from "@/components/shared/app-page-patterns";
 import { PageFilterForm } from "@/components/shared/page-filter-form";
 import { GoalCard } from "@/features/goals/components/goal-card";
 import { GoalsInlineCreatePanel } from "@/features/goals/components/goals-inline-create-panel";
@@ -208,27 +209,37 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
       />
 
       {filteredGoals.length > 0 ? (
-        <section className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
-          {filteredGoals.map((goal) => (
-            <GoalCard goal={goal} key={goal.id} />
-          ))}
+        <section className="space-y-4">
+          <PageSectionTitle
+            description="Tiến độ, nhịp mục tiêu và quyền xem đều nằm gọn ngay trên từng card."
+            eyebrow="Danh sách mục tiêu"
+            title="Các mục tiêu đang hiện trên màn"
+          />
+          <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+            {filteredGoals.map((goal) => (
+              <GoalCard goal={goal} key={goal.id} />
+            ))}
+          </div>
         </section>
       ) : goals.length > 0 ? (
-        <section className="ui-panel border-dashed px-6 py-10 text-center">
-          <h2 className="text-xl font-black text-stone-950">
-            Không tìm thấy mục tiêu phù hợp
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-stone-500">
-            Đổi bộ lọc để quay lại danh sách rộng hơn.
-          </p>
-        </section>
+        <PageEmptyState
+          description="Đổi bộ lọc hoặc từ khóa tìm kiếm để quay lại danh sách rộng hơn."
+          title="Không tìm thấy mục tiêu phù hợp"
+        />
       ) : (
-        <section className="ui-panel border-dashed px-6 py-10 text-center">
-          <h2 className="text-xl font-black text-stone-950">Chưa có mục tiêu nào</h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-stone-600">
-            Form tạo mới đã mở ở phía trên.
-          </p>
-        </section>
+        <PageEmptyState
+          action={
+            <Link
+              className={cn(buttonVariants({ size: "sm" }), "gap-2 rounded-full !text-white")}
+              href="/goals?create=1"
+            >
+              <Plus className="h-4 w-4" />
+              Tạo mục tiêu đầu tiên
+            </Link>
+          }
+          description="Form tạo mới đã mở ở phía trên. Chỉ cần nhập tên, thời gian và ưu tiên để bắt đầu."
+          title="Chưa có mục tiêu nào"
+        />
       )}
     </div>
   );

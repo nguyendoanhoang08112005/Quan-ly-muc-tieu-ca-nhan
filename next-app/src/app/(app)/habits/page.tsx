@@ -1,18 +1,13 @@
 import Link from "next/link";
-import type { Route } from "next";
-import { ArrowRight, Compass, Plus, Sparkles, Target } from "lucide-react";
+import { Compass, Plus, Sparkles, Target } from "lucide-react";
 import {
   PageEmptyState,
-  PageHero
+  PageHero,
+  PageSectionTitle
 } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  habitFrequencyLabels,
-  habitStatusClassNames,
-  habitStatusLabels
-} from "@/features/habits/habit-helpers";
+import { HabitCard } from "@/features/habits/components/habit-card";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
-import { formatDisplayDate, formatDisplayDateTime } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 import { listHabitsForUser } from "@/server/modules/habits/queries";
 
@@ -66,100 +61,17 @@ export default async function HabitsPage() {
       />
 
       {habits.length > 0 ? (
-        <section className="grid gap-6 lg:grid-cols-2">
-          {habits.map((habit) => (
-            <article
-              className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm"
-              key={habit.id}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="flex flex-wrap gap-2">
-                    <span
-                      className={cn(
-                        "rounded-full px-3 py-1 text-xs font-semibold",
-                        habitStatusClassNames[habit.status]
-                      )}
-                    >
-                      {habitStatusLabels[habit.status]}
-                    </span>
-                    <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">
-                      {habitFrequencyLabels[habit.frequency]}
-                    </span>
-                    {habit.goal ? (
-                      <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">
-                        {habit.goal.title}
-                      </span>
-                    ) : null}
-                  </div>
-                  <h2 className="mt-4 text-2xl font-black text-stone-950">
-                    {habit.title}
-                  </h2>
-                  <p className="mt-3 text-sm leading-6 text-stone-600">
-                    {habit.description}
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-right">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
-                    Chuỗi
-                  </div>
-                  <div className="text-2xl font-black text-emerald-900">
-                    {habit.currentStreak}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-5 grid gap-3 text-sm text-stone-600 sm:grid-cols-2">
-                <div>
-                  Mục tiêu: {habit.targetCount} {habit.unit} / chu kỳ
-                </div>
-                <div>
-                  Chuỗi tốt nhất: {habit.bestStreak}
-                </div>
-                <div>
-                  Nhắc: {habit.reminderTime || "Chưa đặt"}
-                </div>
-                <div>
-                  Log gần nhất: {formatDisplayDateTime(habit.lastLoggedAt, "Chưa ghi nhận")}
-                </div>
-                <div>
-                  Bắt đầu: {formatDisplayDate(habit.startDate)}
-                </div>
-                <div>
-                  Kết thúc: {formatDisplayDate(habit.endDate)}
-                </div>
-              </div>
-
-              {habit.todayLog ? (
-                <div className="mt-5 rounded-[1.5rem] border border-stone-200 bg-stone-50 px-4 py-4 text-sm text-stone-600">
-                  Hôm nay: {habit.todayLog.completedCount}/
-                  {habit.todayLog.targetCountSnapshot} {habit.unit}
-                  {habit.todayLog.isCompleted ? " | Đã đạt mục tiêu" : " | Chưa đạt mục tiêu"}
-                </div>
-              ) : (
-                <div className="mt-5 rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-4 py-4 text-sm text-stone-500">
-                  Hôm nay chưa có nhật ký thói quen.
-                </div>
-              )}
-
-              <div className="mt-6 flex items-center justify-between border-t border-stone-200 pt-5">
-                <span className="text-xs font-bold uppercase tracking-[0.22em] text-stone-400">
-                  Mô-đun thói quen
-                </span>
-                <Link
-                  className={cn(
-                    buttonVariants({ size: "sm" }),
-                    "gap-2 rounded-full !text-white"
-                  )}
-                  href={`/habits/${habit.id}` as Route}
-                >
-                  Xem chi tiết
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </article>
-          ))}
+        <section className="space-y-4">
+          <PageSectionTitle
+            description="Mỗi thói quen giờ có nhịp hôm nay, chuỗi hiện tại và các thông số chính ngay trên card."
+            eyebrow="Danh sách thói quen"
+            title="Các nhịp bạn đang theo dõi"
+          />
+          <div className="grid gap-4 lg:grid-cols-2">
+            {habits.map((habit) => (
+              <HabitCard habit={habit} key={habit.id} />
+            ))}
+          </div>
         </section>
       ) : (
         <PageEmptyState

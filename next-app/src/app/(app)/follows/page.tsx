@@ -45,14 +45,14 @@ export default async function FollowsPage() {
             </div>
           </div>
         }
-        description="Chỉ hiển thị mục tiêu công khai, và bạn có thể theo dõi hoặc bỏ theo dõi bằng hành động máy chủ."
-        eyebrow="Theo dõi"
+        description="Mở rộng khỏi danh sách riêng của bạn để xem những mục tiêu công khai có thể theo dõi ngay."
+        eyebrow="Không gian mở rộng"
         metrics={[
           { label: "Đang theo dõi", value: overview.followedGoals.length, hint: "Mục tiêu đã follow" },
           { label: "Khám phá", value: overview.discoverGoals.length, tone: "warm", hint: "Có thể theo dõi ngay" },
           { label: "Mục tiêu công khai của bạn", value: publicGoals.length, tone: "bamboo", hint: "Đang mở cho người khác" }
         ]}
-        title="Theo dõi mục tiêu công khai"
+        title="Mục tiêu công khai quanh bạn"
         trailVariant="bamboo"
       />
 
