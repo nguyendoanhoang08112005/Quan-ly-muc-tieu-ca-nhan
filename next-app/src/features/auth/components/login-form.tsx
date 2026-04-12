@@ -13,7 +13,7 @@ type LoginFormProps = {
 };
 
 const inputClassName =
-  "h-12 rounded-2xl border-[#e2d8cc] bg-white/92 px-4 text-[15px] shadow-[0_10px_20px_-18px_rgba(120,113,108,0.22)] placeholder:text-stone-400 focus:border-stone-500 focus:ring-stone-400/10";
+  "h-[3.25rem] rounded-[1.15rem] border-[#e7dfd5] bg-white px-4 text-[15px] shadow-none placeholder:text-stone-400 focus:border-stone-500 focus:ring-stone-400/10";
 
 export function LoginForm({
   callbackUrl,
@@ -29,7 +29,7 @@ export function LoginForm({
     event.preventDefault();
 
     if (!email.trim() || !password) {
-      setError("Mèo chưa thấy đủ email và mật khẩu.");
+      setError("Vui lòng nhập đủ email và mật khẩu.");
       return;
     }
 
@@ -46,7 +46,7 @@ export function LoginForm({
     setIsPending(false);
 
     if (!result) {
-      setError("Chưa thể đăng nhập lúc này. Thử lại sau một nhịp.");
+      setError("Chưa thể đăng nhập lúc này. Thử lại sau.");
       return;
     }
 
@@ -60,77 +60,92 @@ export function LoginForm({
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
-      <div className="flex flex-wrap gap-2">
-        <span className="rounded-full border border-[#f1d4ca] bg-[#fff1ea] px-3 py-1 text-[11px] font-semibold text-[#b05d42]">
-          Mèo mở lại board
-        </span>
-        <span className="rounded-full border border-[#e7dbcf] bg-white/88 px-3 py-1 text-[11px] font-semibold text-stone-500">
-          Đi tiếp từ chỗ đang dở
-        </span>
-      </div>
-
       {showRegisteredMessage ? (
-        <div className="rounded-[1.35rem] border border-emerald-200 bg-[linear-gradient(180deg,#f2fbf5_0%,#e9f8ee_100%)] px-4 py-3 text-sm font-medium text-emerald-800">
+        <div className="rounded-[1.2rem] border border-emerald-200 bg-[linear-gradient(180deg,#f2fbf5_0%,#e9f8ee_100%)] px-4 py-3 text-sm font-medium text-emerald-800">
           Tài khoản đã được tạo. Bạn có thể đăng nhập ngay bây giờ.
         </div>
       ) : null}
 
       {error ? (
-        <div className="rounded-[1.35rem] border border-rose-200 bg-[linear-gradient(180deg,#fff5f6_0%,#ffecee_100%)] px-4 py-3 text-sm font-medium text-rose-700">
+        <div className="rounded-[1.2rem] border border-rose-200 bg-[linear-gradient(180deg,#fff5f6_0%,#ffecee_100%)] px-4 py-3 text-sm font-medium text-rose-700">
           {error}
         </div>
       ) : null}
 
-      <div className="space-y-2">
-        <label
-          className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500"
-          htmlFor="email"
-        >
-          Email
-        </label>
-        <Input
-          autoComplete="email"
-          className={inputClassName}
-          id="email"
-          name="email"
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="you@example.com"
-          type="email"
-          value={email}
-        />
+      <div className="rounded-[1.5rem] border border-[#ece7e1] bg-[#fcfbfa] p-4 sm:p-5">
+        <div className="space-y-2">
+          <label
+            className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500"
+            htmlFor="email"
+          >
+            Email
+          </label>
+          <Input
+            autoComplete="email"
+            className={inputClassName}
+            id="email"
+            name="email"
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="you@example.com"
+            type="email"
+            value={email}
+          />
+        </div>
+
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <label
+              className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500"
+              htmlFor="password"
+            >
+              Mật khẩu
+            </label>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400">
+              Bảo mật
+            </span>
+          </div>
+          <Input
+            autoComplete="current-password"
+            className={inputClassName}
+            id="password"
+            name="password"
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Nhập mật khẩu của bạn"
+            type="password"
+            value={password}
+          />
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <label
-          className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500"
-          htmlFor="password"
-        >
-          Mật khẩu
-        </label>
-        <Input
-          autoComplete="current-password"
-          className={inputClassName}
-          id="password"
-          name="password"
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="Nhập mật khẩu của bạn"
-          type="password"
-          value={password}
-        />
-      </div>
-
-      <div className="rounded-[1.35rem] border border-[#f1dfd8] bg-white/78 px-4 py-3 text-sm leading-6 text-stone-600">
-        Đăng nhập xong là vào lại ngay dashboard, board và các mục tiêu bạn đang theo.
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="rounded-[1.2rem] border border-[#ece7e1] bg-white px-4 py-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+            Quay lại
+          </p>
+          <p className="mt-1 text-sm font-semibold text-stone-900">Dashboard</p>
+        </div>
+        <div className="rounded-[1.2rem] border border-[#ece7e1] bg-white px-4 py-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+            Tiếp tục
+          </p>
+          <p className="mt-1 text-sm font-semibold text-stone-900">Board gần nhất</p>
+        </div>
+        <div className="rounded-[1.2rem] border border-[#ece7e1] bg-white px-4 py-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+            Giữ nhịp
+          </p>
+          <p className="mt-1 text-sm font-semibold text-stone-900">Mục tiêu đang mở</p>
+        </div>
       </div>
 
       <Button
-        className="h-12 w-full rounded-2xl border border-[#e2d8cc] bg-white/90 text-[15px] font-semibold !text-stone-950 shadow-[0_14px_26px_-22px_rgba(120,113,108,0.3)] hover:bg-white"
+        className="h-12 w-full rounded-[1.15rem] bg-[#202020] text-[15px] font-semibold !text-white hover:bg-[#111111]"
         disabled={isPending}
         size="lg"
         type="submit"
-        variant="secondary"
+        variant="default"
       >
-        {isPending ? "Đang mở lại khu làm việc..." : "Đăng nhập"}
+        {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
       </Button>
     </form>
   );

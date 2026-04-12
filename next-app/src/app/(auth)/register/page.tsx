@@ -16,13 +16,13 @@ export const metadata: Metadata = {
 export default async function RegisterPage() {
   return (
     <AuthShell
-      description="Tạo một tài khoản mới để bắt đầu nhẹ hơn: mục tiêu rõ hơn, việc làm gọn hơn và thói quen dễ quay lại hơn."
-      eyebrow="Thỏ đang giữ chỗ"
+      description="Tạo tài khoản để bắt đầu mục tiêu, sắp việc trong ngày và giữ nhịp gọn hơn."
+      eyebrow="Đăng ký"
       footer={
         <p>
           Đã có tài khoản?{" "}
           <Link
-            className="font-semibold text-[#ab6788] underline decoration-[#ead8e5] underline-offset-4"
+            className="font-semibold text-[#1f1c1a] underline decoration-[#d8d0c8] underline-offset-4"
             href={authRoutes.signIn}
           >
             Đăng nhập
@@ -30,7 +30,7 @@ export default async function RegisterPage() {
         </p>
       }
       mode="register"
-      title="Tạo tài khoản mới"
+      title="Tạo tài khoản để bắt đầu"
     >
       <RegisterForm />
     </AuthShell>

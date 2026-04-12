@@ -1,600 +1,435 @@
 # Panda Cat Rabbit UI UX Plan
 
-## 1. Mục tiêu tổng thể
+## 1. Mục tiêu mới
 
-Biến sản phẩm từ một ứng dụng quản lý mục tiêu khô và nặng thành một sản phẩm:
+Tài liệu này lấy `homepage hiện tại` làm chuẩn thị giác cho toàn bộ app.
 
-- gọn hơn
-- sáng hơn
-- thú vị hơn
-- vẫn đủ trưởng thành để dùng mỗi ngày
+Định hướng chung:
 
-Hướng mới của toàn bộ UI:
+- trắng là nền chính
+- layout phải rõ nhịp hơn màu sắc
+- module thật của sản phẩm phải xuất hiện trong UI
+- mascot chỉ làm accent
+- mỗi màn phải trả lời ngay câu hỏi: `người dùng đang cần làm gì ở đây`
 
-- `white-first UI`
-- nền trắng là mặc định
-- màu chỉ dùng để nhấn
-- mascot chỉ dùng để tạo trải nghiệm, không dùng để phủ giao diện
+Homepage mới đã chốt một hướng rõ:
 
-## 2. Tinh thần sản phẩm
+- `nav mảnh`
+- `hero gói vào một khối lớn`
+- `wall of features` thay cho mockup chung chung
+- `4 ô trung tâm` đại diện cho sản phẩm thật
+- `module icons` bao quanh để cho thấy hệ thống đầy đủ
 
-### 2.1. 5 cảm giác chính
+Từ đây, các màn bên trong phải đi theo cùng logic đó.
 
-- `sạch`: nhìn vào là thấy thoáng
-- `nhẹ`: không có cảm giác bức tường card và form
-- `ấm`: không lạnh như admin panel
-- `vui vừa đủ`: có duyên nhưng không sến
-- `có hy vọng`: lỗi, hụt nhịp, overdue đều được kéo lại nhẹ nhàng
+## 2. Homepage là nguồn chuẩn
 
-### 2.2. Vai trò của 3 mascot
+## 2.1. Những gì homepage đã chốt
 
-#### Gấu trúc
+Homepage hiện tại có 5 quyết định thiết kế quan trọng:
 
-Dùng cho:
+1. `Không có hero chữ riêng + mockup riêng`
+2. `Khối lớn đầu trang vừa là hero vừa là preview`
+3. `Nội dung trong khối preview phải là dữ liệu thật của sản phẩm`
+4. `Các module xung quanh là icon nhỏ, đều, sạch, không tranh trọng tâm`
+5. `Mascot chỉ treo quanh khối lớn như ornament`
 
-- mục tiêu
-- tiến độ
-- focus
-- pomodoro
-- deep work
+Đây là rule phải giữ khi làm các trang trong app.
 
-Vai trò:
+## 2.2. Cấu trúc chuẩn của một màn
 
-- bình tĩnh
-- đáng tin
-- giữ nhịp
+Mỗi màn chính trong app nên có 3 lớp:
 
-#### Mèo
+- `Lớp 1`: tiêu đề + hành động chính
+- `Lớp 2`: khối preview/tổng quan lớn nhất của màn
+- `Lớp 3`: module con hoặc danh sách thao tác
 
-Dùng cho:
+Không nên:
 
-- task board
-- quick add
-- empty state
-- notification
-- success state
+- nhồi quá nhiều card nhỏ ở phần đầu
+- để phần đầu chỉ toàn text
+- để data chính nằm quá thấp, bắt user phải cuộn mới hiểu màn
 
-Vai trò:
+## 3. Hệ visual phải dùng
 
-- lanh
-- nhanh
-- tạo động lực nhẹ
+## 3.1. Nền
 
-#### Thỏ
+- `App background`: `#FFFFFF`
+- `Surface chính`: trắng
+- `Surface phụ`: trắng ngà rất nhẹ
+- không dùng nền gradient phủ cả trang
+- chỉ cho phép gradient/glow ở `hero`, `preview surface`, hoặc `block nhấn`
 
-Dùng cho:
+## 3.2. Màu
 
-- onboarding
-- habits
-- comeback state
-- first-use experience
+### Neutral
 
-Vai trò:
+- `Ink`: `#1F1C1A`
+- `Muted`: `#6B645D`
+- `Soft line`: `#ECE7E1`
+- `Warm wash`: `#FBFAF9`
 
-- khởi đầu lại
-- kéo người dùng quay lại
-- giảm cảm giác bị phán xét
+### Accent theo module
 
-## 3. Hệ visual chung
-
-### 3.1. Nguyên tắc nền
-
-Nền tổng thể nên:
-
-- là trắng hoặc trắng ngà
-- không phủ gradient màu lớn lên cả màn
-- chỉ dùng glow nhẹ ở hero hoặc block nhấn
+- `Goals / Panda`: tím bamboo dịu + xanh lá nhạt
+- `Tasks / Cat`: peach, coral rất nhẹ
+- `Habits / Rabbit`: blush, mint, carrot nhẹ
+- `Notes / Projects`: neutral là chính, accent rất ít
 
 Rule:
 
-- `#FFFFFF` được phép là nền chính
-- card chính vẫn có thể là trắng
-- sự khác biệt đến từ spacing, hierarchy, border, shadow, accent, mascot
+- mỗi block chỉ có `1 accent chính`
+- không để 3 accent cạnh nhau trong cùng một card
+- trạng thái quan trọng hơn mascot
 
-### 3.2. Bảng màu
+## 3.3. Bóng, bo góc, viền
 
-#### Foundation
+- border mềm, mỏng
+- bo góc lớn `18px - 30px`
+- shadow mờ, thấp
+- ưu tiên phân cấp bằng `spacing` trước, `shadow` sau
 
-- `Paper White`: `#FFFFFF`
-- `Warm White`: `#FCFAF7`
-- `Soft Stone`: `#E9E1D7`
-- `Stone Line`: `#DCCFC2`
-- `Muted Text`: `#7C746D`
-- `Ink`: `#1F1B18`
+## 3.4. Typography
 
-#### Panda accent
+Tone chữ phải giống homepage:
 
-- `Bamboo Mist`: `#DDE8D4`
-- `Bamboo Soft`: `#EDF5E8`
-- `Leaf Deep`: `#7FA865`
+- heading lớn, nặng, rất rõ
+- body ngắn, line-height thoáng
+- label viết ít chữ
+- uppercase chỉ dùng cho badge nhỏ hoặc eyebrow
 
-#### Cat accent
+Rule:
 
-- `Cat Peach`: `#F6C7B6`
-- `Cat Coral`: `#EB8E73`
-- `Whisker Pink`: `#FBE7E1`
-- `Toy Yellow`: `#F7D87C`
+- không dùng đoạn mô tả dài kiểu “giải thích giao diện”
+- không nói về thiết kế trong UI
+- chỉ nói về mục tiêu, việc, tiến độ, thói quen, quay lại
 
-#### Rabbit accent
+## 4. Vai trò của mascot
 
-- `Rabbit Milk`: `#FFF7FB`
-- `Blush Ear`: `#F5D7E7`
-- `Carrot Pop`: `#F29A52`
-- `Meadow Mint`: `#DFF3E7`
+Mascot không còn là “nhân vật chính”.
 
-#### Functional colors
+## 4.1. Chỗ được phép dùng mascot
 
-- focus: vàng ấm
-- in progress: xanh dương nhạt
-- completed: xanh lá nhạt
-- paused: vàng kem
-- comeback: hồng rất nhạt
-- destructive: đỏ dâu ấm
-
-### 3.3. Chất liệu
-
-- card trắng, viền stone mềm
-- shadow mờ, thấp, không nặng
-- bo góc lớn `20px - 32px`
-- input trắng, border mềm
-- button đa số trắng hoặc ink
-- mascot chỉ là accent, không phải background texture
-
-### 3.4. Typography
-
-Định hướng:
-
-- heading vui nhưng không trẻ con
-- body trung tính, dễ đọc lâu
-- label ngắn
-
-Đề xuất:
-
-- heading: `Baloo 2` hoặc `Nunito`
-- body: `Plus Jakarta Sans`, `Be Vietnam Pro`, hoặc `Manrope`
-
-### 3.5. Layer system
-
-- `App background`: trắng
-- `Surface 1`: card trắng
-- `Surface 2`: card con trắng pha stone rất nhẹ
-- `Surface 3`: input/chip/button trắng hoặc warm white
-
-Khi cần tạo mood:
-
-- chỉ tint một góc
-- chỉ tint một block
-- không tint toàn trang
-
-### 3.6. Button system
-
-#### Primary
-
-- mặc định dùng `Ink`
-- một số màn có thể dùng accent, nhưng chỉ một màu
-- không lạm dụng gradient
-
-#### Secondary
-
-- nền trắng
-- viền stone
-- text ink
-
-#### Ghost
-
-- gần như trắng trong
-- active mới có accent
-
-#### Destructive
-
-- đỏ dâu ấm
-- không đỏ chói
-
-### 3.7. Form controls
-
-#### Input / select
-
-- nền trắng
-- border stone mềm
-- focus ring nhẹ
-- placeholder muted ấm
-
-#### Textarea
-
-- trắng hoặc warm white
-- không cần hiệu ứng trang trí nếu không giúp đọc
-
-#### Chip / filter
-
-- inactive: trắng, viền stone
-- active: dùng accent
-- trong một hàng filter chỉ nên có vài điểm màu
-
-### 3.8. Card system
-
-#### Hero card
-
-- nền trắng
-- có thể có glow nhẹ ở một góc
-- có 1 khu vực nhấn
-
-#### Data card
-
-- nền trắng
-- số liệu to
-- text phụ ngắn
-
-#### Form card
-
-- nền trắng
-- chia section rõ
-- footer action tách nhẹ
-
-#### Empty state card
-
-- có mascot nhỏ
-- một câu hướng dẫn
-- một CTA
-
-### 3.9. Mapping theo module
-
-- `Dashboard / Goals / Pomodoro`: trắng + bamboo accent
-- `Tasks / Quick actions / Notifications`: trắng + cat peach/coral accent
-- `Habits / Onboarding / Comeback`: trắng + blush/carrot accent
-- `Notes`: trắng + stone ấm
-- `Projects`: trắng + neutral accent
-
-## 4. Nguyên tắc UX
-
-### 4.1. Một màn chỉ có một trọng tâm
-
-Mỗi màn cần có:
-
-- một điểm nhìn chính
-- một hành động chính
-- một lớp thông tin phụ
-
-### 4.2. Mascot phải phục vụ UX
-
-Mascot chỉ nên xuất hiện ở:
-
-- hero nhỏ
+- ornament treo ở góc hero
 - empty state
 - success state
-- reminder nhẹ
+- toast nhỏ
 - onboarding
-- ornament treo góc
+- comeback moments
 
-Không nên:
+## 4.2. Chỗ không được dùng mascot
 
-- nhét 3 mascot vào giữa cùng một block
-- để mascot tranh chỗ với form hoặc dữ liệu
-- dùng mascot ở mọi card
+- giữa dashboard chính
+- giữa board kanban
+- trong form chính
+- ở mọi card dữ liệu
+- lặp lại 3 mascot trong cùng một khu vực
 
-### 4.3. Microcopy phải ngắn
+## 4.3. Mapping mascot
+
+- `Gấu trúc`: goals, focus, pomodoro
+- `Mèo`: tasks, quick add, board, drag-drop
+- `Thỏ`: habits, comeback, restart
+
+## 5. Quy tắc UX cần kéo từ homepage vào app
+
+## 5.1. Hero phải là preview thật
+
+Hero của các màn trong app không được chỉ là:
+
+- tiêu đề
+- mô tả
+- vài stat card
+
+Hero đúng phải có:
+
+- tiêu đề ngắn
+- CTA chính
+- một preview cụ thể của màn đó
+
+Ví dụ:
+
+- `Dashboard`: preview “hôm nay”
+- `Goals`: preview “mục tiêu tuần”
+- `Tasks`: preview “wall of task states”
+- `Habits`: preview “streak / comeback”
+
+## 5.2. Card không được chỉ là box trắng
+
+Mọi card chính cần có một trong các vai trò rõ:
+
+- tóm tắt
+- preview
+- thao tác
+- trạng thái
+
+Nếu card không làm một trong 4 việc này thì bỏ.
+
+## 5.3. Module thật phải xuất hiện
+
+Homepage đã cho thấy:
+
+- mục tiêu
+- công việc
+- thói quen
+- ghi chú
+- pomodoro
+- dự án
+- tags
+- deadline
+- nhắc việc
+- lịch
+
+Các màn trong app cũng phải dùng chính hệ module này, không bịa thêm ngôn ngữ mới.
+
+## 6. Kế hoạch áp dụng cho từng trang
+
+## 6.1. Dashboard
+
+### Mục tiêu
+
+Biến dashboard thành `mission control` của cả sản phẩm.
+
+### Cấu trúc
+
+- hero lớn như homepage, nhưng nội dung là `hôm nay`
+- giữa hero là 4 ô chính:
+  - mục tiêu đang chạy
+  - việc đang focus
+  - streak hiện tại
+  - ghi chú/nguyên tắc hôm nay
+- xung quanh là module chip nhỏ như homepage
+
+### Bỏ
+
+- stat card rời rạc không có preview thật
+- quá nhiều copy giải thích
+- mascot nằm giữa hero
+
+## 6.2. Goals list
+
+### Mục tiêu
+
+Trang goals phải cho thấy:
+
+- mục tiêu nào đang sống
+- mỗi mục tiêu đang ở chặng nào
+- có thể tạo nhanh ngay trên trang
+
+### Cấu trúc
+
+- hero kiểu `wall of goals`
+- giữa là 3-4 mục tiêu đại diện
+- xung quanh là chip module nhỏ: cột mốc, tiến độ, deadline, riêng tư, note
+- danh sách goal card bên dưới phải nhẹ hơn hero
+
+### Rule
+
+- accent chỉ dùng bamboo/panda
+- progress phải đọc được ngay
+- form tạo mục tiêu không được dài hơn nội dung list
+
+## 6.3. Goal detail
+
+### Mục tiêu
+
+Goal detail phải đọc như một hành trình, không như trang admin.
+
+### Cấu trúc
+
+- đầu trang: title + trạng thái + progress + CTA
+- khối chính: `milestone wall`
+- mỗi milestone là một block rõ
+- task trong milestone là sub-layer, không tranh milestone
+
+### Rule
+
+- progress strip phải là phần dễ thấy nhất
+- actions phụ phải gọn
+- log/history phải đẩy xuống thấp
+
+## 6.4. Tasks / board
+
+### Mục tiêu
+
+Board phải là màn nhanh nhất trong toàn app.
+
+### Cấu trúc
+
+- đầu trang: title + filter chính
+- ngay dưới là `wall of task states`
+- mỗi cột là một vùng làm việc
+- quick add nằm đúng trong cột, không biến thành form admin
+
+### Rule
+
+- dùng accent mèo cho:
+  - active chips
+  - quick add
+  - drag highlight
+  - overdue/focus
+- không dùng mascot lớn ở giữa board
+- empty state được phép có mèo nhỏ
+
+## 6.5. Habits
+
+### Mục tiêu
+
+Habits phải cho cảm giác quay lại nhẹ nhàng, không bị phán xét.
+
+### Cấu trúc
+
+- hero: streak + comeback + habit focus
+- preview dạng lưới ngày hoặc vòng nhịp
+- thỏ chỉ ở góc hoặc empty state
+
+### Rule
+
+- blush/mint/carrot chỉ dùng nhẹ
+- không biến habits thành màn candy color
+
+## 6.6. Notes
+
+### Mục tiêu
+
+Notes là nơi yên nhất.
+
+### Cấu trúc
+
+- hero rất gọn
+- preview note list hoặc note canvas
+- neutral nhiều hơn accent
+
+### Rule
+
+- không cần nhiều mascot
+- không cần nhiều màu
+
+## 6.7. Projects / Pomodoro / Categories / Tags
+
+### Projects
+
+- giống goals nhưng neutral hơn
+- project overview là trọng tâm
+
+### Pomodoro
+
+- focus timer là hero
+- gấu trúc chỉ đứng cạnh timer hoặc break state
+
+### Categories / Tags
+
+- utility pages
+- phải cực gọn
+- không cần cố “cute hóa”
+
+## 7. Component system cần có
+
+## 7.1. Hero wall
+
+Component mới nên chuẩn hóa:
+
+- `PageHeroWall`
+- có `eyebrow`
+- có `headline`
+- có `supporting copy`
+- có `primary CTA`
+- có `preview surface`
+- có `module chips`
+- có `mascot ornaments`
+
+## 7.2. Preview tiles
+
+Cần 4 loại tile:
+
+- `summary tile`
+- `progress tile`
+- `board tile`
+- `note tile`
+
+## 7.3. Module chip
+
+Chip module phải:
+
+- cùng height
+- icon nhỏ
+- text ngắn
+- border mềm
+- inactive là trắng
+- active mới có accent
+
+## 7.4. Mascot ornament
+
+Chỉ là:
+
+- badge nhỏ
+- treo góc
+- scale nhỏ
+- không nhận focus chính
+
+## 8. Copywriting rules
+
+## 8.1. Homepage tone
+
+Tone đúng là:
+
+- rõ
+- trưởng thành
+- ngắn
+- nói đúng tính năng
+
+Không dùng:
+
+- “lấy tinh thần từ…”
+- “landing thật”
+- “demo giao diện”
+- các câu nói về thiết kế ngay trong UI
+
+## 8.2. Inner pages tone
 
 Nên dùng:
 
-- "Mèo đang chờ việc mới."
-- "Gấu trúc bảo việc này đáng ưu tiên."
-- "Thỏ nói hôm nay quay lại vẫn tính là tiến lên."
+- “Mục tiêu đang chạy”
+- “Việc trong ngày”
+- “Theo dõi nhịp”
+- “Quay lại nhẹ”
 
-Không nên:
+Không nên dùng:
 
-- giải thích dài
-- mô tả một thứ ai cũng nhìn ra
-- cute hóa quá đà
+- copy dài 2-3 dòng cho một card nhỏ
+- mô tả thứ user đã nhìn thấy
+- giải thích logic hệ thống quá sớm
 
-### 4.4. Phản hồi phải vui nhưng nhanh
+## 9. Lộ trình làm tiếp
 
-Khi người dùng:
-
-- hoàn thành việc
-- kéo thả đúng cột
-- tạo mục tiêu đầu tiên
-- tăng streak
-
-thì UI nên phản hồi bằng:
-
-- toast ngắn
-- icon chuyển động nhẹ
-- mascot nhỏ
-- badge gọn
-
-## 5. Định hướng từ trang chủ đến dashboard
-
-## 5.1. Trang chủ `(public)/page.tsx`
-
-### Mục tiêu
-
-Trang chủ phải cho thấy:
-
-- sản phẩm này sạch
-- có cá tính
-- không quá màu mè
-
-### Hướng giao diện
-
-- nền trắng
-- hero card trắng lớn
-- mascot ở dạng minh họa hoặc ornament nhỏ
-- CTA chính rõ, CTA phụ trắng
-
-### Rule
-
-- không phủ màu toàn hero
-- màu chỉ ở CTA, badge, icon, mascot
-
-## 5.2. Đăng nhập / đăng ký `(auth)/login`, `(auth)/register`
-
-### Mục tiêu
-
-- gọn
-- bớt nhàm
-- không giống form hệ thống mặc định
-
-### Hướng thiết kế
-
-- layout rõ
-- form card trắng
-- mascot là điểm nhấn duy nhất
-- với login có thể dùng mèo peekaboo
-
-### Rule
-
-- input trắng
-- button đa số trắng hoặc ink
-- chỉ mascot mới mang cảm giác vui
-
-## 5.3. App shell, sidebar, mobile nav
-
-### Sidebar
-
-- nền trắng hoặc stone rất nhạt
-- item active dùng accent nhỏ
-- icon rõ, text ngắn
-
-### Mapping mascot
-
-- Dashboard: gấu trúc
-- Tasks: mèo
-- Goals: gấu trúc
-- Habits: thỏ
-
-## 5.4. Dashboard `(app)/dashboard/page.tsx`
-
-### Mục tiêu
-
-Dashboard phải là một trạm điều khiển sạch:
-
-- nhìn nhanh
-- hiểu nhanh
-- có cá tính vừa đủ
-
-### Bố cục
-
-- hero trắng lớn
-- 3 stat card trắng
-- một mascot chính hoặc ornament ở góc
-- phần việc quan trọng nổi bật hơn phần còn lại
-
-### Rule
-
-- không nhồi mascot vào giữa hero
-- mascot nên treo góc hoặc đứng cạnh một block
-- text hero ngắn
-
-## 6. Kế hoạch các màn chính sau dashboard
-
-## 6.1. Mục tiêu `(app)/goals/*`
-
-### Goals list
-
-- hero trắng
-- accent bamboo
-- gấu trúc là mascot chính
-
-### Goal detail
-
-- progress card dùng bamboo accent nhỏ
-- milestone card trắng
-- log dùng icon nhỏ
-
-### Goal edit
-
-- form trắng
-- summary card trắng
-- copy ngắn
-
-## 6.2. Làm việc `(app)/tasks/page.tsx`
-
-### Board concept
-
-Board là sân của mèo, nhưng chỉ theo cách tiết chế:
-
-- board tổng vẫn trắng
-- accent mèo chỉ ở chip, quick add, drop state, reminder
-- cột không đổ màu mạnh
-
-### Empty state
-
-- "Mèo đang nằm chờ việc mới."
-- "Cột này đang trống, thả một việc vào đây."
-
-### Quick add
-
-- giống một composer sạch
-- không giống mini admin form
-- nền trắng, accent chỉ ở các chip active
-
-## 6.3. Dự án `(app)/projects/*`
-
-- trắng là nền chính
-- accent theo project
-- mascot rất nhẹ
-
-## 6.4. Thói quen `(app)/habits/*`
-
-- trắng là nền chính
-- thỏ là mascot chính
-- streak là nơi dùng carrot/blush
-
-## 6.5. Ghi chú `(app)/notes/*`
-
-- trắng + stone ấm
-- mèo chỉ nên là accent nhỏ
-
-## 6.6. Pomodoro `(app)/pomodoro/page.tsx`
-
-- trắng + bamboo
-- gấu trúc là mascot chính
-- focus và break khác nhau bằng trạng thái, không cần đổ màu cả màn
-
-## 7. Component system cần làm
-
-## 7.1. Mascot assets
-
-Cần chuẩn bị:
-
-- panda hero
-- panda focus
-- cat quick-add
-- cat success
-- rabbit onboarding
-- rabbit streak
-- rabbit comeback
-
-Ưu tiên:
-
-- SVG hoặc PNG rõ ràng
-- cùng một style
-- dùng như accent, không dùng như background
-
-## 7.2. New UI components
-
-- `MascotOrnament`
-- `MoodEmptyState`
-- `StickerChip`
-- `CuteQuickComposer`
-- `MascotToast`
-- `ModuleSurfaceCard`
-- `TintedActiveChip`
-
-## 7.3. Design tokens
-
-- `--bg-app`
-- `--bg-surface-1`
-- `--bg-surface-2`
-- `--border-soft`
-- `--shadow-soft`
-- `--accent-panda`
-- `--accent-cat`
-- `--accent-rabbit`
-- `--text-strong`
-- `--text-soft`
-
-## 7.4. Motion
-
-- ornament mascot đung đưa rất nhẹ
-- task drop có pulse nhẹ
-- complete action có sparkle rất ngắn
-- streak tăng có hop animation nhanh
-- không dùng animation dài
-
-## 8. Copywriting system
-
-### Giọng điệu
-
-- ngắn
-- hóm hỉnh
-- không lạm dụng thú vật trong mọi câu
-
-### Ví dụ
-
-- "Chưa có việc nào ở đây. Mèo đang chiếm chỗ."
-- "Mục tiêu này đang ngủ đông."
-- "Hôm nay tiến độ hơi chậm, nhưng gấu trúc vẫn canh."
-- "Không sao, thỏ giữ sẵn chỗ để bạn quay lại."
-
-### Error states
-
-- phải rõ nguyên nhân trước
-- duyên chỉ là phần phụ
-
-## 9. Nguyên tắc tránh bị sến hoặc rối
-
-- nền trắng là mặc định
-- màu không phủ cả màn nếu không có lý do rõ ràng
-- mascot không xuất hiện ở mọi ngóc ngách
-- một màn chỉ nên có một mascot chính
-- nếu có mascot phụ, chỉ nên ở mức ornament góc
-- ưu tiên usability trước trang trí
-
-Rule quan trọng:
-
-- `85% clean product UI`
-- `10% mascot personality`
-- `5% surprise delight`
-
-## 10. Kế hoạch triển khai
-
-## Phase 1. Foundation
-
-- chốt token trắng + accent
-- chốt typography
-- chốt border, radius, shadow, button
-
-## Phase 2. Public and shell
-
-- homepage
-- login/register
-- sidebar
-- mobile nav
-
-## Phase 3. Core productivity
+## Phase 1
 
 - dashboard
-- goals
-- tasks board
-- task edit/create
+- goals list
+- goal detail
 
-## Phase 4. Secondary modules
+## Phase 2
 
-- projects
+- tasks page
+- task board polish
 - habits
+
+## Phase 3
+
 - notes
+- projects
 - pomodoro
+- utility pages
 
-## Phase 5. Delight layer
+## 10. Tiêu chí kiểm tra sau mỗi màn
 
-- mascot toast
-- ornament góc
-- comeback banner
-- celebration nhỏ
+Sau khi làm xong một màn, phải tự kiểm tra:
 
-## 11. Thứ tự nên làm ngay trong codebase này
+1. phần đầu màn có cho thấy `preview thật` không
+2. màn này có nói đúng sản phẩm không
+3. có còn card thừa hoặc đoạn text thừa không
+4. mascot có đang lấn vai trò dữ liệu không
+5. màu có đang vượt quá nhu cầu của màn không
+6. user có biết hành động chính trong 3 giây đầu không
 
-1. `globals.css`
-2. app shell
-3. homepage
-4. dashboard
-5. goals
-6. tasks board
-7. task edit/create
-8. habits
-
-## 12. Kết luận
-
-Hướng đúng cho sản phẩm này không phải là phủ màu hay nhét mascot khắp nơi.
-
-Hướng đúng là:
-
-- nền trắng để dễ dùng lâu
-- accent màu để phân vai
-- mascot để tạo cảm xúc đúng lúc
-
-Điểm mấu chốt:
-
-- mascot phải phục vụ UX
-- trắng là nền để mọi thứ còn thở
-- hóm hỉnh phải đi cùng rõ ràng
+Nếu không qua 6 câu này thì màn đó chưa đạt.

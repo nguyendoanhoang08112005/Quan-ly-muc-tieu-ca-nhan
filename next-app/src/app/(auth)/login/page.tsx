@@ -36,13 +36,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <AuthShell
-      description="Quay lại dashboard, board công việc và các mục tiêu bạn đang theo. Không cần bắt đầu lại từ đầu."
-      eyebrow="Mèo đang chờ bạn"
+      description="Vào lại đúng board, mục tiêu và nhịp làm việc đang theo."
+      eyebrow="Đăng nhập"
       footer={
         <p>
           Chưa có tài khoản?{" "}
           <Link
-            className="font-semibold text-[#b05d42] underline decoration-[#efc8b9] underline-offset-4"
+            className="font-semibold text-[#1f1c1a] underline decoration-[#d8d0c8] underline-offset-4"
             href={authRoutes.register}
           >
             Tạo tài khoản
@@ -50,7 +50,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </p>
       }
       mode="login"
-      title="Đăng nhập để tiếp tục"
+      title="Đăng nhập để làm tiếp"
     >
       <LoginForm
         callbackUrl={callbackUrl}
