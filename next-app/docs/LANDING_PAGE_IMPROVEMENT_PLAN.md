@@ -654,3 +654,31 @@ Nếu chỉ làm một đợt ngắn, ưu tiên cao nhất là:
 4. giảm trùng lặp nội dung
 
 Làm xong 4 việc này, landing page sẽ tăng chất lượng rõ rệt ngay cả khi chưa cần thay đổi nhiều về visual.
+
+## 12. Trạng thái triển khai
+
+Các hạng mục chính trong tài liệu này đã được triển khai:
+
+- sửa điều hướng và CTA sai kỳ vọng
+- viết lại copy public-facing và metadata
+- thống nhất ngôn ngữ tiếng Việt
+- giảm trùng lặp giữa preview và section tính năng
+- thay section cuối bằng flow `3 bước`
+- kéo palette và bề mặt visual về gần dashboard hơn
+- thêm focus states và dọn phần decor cho đúng vai trò trang trí
+- tách landing page khỏi một file duy nhất sang thư mục `src/features/landing/`
+
+Các file đã được tách ra:
+
+- `src/features/landing/content.ts`
+- `src/features/landing/theme.ts`
+- `src/features/landing/components/public-home-header.tsx`
+- `src/features/landing/components/public-home-hero.tsx`
+- `src/features/landing/components/public-home-preview.tsx`
+- `src/features/landing/components/public-home-features.tsx`
+- `src/features/landing/components/public-home-start.tsx`
+
+Mục còn lại mang tính tùy chọn, không còn là lỗi hay thiếu sót trực tiếp của landing page:
+
+- cá nhân hóa preview bằng dữ liệu thật khi user đã đăng nhập
+- tiếp tục tinh chỉnh micro-copy theo định vị sản phẩm nếu scope thương hiệu thay đổi
