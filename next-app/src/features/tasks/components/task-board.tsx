@@ -20,7 +20,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   CircleDot,
-  Clock3,
   GripVertical,
   Layers3,
   LoaderCircle,
@@ -583,7 +582,7 @@ function TaskCardContent({
           ) : null}
           <Link
             className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-900 transition hover:text-stone-600"
-            href={`/goals/${task.goalId}/tasks/${task.id}/edit`}
+            href={`/tasks/${task.id}`}
             onPointerDown={stopCardDrag}
           >
             Chi tiết

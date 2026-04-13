@@ -30,6 +30,7 @@ export async function createSubtaskAction(formData: FormData) {
   }
 
   revalidatePath("/tasks");
+  revalidatePath(`/tasks/${parsedTaskId}`);
   revalidatePath(`/goals/${result.goalId}`);
   revalidatePath("/projects");
   if (result.projectId) {

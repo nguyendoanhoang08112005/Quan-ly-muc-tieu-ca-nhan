@@ -3,39 +3,29 @@
 import { useFormStatus } from "react-dom";
 import { Button, type ButtonProps } from "@/components/ui/button";
 
-type ConfirmSubmitButtonProps = Pick<
+type PendingSubmitButtonProps = Pick<
   ButtonProps,
-  "className" | "size" | "variant"
+  "className" | "disabled" | "size" | "variant"
 > & {
-  confirmMessage: string;
   idleLabel: string;
   pendingLabel?: string;
 };
 
-export function ConfirmSubmitButton({
+export function PendingSubmitButton({
   className,
-  confirmMessage,
+  disabled,
   idleLabel,
   pendingLabel = "Đang xử lý...",
   size,
   variant
-}: ConfirmSubmitButtonProps) {
+}: PendingSubmitButtonProps) {
   const { pending } = useFormStatus();
 
   return (
     <Button
       aria-busy={pending}
       className={className}
-      disabled={pending}
-      onClick={(event) => {
-        if (pending) {
-          return;
-        }
-
-        if (!window.confirm(confirmMessage)) {
-          event.preventDefault();
-        }
-      }}
+      disabled={disabled || pending}
       size={size}
       type="submit"
       variant={variant}

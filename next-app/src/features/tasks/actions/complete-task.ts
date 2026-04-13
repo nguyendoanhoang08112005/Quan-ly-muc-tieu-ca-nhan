@@ -37,6 +37,7 @@ export async function completeTaskAction(formData: FormData) {
   revalidatePath("/tasks");
   revalidatePath("/projects");
   revalidatePath(`/goals/${parsedGoalId.data}`);
+  revalidatePath(`/tasks/${parsedTaskId.data}`);
   if (parsedProjectId?.success) {
     revalidatePath(`/projects/${parsedProjectId.data}`);
   }

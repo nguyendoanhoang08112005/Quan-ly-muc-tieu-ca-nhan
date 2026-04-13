@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import { deleteTaskAction } from "@/features/tasks/actions/delete-task";
 import { ConfirmSubmitButton } from "@/components/shared/confirm-submit-button";
 import type { ButtonProps } from "@/components/ui/button";
@@ -8,6 +9,7 @@ export function DeleteTaskForm({
   idleLabel = "Xóa công việc",
   pendingLabel = "Đang xóa công việc...",
   projectId,
+  redirectTo,
   size = "default",
   taskId,
   variant = "destructive"
@@ -17,6 +19,7 @@ export function DeleteTaskForm({
   idleLabel?: string;
   pendingLabel?: string;
   projectId?: string | null;
+  redirectTo?: Route;
   size?: ButtonProps["size"];
   taskId: string;
   variant?: ButtonProps["variant"];
@@ -25,6 +28,7 @@ export function DeleteTaskForm({
     <form action={deleteTaskAction}>
       <input name="goalId" type="hidden" value={goalId} />
       {projectId ? <input name="projectId" type="hidden" value={projectId} /> : null}
+      {redirectTo ? <input name="redirectTo" type="hidden" value={redirectTo} /> : null}
       <input name="taskId" type="hidden" value={taskId} />
       <ConfirmSubmitButton
         className={className}
