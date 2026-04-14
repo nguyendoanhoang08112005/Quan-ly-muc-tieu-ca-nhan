@@ -53,6 +53,7 @@ export async function updateProjectAction(
   revalidatePath("/projects");
   revalidatePath(`/projects/${updatedProjectId}`);
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/dashboard");
   redirect(`/projects/${updatedProjectId}` as Route);
 }

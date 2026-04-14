@@ -39,6 +39,7 @@ export async function createProjectAction(
 
   revalidatePath("/projects");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/dashboard");
   redirect(`/projects/${projectId}` as Route);
 }

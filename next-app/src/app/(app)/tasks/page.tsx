@@ -222,9 +222,9 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                 buttonVariants({ size: "sm" }),
                 "rounded-full !text-white"
               )}
-              href="/dashboard"
+              href="/tasks/board"
             >
-              Mở bảng công việc
+              Mở bảng kéo thả
             </Link>
             <Link
               className={cn(
@@ -488,9 +488,9 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             <>
               <Link
                 className={cn(buttonVariants({ size: "sm" }), "rounded-full !text-white")}
-                href="/dashboard"
+                href="/tasks/board"
               >
-                Mở bảng công việc
+                Mở bảng kéo thả
               </Link>
               <Link
                 className={cn(
@@ -503,7 +503,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               </Link>
             </>
           }
-          description="Hãy bắt đầu ở Trang chủ để tạo và kéo thả công việc trong một bảng duy nhất, rồi quay lại đây khi cần rà soát chi tiết."
+          description="Hãy bắt đầu bằng mục tiêu và cột mốc, sau đó mở bảng kéo thả để tạo hoặc đổi trạng thái công việc."
           title="Chưa có công việc nào"
         />
       )}

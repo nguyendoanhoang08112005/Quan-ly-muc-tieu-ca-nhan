@@ -88,6 +88,7 @@ export async function POST(
   revalidatePath(`/goals/${goalId.toString()}`);
   revalidatePath("/dashboard");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/projects");
   revalidatePath("/pomodoro");
 

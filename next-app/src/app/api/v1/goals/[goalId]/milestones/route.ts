@@ -103,6 +103,7 @@ export async function POST(
   revalidatePath(`/goals/${goalId}`);
   revalidatePath("/dashboard");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
 
   return NextResponse.json(
     {

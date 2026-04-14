@@ -18,4 +18,5 @@ export async function interruptPomodoroSessionAction(formData: FormData) {
 
   revalidatePath("/pomodoro");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
 }

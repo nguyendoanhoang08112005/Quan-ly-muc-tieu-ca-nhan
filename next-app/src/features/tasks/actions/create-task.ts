@@ -52,6 +52,7 @@ export async function createTaskAction(
   revalidatePath("/dashboard");
   revalidatePath("/goals");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/projects");
   revalidatePath(`/goals/${parsedGoalId.data}`);
   if (parsedValues.data.projectId) {

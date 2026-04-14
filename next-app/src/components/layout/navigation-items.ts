@@ -14,7 +14,8 @@ export type NavigationGroup = {
 };
 
 export const primaryNavigationItems = [
-  { href: "/dashboard" as Route, label: "Làm việc" },
+  { href: "/dashboard" as Route, label: "Tổng quan" },
+  { href: "/tasks/board" as Route, label: "Bảng kéo thả" },
   { href: "/goals" as Route, label: "Mục tiêu" },
   { href: "/tasks" as Route, label: "Danh sách việc" },
   { href: "/habits" as Route, label: "Thói quen" }

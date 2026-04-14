@@ -39,6 +39,7 @@ export async function startPomodoroSessionAction(
 
   revalidatePath("/pomodoro");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/notifications");
 
   return {

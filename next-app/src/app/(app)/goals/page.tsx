@@ -136,9 +136,9 @@ export default async function GoalsPage({ searchParams }: GoalsPageProps) {
                   buttonVariants({ size: "sm", variant: "secondary" }),
                   "rounded-full border-[#e5dbd0] bg-white"
                 )}
-                href="/dashboard"
+                href="/tasks/board"
               >
-                Mở bảng việc
+                Mở bảng kéo thả
               </Link>
               <Link
                 className={cn(

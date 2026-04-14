@@ -28,6 +28,7 @@ export async function toggleSubtaskAction(formData: FormData) {
   }
 
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath(`/tasks/${parsedTaskId.data}`);
   revalidatePath(`/goals/${result.goalId}`);
   revalidatePath("/projects");

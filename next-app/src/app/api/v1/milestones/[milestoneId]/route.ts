@@ -137,6 +137,7 @@ export async function PATCH(
   revalidatePath(`/goals/${goalId.toString()}`);
   revalidatePath("/dashboard");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
 
   return NextResponse.json({
     message: "Cập nhật milestone thành công.",
@@ -185,6 +186,7 @@ export async function DELETE(
   revalidatePath(`/goals/${goalId.toString()}`);
   revalidatePath("/dashboard");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
 
   return noContentResponse();
 }

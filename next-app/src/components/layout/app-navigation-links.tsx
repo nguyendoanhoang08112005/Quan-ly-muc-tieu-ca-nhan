@@ -19,6 +19,10 @@ function isItemActive(pathname: string, href: string) {
     return false;
   }
 
+  if (href === "/tasks" && pathname.startsWith("/tasks/board")) {
+    return false;
+  }
+
   return pathname.startsWith(`${href}/`);
 }
 

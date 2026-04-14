@@ -55,6 +55,7 @@ export async function updateTaskAction(
   revalidatePath("/dashboard");
   revalidatePath("/goals");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/projects");
   revalidatePath(`/goals/${parsedGoalId.data}`);
   revalidatePath(`/tasks/${parsedTaskId.data}`);

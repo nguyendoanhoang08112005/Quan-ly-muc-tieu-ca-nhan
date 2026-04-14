@@ -51,6 +51,7 @@ export async function createMilestoneAction(
   revalidatePath("/dashboard");
   revalidatePath("/goals");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath(`/goals/${parsedGoalId.data}`);
   redirect(`/goals/${parsedGoalId.data}` as Route);
 }

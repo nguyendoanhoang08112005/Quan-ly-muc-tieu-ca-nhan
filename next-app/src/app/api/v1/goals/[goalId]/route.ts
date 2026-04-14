@@ -111,6 +111,7 @@ export async function PATCH(
   revalidatePath(`/goals/${goalId}`);
   revalidatePath("/dashboard");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/follows");
 
   return NextResponse.json({
@@ -146,6 +147,7 @@ export async function DELETE(
   revalidatePath(`/goals/${goalId}`);
   revalidatePath("/dashboard");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/follows");
 
   return noContentResponse();

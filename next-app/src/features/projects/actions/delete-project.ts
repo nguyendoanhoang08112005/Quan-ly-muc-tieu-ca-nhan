@@ -19,6 +19,7 @@ export async function deleteProjectAction(formData: FormData) {
 
   revalidatePath("/projects");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/dashboard");
   redirect("/projects");
 }

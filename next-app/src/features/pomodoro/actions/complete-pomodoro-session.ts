@@ -23,5 +23,6 @@ export async function completePomodoroSessionAction(formData: FormData) {
 
   revalidatePath("/pomodoro");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/notifications");
 }

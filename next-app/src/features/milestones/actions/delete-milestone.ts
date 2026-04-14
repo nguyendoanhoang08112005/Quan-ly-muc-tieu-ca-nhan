@@ -25,5 +25,6 @@ export async function deleteMilestoneAction(formData: FormData) {
   revalidatePath("/dashboard");
   revalidatePath("/goals");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath(`/goals/${parsedGoalId.data}`);
 }

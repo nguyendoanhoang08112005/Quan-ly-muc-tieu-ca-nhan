@@ -154,6 +154,7 @@ export async function PATCH(
     revalidatePath(`/goals/${goalId.toString()}`);
     revalidatePath("/dashboard");
     revalidatePath("/tasks");
+    revalidatePath("/tasks/board");
     revalidatePath("/projects");
     revalidatePath("/pomodoro");
 
@@ -193,6 +194,7 @@ export async function PATCH(
   revalidatePath(`/goals/${goalId.toString()}`);
   revalidatePath("/dashboard");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/projects");
   revalidatePath("/pomodoro");
 
@@ -235,6 +237,7 @@ export async function DELETE(
   revalidatePath(`/goals/${goalId.toString()}`);
   revalidatePath("/dashboard");
   revalidatePath("/tasks");
+  revalidatePath("/tasks/board");
   revalidatePath("/projects");
   revalidatePath("/pomodoro");
 
