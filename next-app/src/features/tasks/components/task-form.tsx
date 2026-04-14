@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { Route } from "next";
-import { useActionState, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useActionState, useMemo, useState, type ReactNode } from "react";
 import {
   CalendarDays,
   CheckCircle2,
@@ -176,20 +176,6 @@ export function TaskForm({
     ],
     []
   );
-
-  useEffect(() => {
-    setTitle(state.values.title);
-    setDescription(state.values.description);
-    setStatus(state.values.status);
-    setPriority(state.values.priority);
-    setEstimatedMinutes(state.values.estimatedMinutes);
-    setProjectId(state.values.projectId);
-    setIsFocus(state.values.isFocus);
-    setDueAt(state.values.dueAt);
-    setDueDate(getDatePartFromDateTimeLocalValue(state.values.dueAt));
-    setDueTime(getTimePartFromDateTimeLocalValue(state.values.dueAt));
-    setShowDetailedDueAt(Boolean(state.values.dueAt));
-  }, [state.values]);
 
   function updateDueAt(nextDueAt: string) {
     setDueAt(nextDueAt);

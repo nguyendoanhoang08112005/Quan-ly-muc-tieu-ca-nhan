@@ -7,7 +7,6 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
-  Layers3,
   PencilLine,
   Plus,
   Sparkles,

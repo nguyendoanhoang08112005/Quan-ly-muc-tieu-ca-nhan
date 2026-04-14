@@ -11,12 +11,17 @@ export default async function NewHabitPage() {
     <PageFormShell
       backHref="/habits"
       backLabel="Quay lại thói quen"
-      description="Tạo thói quen mới, chọn nhịp lặp và gắn vào mục tiêu nếu cần."
+      description="Tạo một thói quen có tín hiệu đạt rõ, nhịp ghi phù hợp và xem trước ngay trước khi lưu."
       eyebrow="Tạo thói quen"
-      maxWidthClassName="max-w-4xl"
+      maxWidthClassName="max-w-6xl"
       title="Thói quen mới"
     >
-      <HabitForm cancelHref="/habits" goalOptions={goalOptions} mode="create" />
+      <HabitForm
+        cancelHref="/habits"
+        goalOptions={goalOptions}
+        key="new-habit"
+        mode="create"
+      />
     </PageFormShell>
   );
 }

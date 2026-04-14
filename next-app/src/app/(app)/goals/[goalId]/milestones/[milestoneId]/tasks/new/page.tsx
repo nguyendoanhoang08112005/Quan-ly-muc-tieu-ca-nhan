@@ -1,14 +1,10 @@
-import Link from "next/link";
 import type { Route } from "next";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { PageFormShell } from "@/components/shared/app-page-patterns";
-import { buttonVariants } from "@/components/ui/button";
 import { goalIdSchema } from "@/features/goals/schemas/goal-schemas";
 import { milestoneIdSchema } from "@/features/milestones/schemas/milestone-schemas";
 import { TaskForm } from "@/features/tasks/components/task-form";
 import { requireAuthenticatedUserId } from "@/lib/auth/session";
-import { cn } from "@/lib/utils";
 import { listProjectOptionsForGoal } from "@/server/modules/projects/queries";
 
 type NewTaskPageProps = {
@@ -42,13 +38,14 @@ export default async function NewTaskPage({ params }: NewTaskPageProps) {
       maxWidthClassName="max-w-6xl"
       title="Công việc mới"
     >
-        <TaskForm
-          cancelHref={`/goals/${parsedGoalId.data}` as Route}
-          goalId={parsedGoalId.data}
-          milestoneId={parsedMilestoneId.data}
-          mode="create"
-          projectOptions={projectOptions}
-        />
+      <TaskForm
+        cancelHref={`/goals/${parsedGoalId.data}` as Route}
+        goalId={parsedGoalId.data}
+        key={`${parsedGoalId.data}:${parsedMilestoneId.data}`}
+        milestoneId={parsedMilestoneId.data}
+        mode="create"
+        projectOptions={projectOptions}
+      />
     </PageFormShell>
   );
 }

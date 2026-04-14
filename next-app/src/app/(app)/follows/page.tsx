@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
 import { PageEmptyState, PageHero, PageSectionTitle } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { GoalCard } from "@/features/goals/components/goal-card";

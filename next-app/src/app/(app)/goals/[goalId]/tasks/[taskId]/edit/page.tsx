@@ -47,14 +47,15 @@ export default async function EditTaskPage({ params }: EditTaskPageProps) {
       maxWidthClassName="max-w-6xl"
       title="Cập nhật công việc"
     >
-        <TaskForm
-          cancelHref={`/tasks/${parsedTaskId.data}` as Route}
-          goalId={parsedGoalId.data}
-          initialValues={task}
-          mode="edit"
-          projectOptions={projectOptions}
-          taskId={parsedTaskId.data}
-        />
+      <TaskForm
+        cancelHref={`/tasks/${parsedTaskId.data}` as Route}
+        goalId={parsedGoalId.data}
+        initialValues={task}
+        key={parsedTaskId.data}
+        mode="edit"
+        projectOptions={projectOptions}
+        taskId={parsedTaskId.data}
+      />
     </PageFormShell>
   );
 }

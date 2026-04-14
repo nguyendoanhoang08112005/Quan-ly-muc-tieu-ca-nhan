@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Bell, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PageEmptyState, PageHero } from "@/components/shared/app-page-patterns";
 import { buttonVariants } from "@/components/ui/button";
 import { MarkAllNotificationsReadForm } from "@/features/notifications/components/mark-all-notifications-read-form";

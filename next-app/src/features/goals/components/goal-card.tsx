@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, CheckCircle2, Layers3, PawPrint } from "lucide-react";
+import { ArrowRight, CalendarDays, Layers3, PawPrint } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import {
   goalPriorityClassNames,

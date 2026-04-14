@@ -33,20 +33,23 @@ export default async function EditHabitPage({ params }: EditHabitPageProps) {
     notFound();
   }
 
+  const detailHref = `/habits/${parsedHabitId.data}` as Route;
+
   return (
     <PageFormShell
-      backHref={`/habits/${parsedHabitId.data}`}
+      backHref={detailHref}
       backLabel="Quay lại thói quen"
-      description="Cập nhật mục tiêu lặp, số lượng cần đạt và nhịp nhắc cho thói quen."
+      description="Điều chỉnh tín hiệu đạt, nhịp ghi và trạng thái theo dõi mà vẫn thấy ngay bức tranh sau khi lưu."
       eyebrow="Sửa thói quen"
-      maxWidthClassName="max-w-4xl"
+      maxWidthClassName="max-w-6xl"
       title="Cập nhật thói quen"
     >
       <HabitForm
-        cancelHref={`/habits/${parsedHabitId.data}` as Route}
+        cancelHref={detailHref}
         goalOptions={goalOptions}
         habitId={parsedHabitId.data}
         initialValues={habit}
+        key={parsedHabitId.data}
         mode="edit"
       />
     </PageFormShell>

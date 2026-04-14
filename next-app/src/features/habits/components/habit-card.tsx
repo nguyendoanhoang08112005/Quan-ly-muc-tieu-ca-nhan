@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import type { ReactNode } from "react";
 import {
   AlarmClock,
   ArrowRight,
@@ -18,162 +19,173 @@ import type { HabitListItem } from "@/features/habits/types";
 import { formatDisplayDate, formatDisplayDateTime } from "@/lib/dates";
 import { cn } from "@/lib/utils";
 
+function getTodayProgress(habit: HabitListItem) {
+  const completedCount = habit.todayLog?.completedCount ?? 0;
+  const targetCount = habit.todayLog?.targetCountSnapshot ?? habit.targetCount;
+
+  if (targetCount <= 0) {
+    return 0;
+  }
+
+  return Math.min(100, Math.round((completedCount / targetCount) * 100));
+}
+
+function StatItem({
+  icon,
+  label,
+  value
+}: {
+  icon: ReactNode;
+  label: string;
+  value: ReactNode;
+}) {
+  return (
+    <div className="min-w-0 border-t border-stone-100 pt-3">
+      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-stone-500">
+        {icon}
+        {label}
+      </div>
+      <div className="mt-1 break-words text-sm font-semibold text-stone-950">
+        {value}
+      </div>
+    </div>
+  );
+}
+
 export function HabitCard({ habit }: { habit: HabitListItem }) {
   const todaySummary = habit.todayLog
     ? `${habit.todayLog.completedCount}/${habit.todayLog.targetCountSnapshot} ${habit.unit}`
     : `0/${habit.targetCount} ${habit.unit}`;
+  const todayProgress = getTodayProgress(habit);
+  const completedToday = Boolean(habit.todayLog?.isCompleted);
+  const detailHref = `/habits/${habit.id}` as Route;
 
   return (
-    <article className="group relative overflow-hidden rounded-[2rem] border border-stone-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#d8d8d8] hover:shadow-[0_20px_36px_-30px_rgba(28,25,23,0.22)]">
-      <div className="pointer-events-none absolute -right-8 top-0 h-28 w-28 rounded-full bg-[#eef6e8] blur-3xl transition group-hover:bg-[#e4f0dc]" />
-      <div className="pointer-events-none absolute left-0 top-8 h-20 w-20 rounded-full bg-[#fff5ed] blur-3xl" />
-
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_13rem]">
+    <article className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm transition hover:border-stone-300 hover:shadow-md sm:p-5">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_12rem]">
         <div className="min-w-0">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 text-xs font-semibold">
             <span
               className={cn(
-                "rounded-full px-3 py-1 text-xs font-semibold",
+                "rounded-md px-2.5 py-1",
                 habitStatusClassNames[habit.status]
               )}
             >
               {habitStatusLabels[habit.status]}
             </span>
-            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">
+            <span className="rounded-md bg-stone-100 px-2.5 py-1 text-stone-700">
               {habitFrequencyLabels[habit.frequency]}
             </span>
             {habit.goal ? (
-              <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-700">
+              <span className="max-w-full break-words rounded-md bg-stone-100 px-2.5 py-1 text-stone-700">
                 {habit.goal.title}
               </span>
             ) : null}
           </div>
 
-          <h2 className="mt-4 text-2xl font-black tracking-tight text-stone-950">
+          <h2 className="mt-4 break-words text-2xl font-black tracking-tight text-stone-950">
             {habit.title}
           </h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">
-            {habit.description || "Chưa thêm mô tả cho thói quen này."}
+          <p className="mt-2 max-w-3xl break-words text-sm leading-6 text-stone-600">
+            {habit.description || "Chưa có mô tả."}
           </p>
-
-          <div className="mt-4 grid gap-2 sm:grid-cols-2">
-            <div className="rounded-[1.2rem] border border-[#ebe1d7] bg-[#fffdfa] px-4 py-3">
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-                <Target className="h-3.5 w-3.5" />
-                Mục tiêu chu kỳ
-              </div>
-              <p className="mt-2 text-sm font-semibold text-stone-900">
-                {habit.targetCount} {habit.unit}
-              </p>
-            </div>
-
-            <div className="rounded-[1.2rem] border border-[#ebe1d7] bg-[#fffdfa] px-4 py-3">
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-                <AlarmClock className="h-3.5 w-3.5" />
-                Nhắc việc
-              </div>
-              <p className="mt-2 text-sm font-semibold text-stone-900">
-                {habit.reminderTime || "Chưa đặt"}
-              </p>
-            </div>
-
-            <div className="rounded-[1.2rem] border border-[#ebe1d7] bg-[#fffdfa] px-4 py-3">
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-                <Flame className="h-3.5 w-3.5" />
-                Chuỗi tốt nhất
-              </div>
-              <p className="mt-2 text-sm font-semibold text-stone-900">{habit.bestStreak} ngày</p>
-            </div>
-
-            <div className="rounded-[1.2rem] border border-[#ebe1d7] bg-[#fffdfa] px-4 py-3">
-              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-stone-500">
-                <CalendarDays className="h-3.5 w-3.5" />
-                Log gần nhất
-              </div>
-              <p className="mt-2 text-sm font-semibold text-stone-900">
-                {formatDisplayDateTime(habit.lastLoggedAt, "Chưa ghi")}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-[1.45rem] border border-[#e8e0d6] bg-stone-50 px-4 py-4">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500">
-                  Nhịp hôm nay
-                </p>
-                <p className="mt-2 text-2xl font-black tracking-tight text-stone-950">
-                  {todaySummary}
-                </p>
-              </div>
-              <span
-                className={cn(
-                  "rounded-full px-3 py-1 text-xs font-semibold",
-                  habit.todayLog?.isCompleted
-                    ? "bg-emerald-100 text-emerald-700"
-                    : "bg-stone-100 text-stone-700"
-                )}
-              >
-                {habit.todayLog?.isCompleted ? "Đã đạt hôm nay" : "Chưa đạt hôm nay"}
-              </span>
-            </div>
-            <p className="mt-3 text-sm text-stone-600">
-              {habit.todayLog
-                ? `Đã ghi nhận trong ngày. Bắt đầu từ ${formatDisplayDate(habit.startDate, "hôm nay")}.`
-                : "Hôm nay chưa có log nào. Vào chi tiết để ghi nhanh trong ngày."}
-            </p>
-          </div>
         </div>
 
-        <aside className="rounded-[1.6rem] border border-[#dfead8] bg-[#f8fcf5] p-4 shadow-[0_16px_30px_-30px_rgba(28,25,23,0.18)]">
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500">
+        <aside className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-700">
+            <Flame className="h-4 w-4" />
             Chuỗi hiện tại
-          </p>
-          <div className="mt-3 text-5xl font-black tracking-tight text-stone-950">
+          </div>
+          <p className="mt-2 text-4xl font-black tracking-tight text-stone-950">
             {habit.currentStreak}
-          </div>
-          <p className="mt-1 text-sm text-stone-600">ngày liên tiếp</p>
-
-          <div className="mt-4 space-y-3 text-sm text-stone-700">
-            <div className="rounded-[1rem] border border-[#dfe8d8] bg-white px-3 py-2.5">
-              <div className="flex items-center justify-between gap-3">
-                <span>Bắt đầu</span>
-                <span className="font-semibold text-stone-950">
-                  {formatDisplayDate(habit.startDate, "Hôm nay")}
-                </span>
-              </div>
-            </div>
-            <div className="rounded-[1rem] border border-[#dfe8d8] bg-white px-3 py-2.5">
-              <div className="flex items-center justify-between gap-3">
-                <span>Kết thúc</span>
-                <span className="font-semibold text-stone-950">
-                  {formatDisplayDate(habit.endDate, "Chưa đặt")}
-                </span>
-              </div>
-            </div>
-            <div className="rounded-[1rem] border border-[#dfe8d8] bg-white px-3 py-2.5">
-              <div className="flex items-center justify-between gap-3">
-                <span>Nhịp</span>
-                <span className="font-semibold text-stone-950">{habitFrequencyLabels[habit.frequency]}</span>
-              </div>
-            </div>
-          </div>
+          </p>
+          <p className="text-sm font-medium text-stone-600">ngày liên tiếp</p>
         </aside>
       </div>
 
-      <div className="mt-5 flex items-center justify-between border-t border-stone-200 pt-4">
-        <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-stone-500">
-          <CheckCircle2 className="h-3.5 w-3.5 text-[#7da066]" />
-          Vào chi tiết để log và xem lịch sử
+      <div className="mt-4 rounded-lg border border-stone-200 bg-stone-50 p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-stone-500">
+              Hôm nay
+            </p>
+            <p className="mt-1 text-2xl font-black tracking-tight text-stone-950">
+              {todaySummary}
+            </p>
+          </div>
+          <span
+            className={cn(
+              "rounded-md px-2.5 py-1 text-xs font-semibold",
+              completedToday
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-amber-100 text-amber-700"
+            )}
+          >
+            {completedToday ? "Đã đạt" : "Cần ghi"}
+          </span>
+        </div>
+        <div
+          aria-label={`Tiến độ hôm nay ${todayProgress}%`}
+          aria-valuemax={100}
+          aria-valuemin={0}
+          aria-valuenow={todayProgress}
+          className="mt-3 h-2 overflow-hidden rounded bg-white"
+          role="progressbar"
+        >
+          <div
+            className={cn(
+              "h-full rounded",
+              completedToday ? "bg-emerald-500" : "bg-stone-950"
+            )}
+            style={{ width: `${todayProgress}%` }}
+          />
+        </div>
+        <p className="mt-3 text-sm leading-6 text-stone-600">
+          {habit.todayLog
+            ? `Đã ghi nhận hôm nay. Bắt đầu từ ${formatDisplayDate(habit.startDate, "hôm nay")}.`
+            : "Chưa có nhật ký hôm nay."}
+        </p>
+      </div>
+
+      <dl className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <StatItem
+          icon={<Target className="h-3.5 w-3.5" />}
+          label="Mục tiêu"
+          value={`${habit.targetCount} ${habit.unit}`}
+        />
+        <StatItem
+          icon={<AlarmClock className="h-3.5 w-3.5" />}
+          label="Giờ nhắc"
+          value={habit.reminderTime || "Chưa đặt"}
+        />
+        <StatItem
+          icon={<CheckCircle2 className="h-3.5 w-3.5" />}
+          label="Tốt nhất"
+          value={`${habit.bestStreak} ngày`}
+        />
+        <StatItem
+          icon={<CalendarDays className="h-3.5 w-3.5" />}
+          label="Gần nhất"
+          value={formatDisplayDateTime(habit.lastLoggedAt, "Chưa ghi")}
+        />
+      </dl>
+
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-stone-200 pt-4">
+        <span className="text-xs font-medium text-stone-500">
+          {completedToday ? "Xem lịch sử để giữ nhịp ổn định." : "Ghi hôm nay để giữ chuỗi."}
         </span>
         <Link
           className={cn(
-            buttonVariants({ size: "sm", variant: "secondary" }),
-            "gap-2 rounded-full border-[#dfead8] bg-[#f7fbf4] text-[#557046] hover:bg-[#eef6e8]"
+            buttonVariants({
+              size: "sm",
+              variant: completedToday ? "secondary" : "default"
+            }),
+            "gap-2 rounded-lg",
+            completedToday ? "border-stone-200 bg-white" : "!text-white"
           )}
-          href={`/habits/${habit.id}` as Route}
+          href={completedToday ? detailHref : (`/habits/${habit.id}#habit-log` as Route)}
         >
-          Xem chi tiết
+          {completedToday ? "Xem chi tiết" : "Ghi nhật ký"}
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
